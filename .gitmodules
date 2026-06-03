@@ -1,0 +1,6 @@
+[submodule "bobmania"]
+	path = bobmania
+	url = https://github.com/robertpelloni/bobmania
+[submodule "itgmania"]
+	path = itgmania
+	url = https://github.com/robertpelloni/itgmania
