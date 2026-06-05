@@ -7,6 +7,8 @@
 - [x] Document hardware build and controller code.
 - [ ] Implement full audio analysis pipeline in Python (librosa).
 - [ ] Connect Stream Sanitizer to a real ML generator output.
-- [ ] Refine "FitnessKiosk" theme to show workout-specific stats.
-- [ ] Override MusicWheelItem to display 1-10 Fitness Levels. (Current Task)
-- [ ] Implement "Workout Summary" screen (stripped down evaluation).
+- [x] Refine "FitnessKiosk" theme to show workout-specific stats.
+- [x] Override MusicWheelItem to display 1-10 Fitness Levels.
+- [x] Implement "Workout Summary" screen (stripped down evaluation).
+- [x] Migrate Feedback screen to Pad Panel input.
+- [ ] Implement systemd service for Linux Kiosk mode.

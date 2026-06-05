@@ -1,7 +1,7 @@
 local t = Def.ActorFrame{
     OnCommand=function(self)
-        -- Auto-advance after 5 seconds if no input
-        self:sleep(5):queuecommand("Off")
+        -- Auto-advance after 10 seconds if no input
+        self:sleep(10):queuecommand("Off")
     end,
     OffCommand=function(self)
         SCREENMAN:GetTopScreen():StartTransitioningByOutEnum('NextScreen')
@@ -25,21 +25,21 @@ t[#t+1] = Def.ActorFrame{
     InitCommand=function(self) self:Center() end,
 
     LoadFont("Common Normal")..{
-        Text="[1] TOO EASY",
+        Text="[LEFT] TOO EASY",
         InitCommand=function(self) self:y(-20):zoom(0.8):x(-150) end
     },
     LoadFont("Common Normal")..{
-        Text="[2] PERFECT",
+        Text="[START] PERFECT",
         InitCommand=function(self) self:y(-20):zoom(0.8):x(0) end
     },
     LoadFont("Common Normal")..{
-        Text="[3] TOO HARD",
+        Text="[RIGHT] TOO HARD",
         InitCommand=function(self) self:y(-20):zoom(0.8):x(150) end
     }
 }
 
 t[#t+1] = LoadFont("Common Normal")..{
-    Text="Press 1, 2, or 3 to give feedback",
+    Text="Step on a panel to give feedback",
     InitCommand=function(self)
         self:Center():y(_screen.cy + 100):zoom(0.6):diffusealpha(0.7)
     end
@@ -49,15 +49,15 @@ t[#t+1] = LoadFont("Common Normal")..{
 t[#t+1] = Def.Actor{
     InputMessageCommand=function(self, params)
         if params.type == "FirstPress" then
-            if params.DeviceInput.button == "DeviceButton_1" or params.button == "MenuLeft" then
+            if params.button == "MenuLeft" or params.button == "Left" then
                 -- Log: Too Easy
                 Trace("FEEDBACK: TOO EASY")
                 self:GetParent():queuecommand("Off")
-            elseif params.DeviceInput.button == "DeviceButton_2" or params.button == "Start" then
+            elseif params.button == "Start" then
                 -- Log: Perfect
                 Trace("FEEDBACK: PERFECT")
                 self:GetParent():queuecommand("Off")
-            elseif params.DeviceInput.button == "DeviceButton_3" or params.button == "MenuRight" then
+            elseif params.button == "MenuRight" or params.button == "Right" then
                 -- Log: Too Hard
                 Trace("FEEDBACK: TOO HARD")
                 self:GetParent():queuecommand("Off")
