@@ -12,9 +12,9 @@
 - [x] Wire 1-10 normalization to the Music Wheel UI.
 - [x] Implement minimalist "Workout Summary" and "Feedback" screens.
 
-## Milestone 3: ML Pipeline Integration [IN PROGRESS]
-- [ ] Develop Python script for audio analysis (BPM, downbeat) using librosa.
-- [ ] Integrate ML chart generator (e.g. Dancing2Night).
+## Milestone 3: ML Pipeline Integration [DONE]
+- [x] Develop Python script for audio analysis (BPM, downbeat) using librosa.
+- [x] Integrate ML chart generator (e.g. Dancing2Night).
 - [x] Implement "Stream Sanitizer" to ensure fitness-safe patterns (No hands, no jacks).
 
 ## Milestone 4: Hardware Integration [DONE]
@@ -24,4 +24,4 @@
 ## Milestone 5: Full System Integration [DONE]
 - [x] Create standalone kiosk entry point script.
 - [x] Implement systemd service for auto-start.
-- [ ] Final testing and calibration (v0.5.0-rc1).
+- [x] Final testing and calibration (v1.0.0).

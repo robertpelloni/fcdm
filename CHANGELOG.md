@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.0] - 2024-05-24
+### Added
+- Final production release.
+- All core features (Fitness 1-10 scale, Kiosk Mode, Stream Sanitizer) verified.
+
+### Changed
+- Promoted project to 1.0.0.
+
 ## [1.0.0-staging] - 2024-05-24
 ### Added
 - Comprehensive integration test suite (`scripts/integration_test.py`).
