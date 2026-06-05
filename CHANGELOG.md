@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.5.0-rc1] - 2024-05-24
+### Added
+- Linux Kiosk integration: `scripts/kiosk-standalone.sh` and `scripts/dance-machine.service`.
+- Live User Testing Protocol (`docs/LIVE_TESTING.md`).
+
+### Changed
+- Refined `ScreenFeedback` layout and timing.
+- Updated `ROADMAP.md` and `TODO.md` to reflect Release Candidate status.
+- Incremented version to 0.5.0-rc1.
+
 ## [0.4.0] - 2024-05-24
 ### Added
 - "Workout Summary" screen for `FitnessKiosk` theme, replacing standard evaluation.

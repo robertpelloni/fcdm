@@ -11,4 +11,5 @@
 - [x] Override MusicWheelItem to display 1-10 Fitness Levels.
 - [x] Implement "Workout Summary" screen (stripped down evaluation).
 - [x] Migrate Feedback screen to Pad Panel input.
-- [ ] Implement systemd service for Linux Kiosk mode.
+- [x] Implement systemd service and kiosk entry point.
+- [ ] Conduct Live User Testing (v0.5.0-rc1).
