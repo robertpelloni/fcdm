@@ -5,8 +5,15 @@
 - Decided to use ITGMania as the primary engine for the kiosk theme.
 - Successfully implemented a theme skeleton that bypasses the title screen.
 
+## Fitness Level Normalization (v0.3.0)
+- Implemented a 1-10 fitness scale based on Notes Per Second (NPS).
+- Logic is encapsulated in `Scripts/FitnessDifficulties.lua`.
+- Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
+- This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
+
 ## Design Choices
 - **UI**: Minimalist, Kiosk-mode. Custom Lua actor in `ScreenTitleMenu overlay.lua` handles the auto-transition.
 - **Sensors**: FSR (Force Sensing Resistors) for longevity and sensitivity. Microcontroller code documented in `docs/HARDWARE.md`.
 - **Audio**: Direct ALSA access to minimize latency (planned for final kiosk image).
 - **Chart Logic**: Standard charts are too complex for long-form cardio. `scripts/stream_sanitizer.py` enforces a L-R-L-R flow by removing jacks and hands.
+- **Theme Inheritance**: `FitnessKiosk` falls back to `_fallback` but is intended to work alongside `Simply Love` if needed (though current implementation overrides core parts).
