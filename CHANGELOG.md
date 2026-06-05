@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.0-staging] - 2024-05-24
+### Added
+- Comprehensive integration test suite (`scripts/integration_test.py`).
+- Staging deployment documentation in `DEPLOY.md`.
+- Automated dependency installation for staging.
+
+### Changed
+- Promoted project to 1.0.0-staging.
+
 ## [0.5.0-rc1] - 2024-05-24
 ### Added
 - Linux Kiosk integration: `scripts/kiosk-standalone.sh` and `scripts/dance-machine.service`.
