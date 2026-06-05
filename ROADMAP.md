@@ -9,11 +9,11 @@
 - [x] Create a stripped-down Lua theme skeleton for ITGMania.
 - [x] Implement instant-boot to song selection.
 - [x] Implement 1-10 difficulty normalization logic.
-- [ ] Wire 1-10 normalization to the Music Wheel UI.
+- [ ] Wire 1-10 normalization to the Music Wheel UI. (In progress)
 - [ ] Strip evaluation screens to simple workout summaries.
 
 ## Milestone 3: ML Pipeline Integration [IN PROGRESS]
-- [ ] Develop Python script for audio analysis (BPM, downbeat).
+- [ ] Develop Python script for audio analysis (BPM, downbeat) using librosa.
 - [ ] Integrate ML chart generator (e.g. Dancing2Night).
 - [x] Implement "Stream Sanitizer" to ensure fitness-safe patterns (No hands, no jacks).
 
@@ -23,4 +23,5 @@
 
 ## Milestone 5: Full System Integration
 - [ ] Create optimized Linux Kiosk image (Openbox, ALSA).
+- [ ] Implement systemd service for auto-start.
 - [ ] Final testing and calibration.
