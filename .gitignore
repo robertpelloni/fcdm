@@ -11,3 +11,7 @@ bin/
 *.dll
 *.so
 *.dylib
+
+# Submodule directories - fetched by fetch-submodules.sh
+bobmania/
+itgmania/
