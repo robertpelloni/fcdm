@@ -1,41 +1,19 @@
-# Deployment & Environment Setup (Staging)
+# Deployment & Environment Setup
 
 ## Software Requirements
-- Linux (Ubuntu 22.04+ or Arch recommended)
+- Linux (Ubuntu LTS or Arch recommended)
 - ITGMania (included as submodule)
-- Python 3.12+
-  - `pip install librosa numpy`
-- X11/X.org (for Kiosk mode)
+- Python 3.x
+  - `pip install librosa numpy` (for future pipeline)
+- Teensyduino (for hardware controller)
 
-## Staging Deployment Steps
-1. **Sync Submodules**:
-   ```bash
-   git submodule update --init --recursive --remote
-   ```
-2. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt # Or manual install librosa numpy
-   ```
-3. **Setup Theme Symlink**:
-   ```bash
-   ln -s ../../themes/FitnessKiosk itgmania/Themes/FitnessKiosk
-   ```
-4. **Configure Systemd Service**:
-   ```bash
-   sudo cp scripts/dance-machine.service /etc/systemd/system/
-   sudo systemctl daemon-reload
-   sudo systemctl enable dance-machine
-   ```
-5. **Run Integration Tests**:
-   ```bash
-   PYTHONPATH=. python3 scripts/integration_test.py
-   ```
+## Hardware Requirements
+- Teensy 4.0
+- FSR Sensors (Interlink 402/406)
+- Polycarbonate panels (1/2 inch)
+- Steel/Aluminum frame (see `docs/HARDWARE.md` for details)
 
-## Kiosk Manual Launch
+## Running the Sanitizer
 ```bash
-./scripts/kiosk-standalone.sh
+python3 scripts/stream_sanitizer.py input.ssc output.ssc
 ```
-
-## Hardware Setup
-- Connect Teensy 4.0 (FSR Controller).
-- Ensure SoundDrivers=ALSA-sw in `itgmania/Data/Static.ini` or similar.
