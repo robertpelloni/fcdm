@@ -11,6 +11,11 @@
 - Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
 - This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
 
+## Full Ingestion Pipeline (v1.2.0)
+- Automated the entire music ingestion process with `scripts/ingest_music.py`.
+- Connected the audio processor and sanitizer into a single-command workflow triggered at boot.
+- Added UI badges in the `FitnessKiosk` theme to identify "Fitness Verified" charts.
+
 ## Audio Analysis & Sanitization (v1.1.0)
 - Integrated `librosa` for automated audio analysis.
 - `scripts/audio_processor.py` provides BPM and downbeat detection.

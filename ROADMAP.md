@@ -16,6 +16,7 @@
 - [x] Develop Python script for audio analysis (BPM, downbeat) using librosa. (Enhanced in v1.1.0)
 - [x] Integrate ML chart generator (e.g. Dancing2Night).
 - [x] Implement "Stream Sanitizer" to ensure fitness-safe patterns (No hands, no jacks).
+- [x] Integrate Sanitizer and Audio Analysis into a full music ingestion pipeline (v1.2.0).
 
 ## Milestone 4: Hardware Integration [DONE]
 - [x] Design/Implement Teensy/Arduino FSR controller code.

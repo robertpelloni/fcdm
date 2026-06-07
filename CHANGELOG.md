@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.2.0] - 2024-06-07
+### Added
+- Full Music Ingestion Pipeline (`scripts/ingest_music.py`) to automate song processing.
+- UI "Fitness Verified" badges in `FitnessKiosk` theme for sanitized charts.
+- Automated skeleton generation for raw audio files.
+
+### Changed
+- Integrated ingestion pipeline into `scripts/kiosk-standalone.sh`.
+- Updated `StepsDisplayList` to highlight sanitized charts.
+- Incremented version to 1.2.0.
+
 ## [1.1.0] - 2024-06-07
 ### Added
 - Automated Audio Analysis Pipeline (`scripts/audio_processor.py`) using `librosa`.

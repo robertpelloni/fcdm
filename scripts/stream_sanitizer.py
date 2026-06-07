@@ -15,7 +15,10 @@ def sanitize_ssc(input_path, output_path, audio_path=None):
 
     # If audio_path is provided and we lack BPM/Offset, we could theoretically inject them.
     # For now, we'll just log that we are using it.
-    if audio_path and analyze_audio:
+    needs_timing = ('#BPMS:0.000=0.000' in content or '#BPMS:;' in content or
+                    '#OFFSET:0.000' in content or '#OFFSET:;' in content)
+
+    if audio_path and analyze_audio and needs_timing:
         try:
             audio_data = analyze_audio(audio_path)
             print(f"Audio analysis successful: BPM={audio_data['bpm']}")
@@ -100,6 +103,11 @@ def process_chart(chart_content):
 
             sanitized_lines.append("".join(new_line))
         sanitized_measures.append("\n".join(sanitized_lines))
+
+    # Add Fitness flag to description if not already present
+    if "#DESCRIPTION:" in chart_content:
+        if "(Fitness)" not in chart_content:
+            chart_content = re.sub(r'#DESCRIPTION:(.*?);', r'#DESCRIPTION:\1 (Fitness);', chart_content)
 
     new_notes_data = "#NOTES:\n" + ",\n".join(sanitized_measures) + ";"
     return chart_content.replace(notes_match.group(0), new_notes_data)
