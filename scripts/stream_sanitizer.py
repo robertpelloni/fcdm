@@ -1,9 +1,32 @@
 import re
 import os
+import sys
 
-def sanitize_ssc(input_path, output_path):
+# Add the scripts directory to path to import audio_processor
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+try:
+    from audio_processor import analyze_audio
+except ImportError:
+    analyze_audio = None
+
+def sanitize_ssc(input_path, output_path, audio_path=None):
     with open(input_path, 'r', encoding='utf-8') as f:
         content = f.read()
+
+    # If audio_path is provided and we lack BPM/Offset, we could theoretically inject them.
+    # For now, we'll just log that we are using it.
+    if audio_path and analyze_audio:
+        try:
+            audio_data = analyze_audio(audio_path)
+            print(f"Audio analysis successful: BPM={audio_data['bpm']}")
+            # In a real implementation, we would update the #BPMS and #OFFSET tags if they are 0 or missing.
+            if '#BPMS:0.000=0.000' in content or '#BPMS:;' in content:
+                 content = re.sub(r'#BPMS:.*?;', f'#BPMS:0.000={audio_data["bpm"]:.3f};', content)
+            if '#OFFSET:0.000' in content or '#OFFSET:;' in content:
+                 offset = audio_data['downbeats'][0] if audio_data['downbeats'] else 0.0
+                 content = re.sub(r'#OFFSET:.*?;', f'#OFFSET:{-offset:.3f};', content)
+        except Exception as e:
+            print(f"Audio analysis failed: {e}")
 
     # Split into charts
     charts = re.split(r'//---------------', content)
@@ -83,7 +106,9 @@ def process_chart(chart_content):
 
 if __name__ == "__main__":
     import sys
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 3:
+        sanitize_ssc(sys.argv[1], sys.argv[2], sys.argv[3])
+    elif len(sys.argv) > 2:
         sanitize_ssc(sys.argv[1], sys.argv[2])
     else:
-        print("Usage: python3 stream_sanitizer.py <input.ssc> <output.ssc>")
+        print("Usage: python3 stream_sanitizer.py <input.ssc> <output.ssc> [audio_file]")

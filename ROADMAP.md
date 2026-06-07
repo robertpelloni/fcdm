@@ -13,7 +13,7 @@
 - [x] Implement minimalist "Workout Summary" and "Feedback" screens.
 
 ## Milestone 3: ML Pipeline Integration [DONE]
-- [x] Develop Python script for audio analysis (BPM, downbeat) using librosa.
+- [x] Develop Python script for audio analysis (BPM, downbeat) using librosa. (Enhanced in v1.1.0)
 - [x] Integrate ML chart generator (e.g. Dancing2Night).
 - [x] Implement "Stream Sanitizer" to ensure fitness-safe patterns (No hands, no jacks).
 

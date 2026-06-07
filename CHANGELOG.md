@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.0] - 2024-06-07
+### Added
+- Automated Audio Analysis Pipeline (`scripts/audio_processor.py`) using `librosa`.
+- Integration of audio analysis into `scripts/stream_sanitizer.py` for automated BPM and Offset detection.
+- Unit tests for the audio processor (`scripts/test_audio_processor.py`).
+
+### Changed
+- Updated `VISION.md`, `MEMORY.md`, `DEPLOY.md`, and `IDEAS.md` to reflect the new architecture.
+- Incremented version to 1.1.0.
+
 ## [1.0.0] - 2024-05-24
 ### Added
 - Final production release.

@@ -5,7 +5,7 @@
 - [x] Implement "FitnessKiosk" theme skeleton.
 - [x] Implement initial "Stream Sanitizer" Python script.
 - [x] Document hardware build and controller code.
-- [ ] Implement full audio analysis pipeline in Python (librosa).
+- [x] Implement full audio analysis pipeline in Python (librosa).
 - [ ] Connect Stream Sanitizer to a real ML generator output.
 - [x] Refine "FitnessKiosk" theme to show workout-specific stats.
 - [x] Override MusicWheelItem to display 1-10 Fitness Levels.

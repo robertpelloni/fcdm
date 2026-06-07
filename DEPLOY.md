@@ -2,7 +2,7 @@
 
 ## Software Requirements
 - Linux (Ubuntu 22.04+ or Arch recommended)
-- ITGMania (included as submodule)
+- ITGMania (fetched via `fetch-submodules.sh`)
 - Python 3.12+
   - `pip install librosa numpy`
 - X11/X.org (for Kiosk mode)

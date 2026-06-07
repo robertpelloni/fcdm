@@ -11,6 +11,11 @@
 - Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
 - This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
 
+## Audio Analysis & Sanitization (v1.1.0)
+- Integrated `librosa` for automated audio analysis.
+- `scripts/audio_processor.py` provides BPM and downbeat detection.
+- `scripts/stream_sanitizer.py` now leverages this data to automatically sync charts if timing data is missing.
+
 ## Design Choices
 - **UI**: Minimalist, Kiosk-mode. Custom Lua actor in `ScreenTitleMenu overlay.lua` handles the auto-transition.
 - **Sensors**: FSR (Force Sensing Resistors) for longevity and sensitivity. Microcontroller code documented in `docs/HARDWARE.md`.

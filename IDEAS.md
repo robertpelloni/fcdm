@@ -6,3 +6,4 @@
 - **Heart Rate Sync**: Dynamically adjust difficulty or visual feedback based on real-time heart rate data.
 - **Global Leaderboards**: Competitive fitness tracking.
 - **ML Refinement**: Train a model specifically on psytrance "fitness" charts rather than just post-processing human charts.
+- **Audio-to-Chart End-to-End**: Combine `audio_processor.py` with an ML generator to produce fully-synced, sanitized fitness charts from any raw MP3.
