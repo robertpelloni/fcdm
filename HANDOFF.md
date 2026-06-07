@@ -19,6 +19,7 @@ In this session, I implemented a full audio analysis pipeline to automate the sy
 - The `stream_sanitizer.py` has transitioned from a pure pattern-manipulator to a more comprehensive chart-processing tool that handles timing synchronization.
 
 ## Instructions for Successor Models
+- **Observations**: See `OBSERVATIONS.md` for detailed performance and compatibility notes.
 - **Environment**: Ensure `librosa` and `numpy` are installed in the Python environment.
 - **Testing**: Run `python3 scripts/test_audio_processor.py` and `python3 scripts/integration_test.py` after any changes to the pipeline.
 - **Submodules**: Always use `./fetch-submodules.sh` to update `bobmania` and `itgmania`, as they are excluded from `.gitmodules` for build-system compatibility.
