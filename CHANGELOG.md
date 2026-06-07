@@ -8,7 +8,8 @@
 
 ### Changed
 - Promoted project to 1.3.0.
-- Updated documentation with CI details.
+- Verified system stability via comprehensive end-to-end testing.
+- Updated documentation with CI details and deployment observations.
 
 ## [1.2.0] - 2024-06-07
 ### Added
