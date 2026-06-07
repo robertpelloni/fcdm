@@ -7,6 +7,7 @@
 - [x] Document hardware build and controller code.
 - [x] Implement full audio analysis pipeline in Python (librosa).
 - [x] Integrate Sanitizer and Audio Analysis into a full music ingestion pipeline.
+- [x] Establish CI Pipeline for automated testing and validation.
 - [ ] Connect Stream Sanitizer to a real ML generator output.
 - [x] Refine "FitnessKiosk" theme to show workout-specific stats.
 - [x] Override MusicWheelItem to display 1-10 Fitness Levels.

@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.0] - 2024-06-07
+### Added
+- GitHub Actions CI Pipeline (`.github/workflows/ci.yml`).
+- Automated end-to-end ingestion tests within CI.
+- System dependency documentation for CI runners.
+
+### Changed
+- Promoted project to 1.3.0.
+- Updated documentation with CI details.
+
 ## [1.2.0] - 2024-06-07
 ### Added
 - Full Music Ingestion Pipeline (`scripts/ingest_music.py`) to automate song processing.

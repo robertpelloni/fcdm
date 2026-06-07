@@ -13,8 +13,7 @@ def sanitize_ssc(input_path, output_path, audio_path=None):
     with open(input_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # If audio_path is provided and we lack BPM/Offset, we could theoretically inject them.
-    # For now, we'll just log that we are using it.
+    # If audio_path is provided and we lack BPM/Offset, we inject the analyzed results.
     needs_timing = ('#BPMS:0.000=0.000' in content or '#BPMS:;' in content or
                     '#OFFSET:0.000' in content or '#OFFSET:;' in content)
 

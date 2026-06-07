@@ -36,7 +36,7 @@ class StagingIntegrationTest(unittest.TestCase):
 
     def test_kiosk_scripts(self):
         """Verify that kiosk deployment scripts exist and are executable."""
-        scripts = ["scripts/kiosk-standalone.sh", "scripts/dance-machine.service"]
+        scripts = ["scripts/kiosk-standalone.sh", "scripts/dance-machine.service", "scripts/ingest_music.py"]
         for s in scripts:
             self.assertTrue(os.path.exists(s), f"Missing deployment script: {s}")
         self.assertTrue(os.access("scripts/kiosk-standalone.sh", os.X_OK), "kiosk-standalone.sh is not executable")

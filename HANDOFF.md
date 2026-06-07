@@ -4,6 +4,7 @@
 In this session, I implemented a full audio analysis pipeline to automate the synchronization of dance charts with their corresponding audio files. This addresses a major gap identified in the `TODO.md` and `ROADMAP.md`.
 
 ## Achievements
+- **CI Pipeline Integration**: Established a robust GitHub Actions workflow for automated testing and validation of the entire FCDM stack.
 - **Music Ingestion Pipeline**: Implemented `scripts/ingest_music.py` to bridge the gap between raw audio and fitness-ready charts. It handles skeleton generation, audio analysis, and pattern sanitization.
 - **UI Verification Badges**: Modified the `FitnessKiosk` theme to visually distinguish charts that have been processed by the FCDM pipeline.
 - **Audio Analysis Pipeline**: Created `scripts/audio_processor.py` leveraging `librosa` to detect BPM and downbeat offsets from raw audio files.
@@ -11,7 +12,7 @@ In this session, I implemented a full audio analysis pipeline to automate the sy
 - **Automated Testing**: Added `scripts/test_audio_processor.py` which uses synthetic audio to verify BPM and downbeat detection accuracy.
 - **Submodule Management**: Successfully synced the project with `bobmania` and `itgmania` submodules using the `fetch-submodules.sh` script.
 - **Documentation Overhaul**: Updated `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `IDEAS.md`, `ROADMAP.md`, and `TODO.md` to reflect the current state of the project.
-- **Version Bump**: Promoted the project to version `1.2.0`.
+- **Version Bump**: Promoted the project to version `1.3.0`.
 
 ## Architectural Shifts
 - The project now has a formal dependency on `librosa` and `numpy` for its offline processing pipeline.

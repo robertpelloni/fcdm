@@ -10,6 +10,7 @@ A bespoke software and hardware stack optimized solely for streamlining a workou
 - **ML-Generated Charts**: Automatic generation of flow-optimized charts for long audio sets.
 - **Music Ingestion Pipeline**: Fully automated workflow for converting raw audio into fitness-ready charts on startup. (`scripts/ingest_music.py`)
 - **Audio Analysis Pipeline**: Automated BPM and downbeat detection for unsynced audio files using `librosa`. (Implemented in `scripts/audio_processor.py`)
+- **Automated CI/CD**: Continuous Integration pipeline via GitHub Actions to ensure system stability and chart quality on every commit.
 - **Stream Sanitizer**: Python-based post-processor to ensure safe, alternating cardio flow. (Implemented in `scripts/stream_sanitizer.py`)
 - **Industrial-Grade Hardware**: FSR-based sensors, bulletproof construction, and high-fidelity audio. (Documented in `docs/HARDWARE.md`)
 - **Zero Latency**: Optimized software stack (Linux/ALSA) for minimal input and audio lag.

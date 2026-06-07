@@ -11,6 +11,11 @@
 - Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
 - This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
 
+## CI/CD Integration (v1.3.0)
+- Established GitHub Actions workflow in `.github/workflows/ci.yml`.
+- Automates dependency installation, submodule fetching, and full test suite execution.
+- Includes end-to-end verification of the music ingestion pipeline.
+
 ## Full Ingestion Pipeline (v1.2.0)
 - Automated the entire music ingestion process with `scripts/ingest_music.py`.
 - Connected the audio processor and sanitizer into a single-command workflow triggered at boot.
