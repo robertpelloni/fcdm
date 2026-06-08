@@ -4,17 +4,17 @@
 - Linux (Ubuntu 22.04+ or Arch recommended)
 - ITGMania (fetched via `fetch-submodules.sh`)
 - Python 3.12+
-  - `pip install librosa numpy`
+  - `pip install librosa numpy tensorflow onnxruntime pyserial`
 - X11/X.org (for Kiosk mode)
 
 ## Staging Deployment Steps
 1. **Sync Submodules**:
    ```bash
-   git submodule update --init --recursive --remote
+   bash fetch-submodules.sh --shallow
    ```
 2. **Install Dependencies**:
    ```bash
-   pip install -r requirements.txt # Or manual install librosa numpy
+   pip install librosa numpy tensorflow onnxruntime pyserial
    ```
 3. **Setup Theme Symlink**:
    ```bash
@@ -44,4 +44,5 @@
 
 ## Hardware Setup
 - Connect Teensy 4.0 (FSR Controller).
+- Run calibration utility: `PYTHONPATH=. python3 scripts/calibrate_fsr.py`
 - Ensure SoundDrivers=ALSA-sw in `itgmania/Data/Static.ini` or similar.

@@ -4,8 +4,8 @@
 - [x] Connect Stream Sanitizer to a real ML generator output (Dancing2Night).
 - [x] Upgrade to DDC-Deep Deep Learning generator (OnsetNet + SymNet).
 - [x] Implement temperature-based sampling for ML selection (v1.7.0).
-- [ ] Implement multi-BPM support in `audio_processor.py`.
-- [ ] Regenerate release zip for v1.3.0.
+- [x] Implement multi-BPM support in `audio_processor.py` (v1.8.0).
+- [x] Regenerate release zip for v1.8.0.
 
 ## Phase 2: Live Testing & Calibration (v1.4.0) [DONE]
 - [ ] Conduct Live User Testing (per `docs/LIVE_TESTING.md`).
