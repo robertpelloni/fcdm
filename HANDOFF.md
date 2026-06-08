@@ -15,8 +15,8 @@ In this session, I implemented a full audio analysis pipeline to automate the sy
 - **Enhanced Stream Sanitizer**: Integrated `scripts/stream_sanitizer.py` with the new audio processor. It can now automatically inject `#BPMS` and `#OFFSET` data into `.ssc` files if they are missing or zero.
 - **Automated Testing**: Added `scripts/test_audio_processor.py` which uses synthetic audio to verify BPM and downbeat detection accuracy.
 - **Submodule Management**: Successfully synced the project with `bobmania` and `itgmania` submodules using the `fetch-submodules.sh` script.
-- **Documentation Overhaul**: Updated `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `IDEAS.md`, `ROADMAP.md`, `TODO.md`, and created `FOLLOWUP.md` and `SUBMODULE_MAP.md` to reflect the current state of the project.
-- **Final Verification**: Successfully executed end-to-end system verification on v1.3.0 stable.
+- **Documentation Overhaul**: Updated `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `IDEAS.md`, `ROADMAP.md`, `TODO.md`, and created `FOLLOWUP.md`, `OBSERVATIONS.md`, and `SUBMODULE_MAP.md` to reflect the current state of the project.
+- **Final Verification**: Successfully executed end-to-end system verification on v1.5.0 stable.
 - **Version Bump**: Promoted the project to version `1.5.0`.
 
 ## Architectural Shifts
