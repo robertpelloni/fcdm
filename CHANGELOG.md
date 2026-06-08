@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.0] - 2024-06-08
+### Added
+- DDC-Deep signal processing generator (`scripts/ddc_inference.py`) using Mel-spectrogram analysis.
+- FSR Calibration Utility (`scripts/calibrate_fsr.py`) for real-time sensor monitoring.
+
+### Changed
+- Upgraded music ingestion pipeline to use DDC-Deep as the primary chart generator.
+- Updated `docs/HARDWARE.md` with calibration procedures.
+- Incremented version to 1.5.0.
+
 ## [1.4.0] - 2024-06-08
 ### Added
 - Production-grade ML chart generator (`scripts/dancing2night.py`) using onset detection and circular flow logic.

@@ -1,9 +1,9 @@
 # Follow-up Actions & Technical Debt
 
 ## High Priority: ML Integration
-- **Task**: Connect `scripts/stream_sanitizer.py` to a real ML generator output (e.g., Dancing2Night or a custom Dance_Diffusion model).
-- **Status**: The ingestion pipeline is ready to receive generated charts, but the generation phase itself is currently a static skeleton.
-- **Requirement**: Integration with a GPU-enabled backend or a pre-generation service.
+- **Task**: Deepen the DDC (Dance Dance Convolution) integration for better chart variety.
+- **Status**: Transitioned from heuristic skeleton to `scripts/ddc_inference.py` which uses advanced signal processing (Mel-spectrograms and Onset detection) to mimic deep learning density.
+- **Requirement**: Native TensorFlow 0.12.1 environment or a modern ONNX port of the original DDC models for true deep learning inference.
 
 ## High Priority: Live User Testing
 - **Task**: Execute the protocol in `docs/LIVE_TESTING.md`.

@@ -82,7 +82,22 @@ void loop() {
 }
 ```
 
-## 3. Industrial Electronics and Sealing
+## 3. Calibration and Maintenance
+
+### FSR Calibration Utility
+To aid in setting thresholds and diagnosing sensor drift, use the provided Python utility:
+```bash
+PYTHONPATH=. python3 scripts/calibrate_fsr.py
+```
+This script connects to the Teensy serial port and provides a live feed of raw sensor values vs. current thresholds.
+
+### Manual Threshold Adjustment
+If panels are too sensitive or non-responsive:
+1. Run the calibration utility.
+2. Observe the `RAW` values during a "strike" vs. "idle".
+3. Update the `baseline + 150` padding in the Arduino code `setup()` or the `thresholds` array in `loop()`.
+
+## 4. Industrial Electronics and Sealing
 - **Wiring**: Braided nylon sleeving inside frame channels.
 - **Connectors**: Waterproof aviation plugs (GX12 or GX16).
 - **Environment**: Conformal coating (silicone/acrylic) on all PCB and solder joints to prevent sweat damage.
