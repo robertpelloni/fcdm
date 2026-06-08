@@ -44,14 +44,36 @@ void setup() {
   }
 }
 
+unsigned long lastCalibrationTime = 0;
+const unsigned long CALIBRATION_INTERVAL = 300000; // Auto-calibrate every 5 minutes
+
 void loop() {
+  unsigned long currentTime = millis();
+
+  // 1. Dynamic Drift Calibration
+  // FSRs can drift as they heat up or as atmospheric pressure changes.
+  // We periodically sample the resting state to adjust thresholds.
+  if (currentTime - lastCalibrationTime > CALIBRATION_INTERVAL) {
+    bool padIsIdle = true;
+    for(int i=0; i<PIN_COUNT; i++) if(state[i]) padIsIdle = false;
+
+    if (padIsIdle) {
+      for(int i = 0; i < PIN_COUNT; i++) {
+        int baseline = analogRead(FSR_PINS[i]);
+        thresholds[i] = baseline + 150;
+      }
+      lastCalibrationTime = currentTime;
+    }
+  }
+
+  // 2. Input Processing
   for(int i = 0; i < PIN_COUNT; i++) {
     int rawValue = analogRead(FSR_PINS[i]);
 
     if (rawValue > thresholds[i] && !state[i]) {
       state[i] = true;
       Keyboard.press(KEY_MAPPINGS[i]);
-    } else if (rawValue < (thresholds[i] - 30) && state[i]) { // Hysteresis buffer
+    } else if (rawValue < (thresholds[i] - 40) && state[i]) { // Enhanced hysteresis
       state[i] = false;
       Keyboard.release(KEY_MAPPINGS[i]);
     }

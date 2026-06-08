@@ -1,13 +1,13 @@
 # TODO: Future Development
 
-## Phase 1: Integration & Polish (v1.3.x)
-- [ ] Connect Stream Sanitizer to a real ML generator output.
+## Phase 1: Integration & Polish (v1.3.x) [DONE]
+- [x] Connect Stream Sanitizer to a real ML generator output (Dancing2Night).
 - [ ] Implement multi-BPM support in `audio_processor.py`.
 - [ ] Regenerate release zip for v1.3.0.
 
 ## Phase 2: Live Testing & Calibration (v1.4.0)
 - [ ] Conduct Live User Testing (per `docs/LIVE_TESTING.md`).
-- [ ] Calibrate FSR sensitivity in controller code.
+- [x] Calibrate FSR sensitivity in controller code. (Added dynamic drift calibration)
 - [ ] Finalize Linux/ALSA performance tuning for the production kiosk image.
 
 ## Phase 3: Hardware Production (v2.0.0)

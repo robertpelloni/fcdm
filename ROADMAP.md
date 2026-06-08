@@ -18,9 +18,10 @@
 - [x] Implement "Stream Sanitizer" to ensure fitness-safe patterns (No hands, no jacks).
 - [x] Integrate Sanitizer and Audio Analysis into a full music ingestion pipeline (v1.2.0).
 - [x] Establish CI Pipeline for automated testing and validation (v1.3.0).
+- [x] Implement Dancing2Night production-grade ML generator (v1.4.0).
 
 ## Milestone 4: Hardware Integration [DONE]
-- [x] Design/Implement Teensy/Arduino FSR controller code.
+- [x] Design/Implement Teensy/Arduino FSR controller code. (Enhanced with drift calibration in v1.4.0)
 - [x] Document hardware build (frame, panel stack, wiring).
 
 ## Milestone 5: Full System Integration [DONE]

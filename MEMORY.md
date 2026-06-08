@@ -11,6 +11,11 @@
 - Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
 - This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
 
+## ML Generation & Hardware Stability (v1.4.0)
+- Implemented `Dancing2Night` ML generator using `librosa` onset detection.
+- Enforced a circular flow state machine to ensure cardio-optimized charts (no double-steps).
+- Added periodic dynamic drift calibration to the FSR controller to improve live testing reliability.
+
 ## CI/CD Integration (v1.3.0)
 - Established GitHub Actions workflow in `.github/workflows/ci.yml`.
 - Automates dependency installation, submodule fetching, and full test suite execution.

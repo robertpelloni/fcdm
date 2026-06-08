@@ -6,6 +6,7 @@ import glob
 # Ensure we can import from scripts/
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from stream_sanitizer import sanitize_ssc
+from dancing2night import generate_notes
 
 def ingest_songs(songs_dir):
     """
@@ -42,9 +43,13 @@ def ingest_songs(songs_dir):
 
 def create_skeleton_ssc(audio_path, ssc_path):
     """
-    Creates a minimal .ssc file for an audio file.
+    Creates a minimal .ssc file for an audio file with ML-generated notes.
     """
     base_name = os.path.splitext(os.path.basename(audio_path))[0]
+
+    # Generate notes using the production-grade ML generator (Dancing2Night)
+    notes_data = generate_notes(audio_path)
+
     content = f"""#VERSION:0.81;
 #TITLE:{base_name};
 #ARTIST:Unknown;
@@ -64,9 +69,7 @@ def create_skeleton_ssc(audio_path, ssc_path):
 #METER:5;
 #RADARVALUES:0,0,0,0,0;
 #CREDIT:FCDM;
-0000
-,
-0000
+{notes_data}
 ;
 """
     with open(ssc_path, 'w', encoding='utf-8') as f:

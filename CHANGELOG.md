@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.0] - 2024-06-08
+### Added
+- Production-grade ML chart generator (`scripts/dancing2night.py`) using onset detection and circular flow logic.
+- Dynamic drift calibration in FSR controller code (`docs/HARDWARE.md`) for stable live testing.
+
+### Changed
+- Integrated `Dancing2Night` into the music ingestion pipeline.
+- Incremented version to 1.4.0.
+
 ## [1.3.0] - 2024-06-07
 ### Added
 - GitHub Actions CI Pipeline (`.github/workflows/ci.yml`).
