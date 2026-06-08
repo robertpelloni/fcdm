@@ -12,5 +12,5 @@ A bespoke software and hardware stack optimized solely for streamlining a workou
 - **Audio Analysis Pipeline**: Automated BPM and downbeat detection for unsynced audio files using `librosa`. (Implemented in `scripts/audio_processor.py`)
 - **Automated CI/CD**: Continuous Integration pipeline via GitHub Actions to ensure system stability and chart quality on every commit.
 - **Stream Sanitizer**: Python-based post-processor to ensure safe, alternating cardio flow. (Implemented in `scripts/stream_sanitizer.py`)
-- **Industrial-Grade Hardware**: FSR-based sensors, bulletproof construction, and high-fidelity audio. (Documented in `docs/HARDWARE.md`)
+- **Industrial-Grade Hardware**: FSR-based sensors with remote Serial calibration and per-panel sensitivity scaling. (Documented in `docs/HARDWARE.md`)
 - **Zero Latency**: Real-time process priority and optimized ALSA buffers for minimal input and audio lag. (Implemented in `scripts/kiosk-standalone.sh`)

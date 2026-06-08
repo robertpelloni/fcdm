@@ -11,6 +11,11 @@
 - Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
 - This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
 
+## Advanced Calibration & ML Sampling (v1.7.0)
+- Enhanced the FSR controller with a Serial command interface for live threshold tuning and per-panel sensitivity.
+- Improved the `DDC-Deep` generator with temperature-based sampling to increase pattern variety.
+- Expanded the music ingestion pipeline with `--difficulty` and `--force` support.
+
 ## Full ML & Performance Tuning (v1.6.0)
 - Completed `DDC-Deep` integration by porting the `SymNet` LSTM architecture for deep learning step selection.
 - Tuned ALSA buffers and systemd process priorities (`CPUSchedulingPolicy=rr`) for zero-latency performance.

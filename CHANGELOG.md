@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0] - 2024-06-08
+### Added
+- Remote Serial calibration interface for FSR controller.
+- Temperature-based sampling for DDC-Deep step selection.
+- Per-panel sensitivity scaling in hardware controller.
+- `--difficulty` and `--force` flags for music ingestion.
+
+### Changed
+- Improved auto-calibration with signal averaging.
+- Optimized `ddc_inference.py` for increased pattern variety.
+- Incremented version to 1.7.0.
+
 ## [1.6.0] - 2024-06-08
 ### Added
 - Full DDC `SymNet` LSTM port for deep learning step selection.

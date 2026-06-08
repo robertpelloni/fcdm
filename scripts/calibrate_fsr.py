@@ -1,38 +1,65 @@
 import os
 import sys
 import time
+import json
 import argparse
 
-def simulate_calibration():
-    """
-    Simulates or reads from Serial (if available) to help calibrate FSR sensors.
-    In a real kiosk, this would connect to /dev/ttyACM0 (Teensy).
-    """
-    print("FCDM FSR Calibration Utility (v1.5.0)")
-    print("Connecting to sensor array...")
+# In production, use: import serial
+# For verification, we simulate serial.
 
-    # Mocking Serial connection for the purpose of the verification session
-    # In production, use: import serial; ser = serial.Serial('/dev/ttyACM0', 115200)
+class MockSerial:
+    def __init__(self):
+        self.out_buf = []
+    def write(self, data):
+        print(f"  [SERIAL OUT] {data.decode()}")
+        self.out_buf.append(data)
+    def in_waiting(self):
+        return 0
+    def read_line(self):
+        return b""
+
+def load_profile(path="config/calibration.json"):
+    if os.path.exists(path):
+        with open(path, 'r') as f:
+            return json.load(f)
+    return {"thresholds": [450]*9, "sensitivity": [150]*9}
+
+def save_profile(data, path="config/calibration.json"):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w') as f:
+        json.dump(data, f, indent=2)
+    print(f"Profile saved to {path}")
+
+def run_calibration(sim_mode=True):
+    print("FCDM FSR Calibration Utility (v1.7.0)")
+    profile = load_profile()
 
     pins = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
-    thresholds = [450] * 9
+    ser = MockSerial()
 
-    print("\nLive Sensor Feed (Ctrl+C to exit):")
-    print("P | RAW | THR | STATUS")
-    print("--|-----|-----|-------")
+    print("\nControls: [u] Update pin threshold, [s] Save profile, [q] Quit")
 
     try:
         count = 0
-        while count < 10: # Limit for sandbox output
+        while count < 5:
+            print(f"\n--- Frame {count} ---")
             for i, p in enumerate(pins):
-                raw = 300 + (count % 200) # Mock variation
-                status = "STRIKE" if raw > thresholds[i] else "IDLE"
-                print(f"{p} | {raw:03} | {thresholds[i]} | {status}")
-            print("-" * 25)
+                raw = 300 + (i * 20) + (count * 5)
+                status = "STRIKE" if raw > profile["thresholds"][i] else "IDLE"
+                print(f"{p} | RAW: {raw:03} | THR: {profile['thresholds'][i]} | {status}")
+
+            # Simulate a user action in frame 2
+            if count == 2:
+                print("\n> User Action: Update threshold for pin 0 (q) to 320")
+                profile["thresholds"][0] = 320
+                ser.write(f"t0 320".encode())
+
             time.sleep(0.5)
             count += 1
+
+        save_profile(profile)
     except KeyboardInterrupt:
-        print("\nCalibration session ended.")
+        print("\nExiting.")
 
 if __name__ == "__main__":
-    simulate_calibration()
+    run_calibration()

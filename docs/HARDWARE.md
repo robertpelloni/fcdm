@@ -33,14 +33,18 @@ const int FSR_PINS[PIN_COUNT] = {A0, A1, A2, A3, A4, A5, A6, A7, A8};
 const char KEY_MAPPINGS[PIN_COUNT] = {'q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c'};
 
 int thresholds[PIN_COUNT] = {300, 300, 300, 300, 300, 300, 300, 300, 300};
+int sensitivity[PIN_COUNT] = {150, 150, 150, 150, 150, 150, 150, 150, 150};
 bool state[PIN_COUNT] = {false};
 
 void setup() {
+  Serial.begin(115200);
   Keyboard.begin();
   // Auto-Calibration loop: Read initial resting pressure of the pad on boot
   for(int i = 0; i < PIN_COUNT; i++) {
-    int baseline = analogRead(FSR_PINS[i]);
-    thresholds[i] = baseline + 150; // Dynamic padding above ambient weight
+    long sum = 0;
+    for(int j=0; j<10; j++) { sum += analogRead(FSR_PINS[i]); delay(5); }
+    int baseline = sum / 10;
+    thresholds[i] = baseline + sensitivity[i];
   }
 }
 
@@ -48,6 +52,20 @@ unsigned long lastCalibrationTime = 0;
 const unsigned long CALIBRATION_INTERVAL = 300000; // Auto-calibrate every 5 minutes
 
 void loop() {
+  // 0. Serial Command Interface
+  if (Serial.available() > 0) {
+    char cmd = Serial.read();
+    if (cmd == 't') { // Update Threshold: t[pin_idx][new_val]
+       int pin = Serial.parseInt();
+       int val = Serial.parseInt();
+       if (pin >= 0 && pin < PIN_COUNT) thresholds[pin] = val;
+    } else if (cmd == 's') { // Update Sensitivity: s[pin_idx][new_val]
+       int pin = Serial.parseInt();
+       int val = Serial.parseInt();
+       if (pin >= 0 && pin < PIN_COUNT) sensitivity[pin] = val;
+    }
+  }
+
   unsigned long currentTime = millis();
 
   // 1. Dynamic Drift Calibration

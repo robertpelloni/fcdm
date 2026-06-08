@@ -4,6 +4,7 @@
 In this session, I implemented a full audio analysis pipeline to automate the synchronization of dance charts with their corresponding audio files. This addresses a major gap identified in the `TODO.md` and `ROADMAP.md`.
 
 ## Achievements
+- **Advanced Calibration & Variety**: Implemented remote Serial calibration for the FSR platform and added temperature-based sampling to the ML generator for richer chart variety.
 - **Full DDC ML Pipeline**: Completed the port of both `OnsetNet` and `SymNet` models into `scripts/ddc_inference.py`, enabling true deep learning placement and selection.
 - **Zero-Latency Stack**: Tuned the kiosk environment and systemd service for real-time priority and optimized audio buffers.
 - **DDC-Deep Generator**: Implemented `scripts/ddc_inference.py` using Mel-spectrogram feature extraction to mimic the deep learning density of the Dance Dance Convolution paper.
@@ -19,7 +20,7 @@ In this session, I implemented a full audio analysis pipeline to automate the sy
 - **Submodule Management**: Successfully synced the project with `bobmania` and `itgmania` submodules using the `fetch-submodules.sh` script.
 - **Documentation Overhaul**: Updated `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `IDEAS.md`, `ROADMAP.md`, `TODO.md`, and created `FOLLOWUP.md`, `OBSERVATIONS.md`, and `SUBMODULE_MAP.md` to reflect the current state of the project.
 - **Final Verification**: Successfully executed end-to-end system verification on v1.5.0 stable.
-- **Version Bump**: Promoted the project to version `1.6.0`.
+- **Version Bump**: Promoted the project to version `1.7.0`.
 
 ## Architectural Shifts
 - The project now has a formal dependency on `librosa` and `numpy` for its offline processing pipeline.

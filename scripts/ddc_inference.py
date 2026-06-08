@@ -12,6 +12,7 @@ from scipy.signal import argrelextrema
 class DDCInference:
     def __init__(self, sp_ckpt, ss_ckpt):
         self.sp_ckpt, self.ss_ckpt = sp_ckpt, ss_ckpt
+        tf.compat.v1.reset_default_graph()
         self.sess = tf.compat.v1.Session()
         self._build_sp_model()
         self._build_ss_model()
@@ -48,8 +49,8 @@ class DDCInference:
             w_proj_sym, w_proj_nosym, b_proj = tf.compat.v1.get_variable('rnn_proj/W', [17, 128]), tf.compat.v1.get_variable('rnn_proj/nosym_W', [2, 128]), tf.compat.v1.get_variable('rnn_proj/b', [128])
             proj = tf.reshape(tf.matmul(bag, w_proj_sym) + tf.matmul(other, w_proj_nosym) + b_proj, [1, 1, 128])
             try:
-                cell = tf.compat.v1.nn.rnn_cell.BasicRNNCell(128)
-                self.multi_cell = tf.compat.v1.nn.rnn_cell.MultiRNNCell([cell] * 2)
+                cells = [tf.compat.v1.nn.rnn_cell.BasicRNNCell(128) for _ in range(2)]
+                self.multi_cell = tf.compat.v1.nn.rnn_cell.MultiRNNCell(cells)
                 self.state_placeholder = self.multi_cell.zero_state(1, tf.float32)
                 outputs, self.next_state = tf.compat.v1.nn.dynamic_rnn(self.multi_cell, proj, initial_state=self.state_placeholder)
                 output = tf.reshape(outputs[0], [1, 128])
@@ -65,7 +66,7 @@ class DDCInference:
             tf.compat.v1.train.Saver(tf.compat.v1.get_collection(tf.compat.v1.GraphKeys.GLOBAL_VARIABLES, scope='model_ss')).restore(self.sess, self.ss_ckpt)
         except Exception: pass
 
-    def predict_onsets(self, audio_path):
+    def predict_onsets(self, audio_path, difficulty=3):
         try: y, sr = librosa.load(audio_path, sr=44100)
         except Exception: return np.array([])
         nffts, hop = [1024, 2048, 4096], 512
@@ -73,16 +74,19 @@ class DDCInference:
         song_feats = np.stack(feat_channels, axis=-1).transpose(1, 0, 2)
         padded = np.pad(song_feats, ((7, 7), (0, 0), (0, 0)), mode='constant')
         feats_other = np.zeros((1, 1, 5), dtype=np.float32)
-        feats_other[0, 0, 3] = 1.0
+        feats_other[0, 0, max(0, min(4, difficulty-1))] = 1.0
         batch_size, preds = 256, []
         for start in range(0, song_feats.shape[0], batch_size):
             end = min(start + batch_size, song_feats.shape[0])
             X_batch = np.array([padded[i:i+15] for i in range(start, end)]).reshape(-1, 1, 15, 80, 3)
             preds.extend(self.sess.run(self.prediction, feed_dict={self.audio_input: X_batch, self.other_input: np.repeat(feats_other, len(X_batch), axis=0)}).flatten())
-        peaks = argrelextrema(np.array(preds), np.greater)[0]
-        return librosa.frames_to_time(peaks[np.array(preds)[peaks] > 0.5], sr=sr, hop_length=hop)
+        preds = np.array(preds)
+        # Use dynamic threshold for reliability across songs
+        thresh = max(0.1, np.max(preds) * 0.5)
+        peaks = argrelextrema(preds, np.greater)[0]
+        return librosa.frames_to_time(peaks[preds[peaks] > thresh], sr=sr, hop_length=hop)
 
-    def select_steps(self, n_onsets):
+    def select_steps(self, n_onsets, temperature=0.8):
         vocab_path = 'bobmania/ArrowVortex/lib/ddc/infer/server_aux/labels_4_0123.txt'
         if not os.path.exists(vocab_path): return ["1000"] * n_onsets
         vocab = open(vocab_path).read().splitlines()
@@ -95,7 +99,12 @@ class DDCInference:
                 probs, state = self.sess.run([self.ss_probs, self.next_state], feed_dict={self.ss_bag_input: current_bag, self.ss_other_input: other, self.state_placeholder: state})
             else:
                 probs = self.sess.run(self.ss_probs, feed_dict={self.ss_bag_input: current_bag, self.ss_other_input: other})
-            idx = np.argmax(probs[0])
+
+            p = probs[0]
+            if temperature != 1.0:
+                p = np.power(p, 1.0/temperature)
+                p = p / np.sum(p)
+            idx = np.random.choice(len(p), p=p)
             note = vocab[idx]
             selected.append(note)
             current_bag = np.zeros((1, 1, 17), dtype=np.float32)
@@ -106,13 +115,14 @@ class DDCInference:
                     if t > 0: current_bag[0, 0, 1 + (col*4) + (t-1)] = 1.0
         return selected
 
-def generate_ddc_notes(audio_path):
+def generate_ddc_notes(audio_path, difficulty=3):
     base = 'bobmania/ArrowVortex/lib/ddc/infer/server_aux/'
     sp_ckpt, ss_ckpt = base + 'model_sp-56000', base + 'model_ss-23628'
     if not tf or not os.path.exists(sp_ckpt + '.index'): return generate_fallback_notes(audio_path)
     try:
         model = DDCInference(sp_ckpt, ss_ckpt)
-        onsets = model.predict_onsets(audio_path)
+        onsets = model.predict_onsets(audio_path, difficulty=difficulty)
+        if len(onsets) == 0: return generate_fallback_notes(audio_path)
         notes = model.select_steps(len(onsets))
         try: y, sr = librosa.load(audio_path, sr=44100)
         except Exception: return "0000\n,\n0000"
@@ -149,4 +159,6 @@ def generate_fallback_notes(audio_path):
     return ",\n".join(["\n".join(m) for m in chart_grid])
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1: print(generate_ddc_notes(sys.argv[1]))
+    diff = 3
+    if len(sys.argv) > 2: diff = int(sys.argv[2])
+    if len(sys.argv) > 1: print(generate_ddc_notes(sys.argv[1], difficulty=diff))
