@@ -26,7 +26,13 @@
    sudo systemctl daemon-reload
    sudo systemctl enable dance-machine
    ```
-5. **Run Integration Tests**:
+5. **Prepare ML Models**:
+   The DDC models are in a legacy format. Convert them for the modern environment:
+   ```bash
+   python3 scripts/convert_models.py
+   ```
+
+6. **Run Integration Tests**:
    ```bash
    PYTHONPATH=. python3 scripts/integration_test.py
    ```

@@ -11,9 +11,10 @@
 - Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
 - This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
 
-## ML Generation & Hardware Stability (v1.4.0)
-- Implemented `Dancing2Night` ML generator using `librosa` onset detection.
-- Enforced a circular flow state machine to ensure cardio-optimized charts (no double-steps).
+## ML Generation & Hardware Stability (v1.5.0)
+- Implemented `DDC-Deep` generator using the real Dance Dance Convolution (DDC) Deep Learning models.
+- Ported the DDC CNN and DNN architectures to a TF 2.x compatible wrapper (`scripts/ddc_inference.py`).
+- Added a model conversion utility (`scripts/convert_models.py`) to transition legacy DDC weights to modern formats.
 - Added periodic dynamic drift calibration to the FSR controller to improve live testing reliability.
 
 ## CI/CD Integration (v1.3.0)

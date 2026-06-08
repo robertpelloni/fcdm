@@ -2,7 +2,7 @@
 
 ## Phase 1: Integration & Polish (v1.3.x) [DONE]
 - [x] Connect Stream Sanitizer to a real ML generator output (Dancing2Night).
-- [x] Upgrade to DDC-Deep signal processing generator.
+- [x] Upgrade to DDC-Deep Deep Learning generator.
 - [ ] Implement multi-BPM support in `audio_processor.py`.
 - [ ] Regenerate release zip for v1.3.0.
 
