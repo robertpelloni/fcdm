@@ -81,9 +81,8 @@ class DDCInference:
             X_batch = np.array([padded[i:i+15] for i in range(start, end)]).reshape(-1, 1, 15, 80, 3)
             preds.extend(self.sess.run(self.prediction, feed_dict={self.audio_input: X_batch, self.other_input: np.repeat(feats_other, len(X_batch), axis=0)}).flatten())
         preds = np.array(preds)
-        # Use dynamic threshold for reliability across songs
-        thresh = max(0.1, np.max(preds) * 0.5)
-        peaks = argrelextrema(preds, np.greater)[0]
+        thresh = max(0.1, np.max(preds) * 0.5) if len(preds) > 0 else 0.5
+        peaks = argrelextrema(preds, np.greater)[0] if len(preds) > 0 else []
         return librosa.frames_to_time(peaks[preds[peaks] > thresh], sr=sr, hop_length=hop)
 
     def select_steps(self, n_onsets, temperature=0.8):
@@ -99,7 +98,6 @@ class DDCInference:
                 probs, state = self.sess.run([self.ss_probs, self.next_state], feed_dict={self.ss_bag_input: current_bag, self.ss_other_input: other, self.state_placeholder: state})
             else:
                 probs = self.sess.run(self.ss_probs, feed_dict={self.ss_bag_input: current_bag, self.ss_other_input: other})
-
             p = probs[0]
             if temperature != 1.0:
                 p = np.power(p, 1.0/temperature)
@@ -138,7 +136,7 @@ def generate_ddc_notes(audio_path, difficulty=3):
             if m_idx < total_measures: chart_grid[m_idx][l_idx] = notes[i]
         return ",\n".join(["\n".join(m) for m in chart_grid])
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error during ML inference: {e}")
         return generate_fallback_notes(audio_path)
 
 def generate_fallback_notes(audio_path):
