@@ -5,6 +5,7 @@
 - GitHub Actions CI Pipeline (`.github/workflows/ci.yml`).
 - Automated end-to-end ingestion tests within CI.
 - System dependency documentation for CI runners.
+- Structural Submodule Map (`SUBMODULE_MAP.md`).
 
 ### Changed
 - Promoted project to 1.3.0.
