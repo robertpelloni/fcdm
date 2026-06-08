@@ -13,4 +13,4 @@ A bespoke software and hardware stack optimized solely for streamlining a workou
 - **Automated CI/CD**: Continuous Integration pipeline via GitHub Actions to ensure system stability and chart quality on every commit.
 - **Stream Sanitizer**: Python-based post-processor to ensure safe, alternating cardio flow. (Implemented in `scripts/stream_sanitizer.py`)
 - **Industrial-Grade Hardware**: FSR-based sensors, bulletproof construction, and high-fidelity audio. (Documented in `docs/HARDWARE.md`)
-- **Zero Latency**: Optimized software stack (Linux/ALSA) for minimal input and audio lag.
+- **Zero Latency**: Real-time process priority and optimized ALSA buffers for minimal input and audio lag. (Implemented in `scripts/kiosk-standalone.sh`)

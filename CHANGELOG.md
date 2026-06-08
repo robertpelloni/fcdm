@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.0] - 2024-06-08
+### Added
+- Full DDC `SymNet` LSTM port for deep learning step selection.
+- Zero-latency tuning: ALSA period/buffer settings and real-time process priority.
+- Stress Test suite in `scripts/integration_test.py`.
+
+### Changed
+- Refined `ddc_inference.py` for high-volume ingestion stability.
+- Incremented version to 1.6.0.
+
 ## [1.5.0] - 2024-06-08
 ### Added
 - DDC-Deep signal processing generator (`scripts/ddc_inference.py`) using Mel-spectrogram analysis.

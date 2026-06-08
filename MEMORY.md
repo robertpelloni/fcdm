@@ -11,8 +11,13 @@
 - Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
 - This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
 
+## Full ML & Performance Tuning (v1.6.0)
+- Completed `DDC-Deep` integration by porting the `SymNet` LSTM architecture for deep learning step selection.
+- Tuned ALSA buffers and systemd process priorities (`CPUSchedulingPolicy=rr`) for zero-latency performance.
+- Added a robust "Stress Test" to the integration suite to ensure multi-file ingestion stability.
+
 ## ML Generation & Hardware Stability (v1.5.0)
-- Implemented `DDC-Deep` generator using the real Dance Dance Convolution (DDC) Deep Learning models.
+- Implemented initial `DDC-Deep` placement model using the Dance Dance Convolution (DDC) OnsetNet.
 - Ported the DDC CNN and DNN architectures to a TF 2.x compatible wrapper (`scripts/ddc_inference.py`).
 - Added a model conversion utility (`scripts/convert_models.py`) to transition legacy DDC weights to modern formats.
 - Added periodic dynamic drift calibration to the FSR controller to improve live testing reliability.

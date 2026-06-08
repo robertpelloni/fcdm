@@ -2,7 +2,7 @@
 
 ## Phase 1: Integration & Polish (v1.3.x) [DONE]
 - [x] Connect Stream Sanitizer to a real ML generator output (Dancing2Night).
-- [x] Upgrade to DDC-Deep Deep Learning generator.
+- [x] Upgrade to DDC-Deep Deep Learning generator (OnsetNet + SymNet).
 - [ ] Implement multi-BPM support in `audio_processor.py`.
 - [ ] Regenerate release zip for v1.3.0.
 
@@ -10,7 +10,7 @@
 - [ ] Conduct Live User Testing (per `docs/LIVE_TESTING.md`).
 - [x] Calibrate FSR sensitivity in controller code. (Added dynamic drift calibration)
 - [x] Create FSR calibration utility script.
-- [ ] Finalize Linux/ALSA performance tuning for the production kiosk image.
+- [x] Finalize Linux/ALSA performance tuning and real-time process priority (v1.6.0).
 
 ## Phase 3: Hardware Production (v2.0.0)
 - [ ] Finalize industrial frame design.
