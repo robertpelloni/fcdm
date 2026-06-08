@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.8.0] - 2024-06-08
+### Added
+- Multi-BPM segment detection in `audio_processor.py`.
+- Support for complex tempo shifts in StepMania `#BPMS` tags.
+
+### Changed
+- Refined `stream_sanitizer.py` to inject multi-segment BPM strings.
+- Incremented version to 1.8.0.
+
 ## [1.7.0] - 2024-06-08
 ### Added
 - Remote Serial calibration interface for FSR controller.

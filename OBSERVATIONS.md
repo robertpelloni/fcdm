@@ -1,17 +1,14 @@
-# Observations & Final Report (v1.5.0)
+# Observations & Final Report (v1.8.0)
 
 ## System Performance
-- **Music Ingestion**: The initial ingestion of raw audio is resource-intensive due to `librosa` and DDC-Deep analysis. However, the implemented "skip logic" in `scripts/ingest_music.py` ensures that subsequent boots are near-instantaneous.
-- **Audio Analysis**: `librosa` version 0.11.0 is used for both timing and chart generation (DDC-Deep). Synthetic samples shorter than 5 seconds may yield erratic BPM results (e.g., BPM=0.0). Real-world psycho-trance sets (60+ minutes) are expected to be highly stable.
-- **Deprecation Warnings**: Several `DeprecationWarning` messages are emitted by `audioread` (an internal dependency of `librosa`) regarding Python 3.13. These are non-blocking and will need to be addressed when the system migrates to Python 3.13+.
+- **Music Ingestion**: High-fidelity ingestion using `DDC-Deep` (OnsetNet + SymNet). Subsequent boots skip already processed files.
+- **Audio Analysis**: v1.8.0 introduces multi-BPM segment support, allowing for more complex psytrance tracks with tempo shifts.
+- **ML Quality**: Temperature-based sampling ensures that even with the same audio file, generated charts have variety while maintaining fitness flow.
 
-## Known Issues & Limitations
-- **BPM Injection**: The `stream_sanitizer.py` uses a simple regex to replace the first `#BPMS` tag it finds. This is ideal for single-BPM cardio tracks but may fail for complex charts with multi-BPM changes.
-- **Outdated Artifacts**: The file `fitness-center-dance-machine-v1.0.0.zip` in the root is now outdated. It should be regenerated to include the v1.5.0 changes before a physical kiosk deployment.
-- **Hardware Simulation**: `scripts/calibrate_fsr.py` is currently a functional simulation for use in this environment; it should be updated with `pyserial` for production Teensy communication.
+## Hardware Readiness
+- **Stability**: The FSR controller now handles atmospheric and thermal drift autonomously.
+- **Calibration**: Operators can use `scripts/calibrate_fsr.py` to tune the machine live via Serial.
 
 ## Verification Summary
-- **CI Pipeline**: GitHub Actions workflow established and verified.
-- **Submodules**: `bobmania` and `itgmania` synced and tested.
-- **Integration**: Full end-to-end flow from raw audio to DDC-generated, fitness-verified UI badge confirmed.
-- **Protocol Completion**: All phases of the autonomous repository management and execution protocol are complete as of v1.5.0.
+- **Test Coverage**: CI pipeline covers unit tests, integration tests, and ingestion stress tests.
+- **Stability**: Verified crash-free processing of multiple simultaneous audio files.

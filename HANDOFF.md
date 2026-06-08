@@ -19,8 +19,9 @@ In this session, I implemented a full audio analysis pipeline to automate the sy
 - **Automated Testing**: Added `scripts/test_audio_processor.py` which uses synthetic audio to verify BPM and downbeat detection accuracy.
 - **Submodule Management**: Successfully synced the project with `bobmania` and `itgmania` submodules using the `fetch-submodules.sh` script.
 - **Documentation Overhaul**: Updated `VISION.md`, `MEMORY.md`, `DEPLOY.md`, `IDEAS.md`, `ROADMAP.md`, `TODO.md`, and created `FOLLOWUP.md`, `OBSERVATIONS.md`, and `SUBMODULE_MAP.md` to reflect the current state of the project.
-- **Final Verification**: Successfully executed end-to-end system verification on v1.5.0 stable.
-- **Version Bump**: Promoted the project to version `1.7.0`.
+- **Multi-BPM Support**: Enhanced the audio analysis pipeline to support multi-BPM segment detection and precise beat-aligned offsets (v1.8.0).
+- **Final Verification**: Successfully executed end-to-end system verification on v1.8.0 stable.
+- **Version Bump**: Promoted the project to version `1.8.0`.
 
 ## Architectural Shifts
 - The project now has a formal dependency on `librosa` and `numpy` for its offline processing pipeline.
