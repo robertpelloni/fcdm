@@ -31,7 +31,10 @@ jobs:
     - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install librosa numpy
+        pip install librosa numpy tensorflow
+
+    - name: Prepare ML Models
+      run: python3 scripts/convert_models.py
 
     - name: Run Integration Tests
       run: |

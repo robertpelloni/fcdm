@@ -2,11 +2,13 @@ import os
 import sys
 import numpy as np
 import librosa
-import tensorflow as tf
+try:
+    import tensorflow as tf
+    # DDC uses TF 1.x features
+    tf.compat.v1.disable_eager_execution()
+except ImportError:
+    tf = None
 from scipy.signal import argrelextrema
-
-# DDC uses TF 1.x features
-tf.compat.v1.disable_eager_execution()
 
 class DDCInference:
     def __init__(self, sp_ckpt):
@@ -98,7 +100,11 @@ class DDCInference:
 
 def generate_ddc_notes(audio_path):
     sp_ckpt = 'bobmania/ArrowVortex/lib/ddc/infer/server_aux/model_sp-56000'
-    if not os.path.exists(sp_ckpt + '.index'):
+    if not tf or not os.path.exists(sp_ckpt + '.index'):
+        if not tf:
+            print("  [DDC-Deep] Warning: TensorFlow not installed. Falling back to signal processing.")
+        else:
+            print("  [DDC-Deep] Warning: Model checkpoint not found. Falling back to signal processing.")
         return generate_fallback_notes(audio_path)
 
     try:
