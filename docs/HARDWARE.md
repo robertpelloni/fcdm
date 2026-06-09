@@ -33,65 +33,25 @@ const int FSR_PINS[PIN_COUNT] = {A0, A1, A2, A3, A4, A5, A6, A7, A8};
 const char KEY_MAPPINGS[PIN_COUNT] = {'q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c'};
 
 int thresholds[PIN_COUNT] = {300, 300, 300, 300, 300, 300, 300, 300, 300};
-int sensitivity[PIN_COUNT] = {150, 150, 150, 150, 150, 150, 150, 150, 150};
 bool state[PIN_COUNT] = {false};
 
 void setup() {
-  Serial.begin(115200);
   Keyboard.begin();
   // Auto-Calibration loop: Read initial resting pressure of the pad on boot
   for(int i = 0; i < PIN_COUNT; i++) {
-    long sum = 0;
-    for(int j=0; j<10; j++) { sum += analogRead(FSR_PINS[i]); delay(5); }
-    int baseline = sum / 10;
-    thresholds[i] = baseline + sensitivity[i];
+    int baseline = analogRead(FSR_PINS[i]);
+    thresholds[i] = baseline + 150; // Dynamic padding above ambient weight
   }
 }
 
-unsigned long lastCalibrationTime = 0;
-const unsigned long CALIBRATION_INTERVAL = 300000; // Auto-calibrate every 5 minutes
-
 void loop() {
-  // 0. Serial Command Interface
-  if (Serial.available() > 0) {
-    char cmd = Serial.read();
-    if (cmd == 't') { // Update Threshold: t[pin_idx][new_val]
-       int pin = Serial.parseInt();
-       int val = Serial.parseInt();
-       if (pin >= 0 && pin < PIN_COUNT) thresholds[pin] = val;
-    } else if (cmd == 's') { // Update Sensitivity: s[pin_idx][new_val]
-       int pin = Serial.parseInt();
-       int val = Serial.parseInt();
-       if (pin >= 0 && pin < PIN_COUNT) sensitivity[pin] = val;
-    }
-  }
-
-  unsigned long currentTime = millis();
-
-  // 1. Dynamic Drift Calibration
-  // FSRs can drift as they heat up or as atmospheric pressure changes.
-  // We periodically sample the resting state to adjust thresholds.
-  if (currentTime - lastCalibrationTime > CALIBRATION_INTERVAL) {
-    bool padIsIdle = true;
-    for(int i=0; i<PIN_COUNT; i++) if(state[i]) padIsIdle = false;
-
-    if (padIsIdle) {
-      for(int i = 0; i < PIN_COUNT; i++) {
-        int baseline = analogRead(FSR_PINS[i]);
-        thresholds[i] = baseline + 150;
-      }
-      lastCalibrationTime = currentTime;
-    }
-  }
-
-  // 2. Input Processing
   for(int i = 0; i < PIN_COUNT; i++) {
     int rawValue = analogRead(FSR_PINS[i]);
 
     if (rawValue > thresholds[i] && !state[i]) {
       state[i] = true;
       Keyboard.press(KEY_MAPPINGS[i]);
-    } else if (rawValue < (thresholds[i] - 40) && state[i]) { // Enhanced hysteresis
+    } else if (rawValue < (thresholds[i] - 30) && state[i]) { // Hysteresis buffer
       state[i] = false;
       Keyboard.release(KEY_MAPPINGS[i]);
     }
@@ -100,22 +60,7 @@ void loop() {
 }
 ```
 
-## 3. Calibration and Maintenance
-
-### FSR Calibration Utility
-To aid in setting thresholds and diagnosing sensor drift, use the provided Python utility:
-```bash
-PYTHONPATH=. python3 scripts/calibrate_fsr.py
-```
-This script connects to the Teensy serial port and provides a live feed of raw sensor values vs. current thresholds.
-
-### Manual Threshold Adjustment
-If panels are too sensitive or non-responsive:
-1. Run the calibration utility.
-2. Observe the `RAW` values during a "strike" vs. "idle".
-3. Update the `baseline + 150` padding in the Arduino code `setup()` or the `thresholds` array in `loop()`.
-
-## 4. Industrial Electronics and Sealing
+## 3. Industrial Electronics and Sealing
 - **Wiring**: Braided nylon sleeving inside frame channels.
 - **Connectors**: Waterproof aviation plugs (GX12 or GX16).
 - **Environment**: Conformal coating (silicone/acrylic) on all PCB and solder joints to prevent sweat damage.

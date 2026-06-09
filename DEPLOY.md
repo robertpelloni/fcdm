@@ -2,19 +2,19 @@
 
 ## Software Requirements
 - Linux (Ubuntu 22.04+ or Arch recommended)
-- ITGMania (fetched via `fetch-submodules.sh`)
+- ITGMania (included as submodule)
 - Python 3.12+
-  - `pip install librosa numpy tensorflow onnxruntime pyserial`
+  - `pip install librosa numpy`
 - X11/X.org (for Kiosk mode)
 
 ## Staging Deployment Steps
 1. **Sync Submodules**:
    ```bash
-   bash fetch-submodules.sh --shallow
+   git submodule update --init --recursive --remote
    ```
 2. **Install Dependencies**:
    ```bash
-   pip install librosa numpy tensorflow onnxruntime pyserial
+   pip install -r requirements.txt # Or manual install librosa numpy
    ```
 3. **Setup Theme Symlink**:
    ```bash
@@ -26,13 +26,7 @@
    sudo systemctl daemon-reload
    sudo systemctl enable dance-machine
    ```
-5. **Prepare ML Models**:
-   The DDC models are in a legacy format. Convert them for the modern environment:
-   ```bash
-   python3 scripts/convert_models.py
-   ```
-
-6. **Run Integration Tests**:
+5. **Run Integration Tests**:
    ```bash
    PYTHONPATH=. python3 scripts/integration_test.py
    ```
@@ -44,5 +38,4 @@
 
 ## Hardware Setup
 - Connect Teensy 4.0 (FSR Controller).
-- Run calibration utility: `PYTHONPATH=. python3 scripts/calibrate_fsr.py`
 - Ensure SoundDrivers=ALSA-sw in `itgmania/Data/Static.ini` or similar.

@@ -14,15 +14,11 @@ local t = Def.ActorFrame{
 
 			for i=1,5 do
 				local item = self:GetChild("Grid"):GetChild("Meter_"..i)
-				local badge = self:GetChild("Grid"):GetChild("Badge_"..i)
 				if steps[i] then
 					local level = GetFitnessLevel(steps[i])
-					local isFitness = string.find(steps[i]:GetDescription(), "%(Fitness%)") ~= nil
-					item:playcommand("Set", {Level=level, IsFitness=isFitness})
-					badge:playcommand("Set", {IsFitness=isFitness})
+					item:playcommand("Set", {Level=level})
 				else
 					item:playcommand("Unset")
-					badge:playcommand("Unset")
 				end
 			end
 		end
@@ -52,25 +48,8 @@ for RowNumber=-2, 2 do
 			if params.Level <= 3 then self:diffuse(0,1,0,1)
 			elif params.Level <= 7 then self:diffuse(1,1,0,1)
 			else self:diffuse(1,0,0,1) end
-
-			if params.IsFitness then
-				self:strokecolor(1,1,1,1)
-			else
-				self:strokecolor(0,0,0,0)
-			end
 		end,
 		UnsetCommand=function(self) self:settext("") end,
-	}
-
-	Grid[#Grid+1] = Def.Quad{
-		Name="Badge_"..idx,
-		InitCommand=function(self)
-			self:xy(12, 30*RowNumber + 10):zoomto(4,4):rotationz(45):visible(false)
-		end,
-		SetCommand=function(self, params)
-			self:visible(params.IsFitness):diffuse(1,1,1,1)
-		end,
-		UnsetCommand=function(self) self:visible(false) end,
 	}
 end
 

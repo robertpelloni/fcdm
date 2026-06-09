@@ -29,6 +29,11 @@ local stats = {
         local steps = GAMESTATE:GetCurrentSteps(PLAYER_1)
         return steps and GetFitnessLevel(steps) or "N/A"
     end },
+    { label="BOBCOIN REWARD", value=function()
+        local cal = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1):GetCaloriesBurned()
+        local dur = STATSMAN:GetCurStageStats():GetGameplaySeconds()
+        return string.format("%.2f BOB", GetBobcoinReward(cal, dur))
+    end },
 }
 
 for i, stat in ipairs(stats) do

@@ -7,9 +7,6 @@ Type=simple
 User=jules
 WorkingDirectory=/app
 ExecStart=/app/scripts/kiosk-standalone.sh
-CPUSchedulingPolicy=rr
-CPUSchedulingPriority=99
-Nice=-20
 Restart=always
 RestartSec=10
 Environment=DISPLAY=:0
