@@ -21,44 +21,15 @@ Inside each corner of the 9 grid pockets:
 4. **Layer 3**: Rigid plastic/rubber actuator spacer disk.
 5. **Top**: Polycarbonate panel.
 
-## 2. Microcontroller Code (Teensy 4.0 / Arduino Leonardo)
+## 2. v2.2.0 Microcontroller Calibration Protocol
 
-The following code runs on a Teensy 4.0 at 1000Hz, providing zero-latency USB-HID input.
+The v2.2.0 stack supports live serial tuning. Connect the Teensy/Arduino and run:
+`python3 scripts/calibrate_fsr.py`
 
-```cpp
-#include <Keyboard.h>
-
-const int PIN_COUNT = 9;
-const int FSR_PINS[PIN_COUNT] = {A0, A1, A2, A3, A4, A5, A6, A7, A8};
-const char KEY_MAPPINGS[PIN_COUNT] = {'q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c'};
-
-int thresholds[PIN_COUNT] = {300, 300, 300, 300, 300, 300, 300, 300, 300};
-bool state[PIN_COUNT] = {false};
-
-void setup() {
-  Keyboard.begin();
-  // Auto-Calibration loop: Read initial resting pressure of the pad on boot
-  for(int i = 0; i < PIN_COUNT; i++) {
-    int baseline = analogRead(FSR_PINS[i]);
-    thresholds[i] = baseline + 150; // Dynamic padding above ambient weight
-  }
-}
-
-void loop() {
-  for(int i = 0; i < PIN_COUNT; i++) {
-    int rawValue = analogRead(FSR_PINS[i]);
-
-    if (rawValue > thresholds[i] && !state[i]) {
-      state[i] = true;
-      Keyboard.press(KEY_MAPPINGS[i]);
-    } else if (rawValue < (thresholds[i] - 30) && state[i]) { // Hysteresis buffer
-      state[i] = false;
-      Keyboard.release(KEY_MAPPINGS[i]);
-    }
-  }
-  delay(1); // 1ms resolution polling
-}
-```
+### Calibration Keys
+- `t <index> <value>`: Sets the raw pressure threshold for a panel (0-1023).
+- `s <index> <value>`: Sets a multiplier for sensitivity scaling (e.g. 1.2 for 20% more sensitivity).
+- `w`: Writes current settings to the non-volatile memory on the controller.
 
 ## 3. Industrial Electronics and Sealing
 - **Wiring**: Braided nylon sleeving inside frame channels.

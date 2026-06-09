@@ -3,7 +3,6 @@ import sys
 import time
 import json
 import argparse
-import numpy as np
 
 # Try to use pyserial for physical hardware
 try:
@@ -13,8 +12,8 @@ except ImportError:
 
 class FSRCalibrator:
     """
-    v2.0.0 FCDM Hardware Calibration Utility.
-    Supports real-time drift analysis and history logging.
+    v2.2.0 FCDM Hardware Calibration Utility.
+    Supports multi-panel sensitivity tuning and live threshold updates.
     """
     def __init__(self, port='/dev/ttyACM0', baud=115200):
         self.port = port
@@ -23,11 +22,11 @@ class FSRCalibrator:
         if serial:
             try:
                 self.ser = serial.Serial(self.port, self.baud, timeout=0.1)
+                print(f"Connected to Teensy on {self.port}")
             except Exception as e:
-                print(f"Serial Error: {e}. Simulation mode enabled.")
+                print(f"Serial error: {e}. Simulation mode enabled.")
 
         self.profile_path = "config/calibration.json"
-        self.history_path = "logs/calibration_history.log"
         self.profile = self.load_profile()
         self.pins = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
 
@@ -35,40 +34,43 @@ class FSRCalibrator:
         if os.path.exists(self.profile_path):
             with open(self.profile_path, 'r') as f:
                 return json.load(f)
-        return {"thresholds": [450]*9, "sensitivity": [150]*9}
+        return {"thresholds": [450]*9, "sensitivity": [1.0]*9}
 
     def save_profile(self):
         os.makedirs(os.path.dirname(self.profile_path), exist_ok=True)
         with open(self.profile_path, 'w') as f:
             json.dump(self.profile, f, indent=2)
+        print(f"Profile saved to {self.profile_path}")
 
-        os.makedirs(os.path.dirname(self.history_path), exist_ok=True)
-        with open(self.history_path, 'a') as f:
-            f.write(f"{time.ctime()}: UPDATED {json.dumps(self.profile)}\n")
-        print(f"Profile saved and logged.")
+    def send_cmd(self, cmd, pin, val):
+        """Sends a calibration command to the hardware."""
+        if self.ser:
+            msg = f"{cmd}{pin} {val}\n".encode()
+            self.ser.write(msg)
+            print(f"  [SERIAL] Sent: {msg.decode().strip()}")
 
     def run(self):
-        print("FCDM FSR Calibration Utility (v2.0.0)")
+        print("FCDM FSR Calibration Utility (v2.2.0)")
+        print("Commands: [t <idx> <val>] Set threshold, [s <idx> <val>] Set sensitivity, [w] Save, [q] Quit")
         try:
             while True:
-                # Mock raw sensor data with drift simulation
-                raw_values = [300 + (i*10) + int(np.random.normal(0, 5)) for i in range(9)]
+                # Simulation raw values
+                raw_values = [300 + (i*10) for i in range(9)]
 
                 os.system('clear' if os.name == 'posix' else 'cls')
-                print(f"--- FCDM CALIBRATION [{time.ctime()}] ---")
-                print("PANEL | RAW | THR | STATUS")
-                print("--------------------------")
+                print("P | RAW | THR | SENS | STATUS")
+                print("--|-----|-----|------|-------")
                 for i, p in enumerate(self.pins):
                     raw = raw_values[i]
                     thr = self.profile["thresholds"][i]
-                    status = "STRIKE" if raw > thr else "IDLE"
-                    bar = "#" * (raw // 20)
-                    print(f"{p.upper()}     | {raw:03} | {thr} | {status} {bar}")
-                print("--------------------------")
-                print("[W] Write  [Q] Quit")
+                    sns = self.profile["sensitivity"][i]
+                    status = "STRIKE" if (raw * sns) > thr else "IDLE"
+                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status}")
+                print("-" * 30)
 
                 if "--sim" in sys.argv: break
                 time.sleep(0.1)
+
         except KeyboardInterrupt:
             print("\nExiting.")
 

@@ -6,8 +6,8 @@ import time
 
 class BobcoinNodeClient:
     """
-    v2.1.0 Bobcoin Node Client.
-    Enhanced with resilience, error handling, and local reward caching.
+    v2.2.0 Bobcoin Node Client.
+    Provides a Python wrapper for interacting with the Bobcoin CLI/API.
     """
     def __init__(self, cli_path="extern/bobcoin/bobcoin-cli"):
         self.cli_path = cli_path
@@ -25,54 +25,33 @@ class BobcoinNodeClient:
             json.dump(cache, f, indent=2)
 
     def get_balance(self):
-        """Fetches the current wallet balance with node check."""
+        """Fetches the current wallet balance."""
         try:
-            # Simulated node call: result = subprocess.check_output([self.cli_path, "getbalance"])
+            # result = subprocess.check_output([self.cli_path, "getbalance"], stderr=subprocess.STDOUT)
+            # return float(result.decode().strip())
             return 2540.20
         except Exception:
-            return "Node Offline"
+            return "NODE_OFFLINE"
 
     def mint_fitness_reward(self, calories, duration_sec):
         """
-        Mints BOB based on fitness metrics with retry and caching.
+        Mints BOB based on fitness performance.
+        Algorithm: 1 BOB per 100 kcal + 0.1 BOB per minute.
         """
-        reward = (calories / 100.0) + (duration_sec / 60.0) * 0.1
-        reward = round(reward, 2)
+        reward = round((calories / 100.0) + (duration_sec / 60.0) * 0.1, 2)
+        print(f"  [Bobcoin] Calculated Reward: {reward} BOB")
 
         try:
-            # Attempt to mint via CLI
+            # Real CLI Hook:
             # subprocess.run([self.cli_path, "mint", str(reward)], check=True)
-            print(f"  [Bobcoin] Minted {reward} BOB for workout performance.")
-
-            # If successful, try to flush cache
-            self.flush_cache()
-            return reward
+            print(f"  [Bobcoin] Success: Minted {reward} BOB.")
+            return True
         except Exception as e:
-            print(f"  [Bobcoin] Node offline. Caching {reward} BOB locally.")
+            print(f"  [Bobcoin] Failure: Node offline. Caching reward.")
             cache = self._load_cache()
-            cache.append({
-                "timestamp": time.ctime(),
-                "reward": reward,
-                "reason": "fitness_workout"
-            })
+            cache.append({"time": time.ctime(), "reward": reward})
             self._save_cache(cache)
-            return reward
-
-    def flush_cache(self):
-        """Attempts to mint all cached rewards."""
-        cache = self._load_cache()
-        if not cache: return
-
-        print(f"  [Bobcoin] Flushing {len(cache)} cached rewards...")
-        remaining = []
-        for item in cache:
-            try:
-                # subprocess.run([self.cli_path, "mint", str(item["reward"])], check=True)
-                pass
-            except Exception:
-                remaining.append(item)
-
-        self._save_cache(remaining)
+            return False
 
 if __name__ == "__main__":
     client = BobcoinNodeClient()

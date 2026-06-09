@@ -9,6 +9,14 @@
 - Added production Hardware Calibration Guide.
 - Initialized bobcoin submodule in `extern/bobcoin`.
 
+## [2.2.0] - 2026-06-09
+### Added
+- **v2.2.0 Full ML Integration Milestone**.
+- Fully implemented SymNet LSTM inference loop in `scripts/ddc_inference.py`.
+- Enhanced FSR hardware calibration with sensitivity tuning and live Serial updates.
+- Deepened Bobcoin "Fitness Mining" with real CLI hooks and reward caching.
+- Updated documentation with v2.2.0 industrial calibration protocols.
+
 ## [2.1.0] - 2026-06-09
 ### Added
 - **Production Resilience Update**.

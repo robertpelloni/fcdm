@@ -1,15 +1,15 @@
 -- themes/FitnessKiosk/Scripts/BobcoinIntegration.lua
--- v2.0.0 Production Bobcoin Integration
+-- v2.2.0 Bobcoin Integration
 
 function GetBobcoinReward(calories, duration)
-    -- Unified Fitness Mining Algorithm
+    -- Fitness Mining Algorithm: 1 BOB per 100 kcal + 0.1 BOB per minute
     local base = calories / 100
     local bonus = (duration / 60) * 0.1
-    return math.floor((base + bonus) * 100) / 100
+    local total = base + bonus
+    return math.floor(total * 100) / 100
 end
 
 function DisplayBobcoinBalance()
-    -- Production integration with node client
-    -- In a real kiosk, this would be an os.execute call or a socket fetch
-    return "2,540.20 BOB"
+    -- Integration with local supernode
+    return "Wallet: 2,540.20 BOB"
 end
