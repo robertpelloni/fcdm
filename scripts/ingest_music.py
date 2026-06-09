@@ -10,7 +10,7 @@ from ddc_inference import generate_ddc_notes
 
 def ingest_songs(songs_dir, difficulty=3, force=False):
     """
-    Automated Music Ingestion Pipeline (v1.9.0)
+    Automated Music Ingestion Pipeline (v2.1.0)
     """
     print(f"Ingesting songs from: {songs_dir} (Diff: {difficulty}, Force: {force})")
 
@@ -45,7 +45,7 @@ def create_skeleton_ssc(audio_path, ssc_path, difficulty):
 #STEPSTYPE:dance-single;
 #DIFFICULTY:Medium;
 #METER:{difficulty};
-#CREDIT:FCDM-v1.9.0;
+#CREDIT:FCDM-v2.1.0;
 {notes_data}
 ;
 """

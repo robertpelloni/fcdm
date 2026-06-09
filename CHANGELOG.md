@@ -9,6 +9,13 @@
 - Added production Hardware Calibration Guide.
 - Initialized bobcoin submodule in `extern/bobcoin`.
 
+## [2.1.0] - 2026-06-09
+### Added
+- **Production Resilience Update**.
+- SymNet LSTM selection architecture support in ONNX.
+- Robust error handling and local reward caching for Bobcoin node.
+- System-wide v2.1.0 stability improvements.
+
 ## [1.0.0] - 2024-05-24
 ### Added
 - Final production release.
