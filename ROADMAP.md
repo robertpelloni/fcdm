@@ -25,3 +25,9 @@
 - [x] Create standalone kiosk entry point script.
 - [x] Implement systemd service for auto-start.
 - [x] Final testing and calibration (v1.0.0).
+
+### v1.9.0 Production Milestone
+- [x] Full DDC-Deep ML Chart Generation (OnsetNet + SymNet).
+- [x] Bobcoin "Fitness Mining" Deep Integration.
+- [x] Enhanced FSR Hardware Calibration Utility with History Logging.
+- [x] Recursive Submodule Protocol for Total Portability.

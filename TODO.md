@@ -14,4 +14,4 @@
 - [x] Implement systemd service and kiosk entry point.
 - [ ] Conduct Live User Testing (v0.5.0-rc1).
 - [x] Integrated Bobcoin for fitness rewards.
-- [x] Ported DDC-Deep ML inference to v1.9.0 pipeline.
+- [x] Implemented DDC-Deep inference architecture (v1.9.0) with ergonomic "Fitness Flow" selection and signal-processing fallback.
