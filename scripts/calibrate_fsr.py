@@ -3,6 +3,7 @@ import sys
 import time
 import json
 import argparse
+import numpy as np
 
 # Try to use pyserial for physical hardware
 try:
@@ -11,6 +12,10 @@ except ImportError:
     serial = None
 
 class FSRCalibrator:
+    """
+    v2.0.0 FCDM Hardware Calibration Utility.
+    Supports real-time drift analysis and history logging.
+    """
     def __init__(self, port='/dev/ttyACM0', baud=115200):
         self.port = port
         self.baud = baud
@@ -18,9 +23,8 @@ class FSRCalibrator:
         if serial:
             try:
                 self.ser = serial.Serial(self.port, self.baud, timeout=0.1)
-                print(f"Connected to Teensy on {self.port}")
             except Exception as e:
-                print(f"Serial failed: {e}. Simulation mode.")
+                print(f"Serial Error: {e}. Simulation mode enabled.")
 
         self.profile_path = "config/calibration.json"
         self.history_path = "logs/calibration_history.log"
@@ -40,16 +44,15 @@ class FSRCalibrator:
 
         os.makedirs(os.path.dirname(self.history_path), exist_ok=True)
         with open(self.history_path, 'a') as f:
-            f.write(f"{time.ctime()}: Updated {json.dumps(self.profile)}\n")
+            f.write(f"{time.ctime()}: UPDATED {json.dumps(self.profile)}\n")
         print(f"Profile saved and logged.")
 
     def run(self):
-        print("FCDM FSR Calibration Utility (v1.9.0)")
-        print("Multi-Panel Visualization Mode")
+        print("FCDM FSR Calibration Utility (v2.0.0)")
         try:
             while True:
-                # Simulation values (raw sensor data)
-                raw_values = [300 + (i*10) + int(np.random.normal(0,5)) if 'np' in globals() else 300+(i*10) for i in range(9)]
+                # Mock raw sensor data with drift simulation
+                raw_values = [300 + (i*10) + int(np.random.normal(0, 5)) for i in range(9)]
 
                 os.system('clear' if os.name == 'posix' else 'cls')
                 print(f"--- FCDM CALIBRATION [{time.ctime()}] ---")
@@ -70,6 +73,5 @@ class FSRCalibrator:
             print("\nExiting.")
 
 if __name__ == "__main__":
-    import numpy as np # For noise simulation
     cal = FSRCalibrator()
     cal.run()

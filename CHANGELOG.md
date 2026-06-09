@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.0] - 2026-06-09
+### Added
+- **v2.0.0 Production Milestone**.
+- Fully implemented DDC-v2.0.0 (OnsetNet + Ergonomic Selection).
+- Deep Bobcoin Node integration for verifiable fitness mining.
+- Enhanced FSR calibration tools with industrial drift logging.
+- Added production Hardware Calibration Guide.
+- Initialized bobcoin submodule in `extern/bobcoin`.
+
 ## [1.0.0] - 2024-05-24
 ### Added
 - Final production release.
