@@ -9,6 +9,14 @@
 - Added production Hardware Calibration Guide.
 - Initialized bobcoin submodule in `extern/bobcoin`.
 
+## [2.5.0] - 2026-06-12
+### Added
+- **v2.5.0 Performance Diagnostics Milestone**.
+- Implemented batch ingestion QA with automated Fitness Level (NPS) calculation.
+- Integrated Heart Rate Monitor (HRM) mock into the kiosk UI.
+- Added Calibration Profiles and documentation export to `scripts/calibrate_fsr.py`.
+- Unified v2.5.0 stack with performance monitoring and HRM visual parity.
+
 ## [2.4.0] - 2026-06-11
 ### Added
 - **v2.4.0 High-Fidelity ML Milestone**.

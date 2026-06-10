@@ -15,3 +15,6 @@
 - [ ] Conduct Live User Testing (v0.5.0-rc1).
 - [x] Integrated Bobcoin for fitness rewards.
 - [x] Implemented DDC-Deep inference architecture (v1.9.0) with ergonomic "Fitness Flow" selection and signal-processing fallback.
+- [x] Batch Ingestion QA and NPS-based Fitness Level calculation.
+- [x] Heart Rate Monitor (HRM) visual integration.
+- [x] Hardware Calibration Profiles and documentation export.

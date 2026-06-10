@@ -15,3 +15,17 @@ FSR sensors may drift due to temperature or pad compression. The v2.0.0 calibrat
 
 ### 4. Zero-Latency Verification
 Ensure the Teensy/Arduino is polling at 1000Hz. Use the `integration_test.py` to verify that the software stack is processing inputs without lag.
+
+
+### Current Thresholds (Wed Jun 10 02:29:44 2026)
+| Panel | Threshold | Sensitivity |
+|-------|-----------|-------------|
+| Q | 450 | 1.0 |
+| W | 450 | 1.0 |
+| E | 450 | 1.0 |
+| A | 450 | 1.0 |
+| S | 450 | 1.0 |
+| D | 450 | 1.0 |
+| Z | 450 | 1.0 |
+| X | 450 | 1.0 |
+| C | 450 | 1.0 |

@@ -13,8 +13,9 @@ except ImportError:
 
 class FSRCalibrator:
     """
-    v2.4.0 FCDM Hardware Calibration & Diagnostic Utility.
-    Supports multi-panel sensitivity tuning, live threshold updates, and performance graphing.
+    v2.5.0 FCDM Hardware Calibration & Diagnostic Utility.
+    Supports multi-panel sensitivity tuning, live threshold updates,
+    performance graphing, and Calibration Profiles.
     """
     def __init__(self, port='/dev/ttyACM0', baud=115200):
         self.port = port
@@ -27,23 +28,27 @@ class FSRCalibrator:
             except Exception as e:
                 print(f"Serial error: {e}. Simulation mode enabled.")
 
-        self.profile_path = "config/calibration.json"
+        self.profile_dir = "config/profiles"
+        self.active_profile = "default"
         self.drift_log_path = "logs/sensor_drift.csv"
-        self.profile = self.load_profile()
         self.pins = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
         self.stuck_sensor_thresh = 5.0
 
-    def load_profile(self):
-        if os.path.exists(self.profile_path):
-            with open(self.profile_path, 'r') as f:
+        os.makedirs(self.profile_dir, exist_ok=True)
+        self.profile = self.load_profile(self.active_profile)
+
+    def load_profile(self, name):
+        path = os.path.join(self.profile_dir, f"{name}.json")
+        if os.path.exists(path):
+            with open(path, 'r') as f:
                 return json.load(f)
         return {"thresholds": [450]*9, "sensitivity": [1.0]*9}
 
-    def save_profile(self):
-        os.makedirs(os.path.dirname(self.profile_path), exist_ok=True)
-        with open(self.profile_path, 'w') as f:
+    def save_profile(self, name):
+        path = os.path.join(self.profile_dir, f"{name}.json")
+        with open(path, 'w') as f:
             json.dump(self.profile, f, indent=2)
-        print(f"Profile saved to {self.profile_path}")
+        print(f"Profile '{name}' saved.")
 
     def log_drift(self, raw_values):
         os.makedirs(os.path.dirname(self.drift_log_path), exist_ok=True)
@@ -51,8 +56,18 @@ class FSRCalibrator:
             writer = csv.writer(f)
             writer.writerow([time.ctime()] + raw_values)
 
-    def run(self):
-        print("FCDM FSR Calibration Utility (v2.4.0)")
+    def export_docs(self):
+        doc_path = "docs/CALIBRATION_GUIDE.md"
+        with open(doc_path, 'a') as f:
+            f.write(f"\n\n### Current Thresholds ({time.ctime()})\n")
+            f.write("| Panel | Threshold | Sensitivity |\n")
+            f.write("|-------|-----------|-------------|\n")
+            for i, p in enumerate(self.pins):
+                f.write(f"| {p.upper()} | {self.profile['thresholds'][i]} | {self.profile['sensitivity'][i]} |\n")
+        print(f"Exported thresholds to {doc_path}")
+
+    def run(self, dry_run=False):
+        print(f"FCDM FSR Calibration Utility (v2.5.0) - Profile: {self.active_profile}")
         strike_timers = [0.0] * 9
 
         try:
@@ -61,7 +76,7 @@ class FSRCalibrator:
                 raw_values = [300 + (i*10) for i in range(9)]
 
                 os.system('clear' if os.name == 'posix' else 'cls')
-                print("P | RAW | THR | SENS | STATUS | DIAGNOSTIC | PERFORMANCE")
+                print(f"P | RAW | THR | SENS | STATUS | DIAGNOSTIC | PERFORMANCE (Profile: {self.active_profile})")
                 print("--|-----|-----|------|--------|------------|------------")
                 for i, p in enumerate(self.pins):
                     raw = raw_values[i]
@@ -70,11 +85,8 @@ class FSRCalibrator:
 
                     is_strike = (raw * sns) > thr
                     status = "STRIKE" if is_strike else "IDLE"
-
-                    # Graphing (CLI)
                     graph = "#" * (int(raw * sns) // 20)
 
-                    # Stuck Sensor
                     diag = ""
                     if is_strike:
                         strike_timers[i] += 0.1
@@ -85,15 +97,27 @@ class FSRCalibrator:
 
                     print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status:6} | {diag:10} | {graph}")
 
-                print("-" * 65)
+                print("-" * 75)
                 self.log_drift(raw_values)
 
-                if "--sim" in sys.argv: break
+                if dry_run or "--sim" in sys.argv: break
                 time.sleep(0.1)
 
         except KeyboardInterrupt:
             print("\nExiting.")
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--profile", default="default", help="Profile name to load")
+    parser.add_argument("--export", action="store_true", help="Export current settings to docs")
+    parser.add_argument("--sim", action="store_true", help="Simulation mode")
+    args = parser.parse_args()
+
     cal = FSRCalibrator()
-    cal.run()
+    cal.active_profile = args.profile
+    cal.profile = cal.load_profile(args.profile)
+
+    if args.export:
+        cal.export_docs()
+    else:
+        cal.run()
