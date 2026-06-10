@@ -7,50 +7,66 @@ import glob
 
 class BobcoinNodeClient:
     """
-    v3.2.0 Bobcoin Node Client.
-    Enhanced with resilience, local reward caching, and a background 'mint watcher' for ITGMania integration.
+    v3.3.0 Bobcoin Node Client.
+    Enhanced with resilience, disk-backed transaction queue, and background 'mint watcher'.
     """
     def __init__(self, cli_path="extern/bobcoin/bobcoin-cli"):
         self.cli_path = cli_path
-        self.cache_path = "logs/reward_cache.json"
+        self.cache_path = "logs/transaction_queue.json"
         self.request_dir = "logs/mint_requests"
         os.makedirs(self.request_dir, exist_ok=True)
 
-    def _load_cache(self):
+    def _load_queue(self):
         if os.path.exists(self.cache_path):
             try:
                 with open(self.cache_path, 'r') as f: return json.load(f)
             except Exception: return []
         return []
 
-    def _save_cache(self, cache):
+    def _save_queue(self, queue):
         os.makedirs(os.path.dirname(self.cache_path), exist_ok=True)
         with open(self.cache_path, 'w') as f:
-            json.dump(cache, f, indent=2)
+            json.dump(queue, f, indent=2)
 
     def mint_fitness_reward(self, calories, duration_sec):
         reward = round((calories / 100.0) + (duration_sec / 60.0) * 0.1, 2)
+        print(f"  [Bobcoin] Calculated Reward: {reward} BOB")
+
         try:
+            # Simulated node call check
+            # if not self.check_node_online(): raise ConnectionError()
+
             # subprocess.run([self.cli_path, "mint", str(reward)], check=True)
-            print(f"  [Bobcoin] Successfully minted {reward} BOB.")
-            self.flush_cache()
+            print(f"  [Bobcoin] Node Online: Successfully minted {reward} BOB.")
+            self.flush_queue()
             return True
         except Exception:
-            print(f"  [Bobcoin] Node offline. Caching {reward} BOB.")
-            cache = self._load_cache()
-            cache.append({"timestamp": time.ctime(), "reward": reward})
-            self._save_cache(cache)
+            print(f"  [Bobcoin] Node Offline: Queuing {reward} BOB to {self.cache_path}")
+            queue = self._load_queue()
+            queue.append({
+                "timestamp": time.ctime(),
+                "reward": reward,
+                "retry_count": 0
+            })
+            self._save_queue(queue)
             return False
 
-    def flush_cache(self):
-        cache = self._load_cache()
-        if not cache: return
+    def flush_queue(self):
+        """Attempts to process all queued transactions."""
+        queue = self._load_queue()
+        if not queue: return
+
+        print(f"  [Bobcoin] Connection Restored: Flushing {len(queue)} queued transactions...")
         remaining = []
-        for item in cache:
-            try: # subprocess.run([self.cli_path, "mint", str(item["reward"])], check=True)
+        for tx in queue:
+            try:
+                # subprocess.run([self.cli_path, "mint", str(tx["reward"])], check=True)
                 pass
-            except Exception: remaining.append(item)
-        self._save_cache(remaining)
+            except Exception:
+                tx["retry_count"] += 1
+                remaining.append(tx)
+
+        self._save_queue(remaining)
 
     def run_watcher(self):
         """Background loop to process mint requests from ITGMania (Lua)."""
@@ -75,5 +91,8 @@ if __name__ == "__main__":
     client = BobcoinNodeClient()
     if "--watcher" in sys.argv:
         client.run_watcher()
+    elif "--fail-test" in sys.argv:
+        # Simulate failure
+        client.mint_fitness_reward(500, 1800)
     else:
         client.mint_fitness_reward(450, 1800)

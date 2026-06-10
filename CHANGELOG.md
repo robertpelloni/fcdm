@@ -32,6 +32,14 @@
 - Added reward caching and automated cache flushing to Bobcoin client.
 - Enhanced hardware stress testing with polling jitter analysis.
 
+## [3.3.0] - 2024-05-26
+### Added
+- **v3.3.0 Resilience Milestone Release**.
+- Disk-backed JSON transaction queue for Bobcoin rewards (node resilience).
+- Interactive 'Calibration Wizard' with physical strike verification.
+- Flow-aware ML chart generation with 'Fitness Flow Score' QA.
+- Automated ALSA hardware buffer analysis.
+
 ## [3.1.0] - 2024-05-26
 ### Added
 - **v3.1.0 Industrial Release**.

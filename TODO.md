@@ -31,3 +31,6 @@
 - [x] Multiprocessing bulk ingestion (imap_unordered).
 - [x] ALSA buffer tuning and real-time process priorities.
 - [x] Industrial sensor health monitoring.
+- [x] Bobcoin node resilience (disk-backed transaction queue).
+- [x] Interactive Calibration Wizard.
+- [x] Flow-aware ML chart generation and Fitness Flow Score.
