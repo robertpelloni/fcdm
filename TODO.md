@@ -34,3 +34,5 @@
 - [x] Bobcoin node resilience (disk-backed transaction queue).
 - [x] Interactive Calibration Wizard.
 - [x] Flow-aware ML chart generation and Fitness Flow Score.
+- [x] Fully native SymNet ONNX selection with recursive state tracking.
+- [x] Industrial stress testing and health monitoring.

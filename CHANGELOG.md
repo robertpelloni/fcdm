@@ -32,6 +32,14 @@
 - Added reward caching and automated cache flushing to Bobcoin client.
 - Enhanced hardware stress testing with polling jitter analysis.
 
+## [3.5.0] - 2024-05-28
+### Added
+- **v3.5.0 ONNX Parity Milestone**.
+- Fully transitioned to native recursive LSTM SymNet selection with high-fidelity sampling.
+- Refined OnsetNet windowing and hidden-state management for production weights.
+- Added 'Industrial Stress Test' mode to `scripts/calibrate_fsr.py` with polling jitter analysis.
+- Unified v3.5.0 production stack with automated health warnings.
+
 ## [3.4.0] - 2024-05-27
 ### Added
 - **v3.4.0 Production Parity Milestone**.

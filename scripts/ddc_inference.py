@@ -19,7 +19,7 @@ except ImportError:
 
 class DDCInference:
     """
-    v3.4.0 Production DDC Inference Pipeline.
+    v3.5.0 Production DDC Inference Pipeline.
     Implements OnsetNet (Placement) and Native SymNet (Recursive LSTM Selection).
     """
     def __init__(self, onset_model_path, sym_model_path=None):
@@ -33,7 +33,7 @@ class DDCInference:
             self._load_model(sym_model_path, 'sym')
 
     def _load_model(self, path, model_type):
-        if not os.path.exists(path) or os.path.getsize(path) == 0: return
+        if not os.path.exists(path) or os.path.getsize(path) < 100: return
 
         if path.endswith('.onnx') and ort:
             try:
@@ -91,7 +91,7 @@ class DDCInference:
         chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
         vocab = ["1000", "0100", "0010", "0001", "1100", "0011", "1010", "0101"]
 
-        # --- Native LSTM Sequence Generation (v3.4.0) ---
+        # --- Native LSTM Sequence Generation (v3.5.0) ---
         h = np.zeros((1, 256), dtype=np.float32)
         c = np.zeros((1, 256), dtype=np.float32)
         prev_idx = 0
@@ -135,15 +135,15 @@ class DDCInference:
             if curr_idx != prev_idx: alternation_count += 1
             prev_idx = curr_idx
 
-        # v3.4.0 Fitness Flow Analysis
+        # Flow Analysis
         flow_score = (alternation_count / total_steps) if total_steps > 0 else 1.0
         print(f"  [QA] Fitness Flow Score: {flow_score:.2f} (Target: >0.85)")
 
         return ",\n".join(["\n".join(m) for m in chart_grid])
 
 def generate_ddc_notes(audio_path, difficulty=3):
-    """v3.4.0 High-Fidelity Chart Generator."""
-    print(f"  [v3.4.0] Processing {audio_path}...")
+    """v3.5.0 High-Fidelity Chart Generator."""
+    print(f"  [v3.5.0] Processing {audio_path}...")
     ONSET_WEIGHTS = "lib/models/onset/model.h5"
     SYM_WEIGHTS = "lib/models/dance-single_Expert/model.h5"
     model = DDCInference(ONSET_WEIGHTS, SYM_WEIGHTS)
