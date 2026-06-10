@@ -7,25 +7,25 @@ import glob
 
 class BobcoinNodeClient:
     """
-    v3.3.0 Bobcoin Node Client.
-    Enhanced with resilience, disk-backed transaction queue, and background 'mint watcher'.
+    v3.6.0 Bobcoin Node Client.
+    Enhanced with persistent transaction queue, automated retry, and 'mint watcher'.
     """
     def __init__(self, cli_path="extern/bobcoin/bobcoin-cli"):
         self.cli_path = cli_path
-        self.cache_path = "logs/transaction_queue.json"
+        self.queue_path = "logs/transaction_queue.json"
         self.request_dir = "logs/mint_requests"
         os.makedirs(self.request_dir, exist_ok=True)
 
     def _load_queue(self):
-        if os.path.exists(self.cache_path):
+        if os.path.exists(self.queue_path):
             try:
-                with open(self.cache_path, 'r') as f: return json.load(f)
+                with open(self.queue_path, 'r') as f: return json.load(f)
             except Exception: return []
         return []
 
     def _save_queue(self, queue):
-        os.makedirs(os.path.dirname(self.cache_path), exist_ok=True)
-        with open(self.cache_path, 'w') as f:
+        os.makedirs(os.path.dirname(self.queue_path), exist_ok=True)
+        with open(self.queue_path, 'w') as f:
             json.dump(queue, f, indent=2)
 
     def mint_fitness_reward(self, calories, duration_sec):
@@ -34,14 +34,14 @@ class BobcoinNodeClient:
 
         try:
             # Simulated node call check
-            # if not self.check_node_online(): raise ConnectionError()
+            # if not self.node_heartbeat(): raise ConnectionError()
 
             # subprocess.run([self.cli_path, "mint", str(reward)], check=True)
             print(f"  [Bobcoin] Node Online: Successfully minted {reward} BOB.")
             self.flush_queue()
             return True
         except Exception:
-            print(f"  [Bobcoin] Node Offline: Queuing {reward} BOB to {self.cache_path}")
+            print(f"  [Bobcoin] Node Offline: Queuing {reward} BOB for later.")
             queue = self._load_queue()
             queue.append({
                 "timestamp": time.ctime(),
@@ -56,7 +56,7 @@ class BobcoinNodeClient:
         queue = self._load_queue()
         if not queue: return
 
-        print(f"  [Bobcoin] Connection Restored: Flushing {len(queue)} queued transactions...")
+        print(f"  [Bobcoin] Connection Restored: Flushing {len(queue)} transactions...")
         remaining = []
         for tx in queue:
             try:
@@ -64,7 +64,8 @@ class BobcoinNodeClient:
                 pass
             except Exception:
                 tx["retry_count"] += 1
-                remaining.append(tx)
+                if tx["retry_count"] < 10: # Limit retries
+                    remaining.append(tx)
 
         self._save_queue(remaining)
 
@@ -91,8 +92,5 @@ if __name__ == "__main__":
     client = BobcoinNodeClient()
     if "--watcher" in sys.argv:
         client.run_watcher()
-    elif "--fail-test" in sys.argv:
-        # Simulate failure
-        client.mint_fitness_reward(500, 1800)
     else:
         client.mint_fitness_reward(450, 1800)

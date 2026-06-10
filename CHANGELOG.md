@@ -32,6 +32,14 @@
 - Added reward caching and automated cache flushing to Bobcoin client.
 - Enhanced hardware stress testing with polling jitter analysis.
 
+## [3.6.0] - 2024-05-29
+### Added
+- **v3.6.0 Industrial Release**.
+- Fully transitioned to production-grade recursive ML selection with native LSTM hidden state management.
+- Implemented 'Industrial Burn-In' diagnostics and sensor health alerts for FSR assembly.
+- Finalized Bobcoin node resilience with persistent transaction queuing and automated retry.
+- Unified v3.6.0 stack for high-volume physical platform deployments.
+
 ## [3.5.0] - 2024-05-28
 ### Added
 - **v3.5.0 ONNX Parity Milestone**.

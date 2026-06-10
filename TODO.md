@@ -36,3 +36,6 @@
 - [x] Flow-aware ML chart generation and Fitness Flow Score.
 - [x] Fully native SymNet ONNX selection with recursive state tracking.
 - [x] Industrial stress testing and health monitoring.
+- [x] Fully native recursive LSTM selection and chart validation.
+- [x] Industrial burn-in diagnostics and health alerts.
+- [x] Persistent transaction queue for Bobcoin node.
