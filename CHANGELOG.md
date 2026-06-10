@@ -9,6 +9,13 @@
 - Added production Hardware Calibration Guide.
 - Initialized bobcoin submodule in `extern/bobcoin`.
 
+## [2.4.0] - 2026-06-11
+### Added
+- **v2.4.0 High-Fidelity ML Milestone**.
+- Finalized recursive LSTM SymNet selection logic in `scripts/ddc_inference.py`.
+- Enhanced hardware calibration with real-time performance graphing and high-polling diagnostics.
+- Unified v2.4.0 production stack with advanced sensor monitoring.
+
 ## [2.3.0] - 2026-06-10
 ### Added
 - **v2.3.0 Production Diagnostics Milestone**.

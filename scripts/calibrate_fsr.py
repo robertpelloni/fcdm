@@ -13,8 +13,8 @@ except ImportError:
 
 class FSRCalibrator:
     """
-    v2.3.0 FCDM Hardware Calibration & Diagnostic Utility.
-    Supports multi-panel sensitivity tuning, live threshold updates, and drift logging.
+    v2.4.0 FCDM Hardware Calibration & Diagnostic Utility.
+    Supports multi-panel sensitivity tuning, live threshold updates, and performance graphing.
     """
     def __init__(self, port='/dev/ttyACM0', baud=115200):
         self.port = port
@@ -31,7 +31,7 @@ class FSRCalibrator:
         self.drift_log_path = "logs/sensor_drift.csv"
         self.profile = self.load_profile()
         self.pins = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
-        self.stuck_sensor_thresh = 5 # seconds of continuous strike to trigger alarm
+        self.stuck_sensor_thresh = 5.0
 
     def load_profile(self):
         if os.path.exists(self.profile_path):
@@ -46,16 +46,13 @@ class FSRCalibrator:
         print(f"Profile saved to {self.profile_path}")
 
     def log_drift(self, raw_values):
-        """Logs current raw sensor values to CSV for long-term drift analysis."""
         os.makedirs(os.path.dirname(self.drift_log_path), exist_ok=True)
         with open(self.drift_log_path, 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([time.ctime()] + raw_values)
 
     def run(self):
-        print("FCDM FSR Calibration Utility (v2.3.0)")
-        print("Commands: [t <idx> <val>] Threshold, [s <idx> <val>] Sensitivity, [w] Save, [q] Quit")
-
+        print("FCDM FSR Calibration Utility (v2.4.0)")
         strike_timers = [0.0] * 9
 
         try:
@@ -64,8 +61,8 @@ class FSRCalibrator:
                 raw_values = [300 + (i*10) for i in range(9)]
 
                 os.system('clear' if os.name == 'posix' else 'cls')
-                print("P | RAW | THR | SENS | STATUS | DIAGNOSTIC")
-                print("--|-----|-----|------|--------|-----------")
+                print("P | RAW | THR | SENS | STATUS | DIAGNOSTIC | PERFORMANCE")
+                print("--|-----|-----|------|--------|------------|------------")
                 for i, p in enumerate(self.pins):
                     raw = raw_values[i]
                     thr = self.profile["thresholds"][i]
@@ -74,7 +71,10 @@ class FSRCalibrator:
                     is_strike = (raw * sns) > thr
                     status = "STRIKE" if is_strike else "IDLE"
 
-                    # Stuck Sensor Logic
+                    # Graphing (CLI)
+                    graph = "#" * (int(raw * sns) // 20)
+
+                    # Stuck Sensor
                     diag = ""
                     if is_strike:
                         strike_timers[i] += 0.1
@@ -83,9 +83,9 @@ class FSRCalibrator:
                     else:
                         strike_timers[i] = 0.0
 
-                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status:6} | {diag}")
+                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status:6} | {diag:10} | {graph}")
 
-                print("-" * 45)
+                print("-" * 65)
                 self.log_drift(raw_values)
 
                 if "--sim" in sys.argv: break
