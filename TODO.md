@@ -22,3 +22,5 @@
 - [x] Calibration health diagnostics and live testing mode.
 - [x] Native SymNet LSTM selection with temperature sampling.
 - [x] Live stress test mode with polling jitter analysis.
+- [x] Production weight support (.h5/.onnx) and flow analysis.
+- [x] Pre-live system health check script.

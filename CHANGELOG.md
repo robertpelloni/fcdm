@@ -24,6 +24,14 @@
 - Added "Live Test" mode and panel health diagnostics to `scripts/calibrate_fsr.py`.
 - Finalized software stack for first live industrial testing.
 
+## [2.8.0] - 2026-06-13
+### Added
+- **v2.8.0 Production ML Milestone**.
+- Full support for production weights (.h5 and .onnx) in `scripts/ddc_inference.py`.
+- Automated "Flow Analysis" QA for generated charts.
+- System health check script for pre-testing verification.
+- Finalized live testing benchmarks in documentation.
+
 ## [2.5.0] - 2026-06-12
 ### Added
 - **v2.5.0 Performance Diagnostics Milestone**.
