@@ -9,6 +9,13 @@
 - Added production Hardware Calibration Guide.
 - Initialized bobcoin submodule in `extern/bobcoin`.
 
+## [2.3.0] - 2026-06-10
+### Added
+- **v2.3.0 Production Diagnostics Milestone**.
+- Implemented full recursive LSTM selection sequence in `scripts/ddc_inference.py`.
+- Added "Stuck Sensor" detection and automated CSV drift logging to `scripts/calibrate_fsr.py`.
+- Finalized hardware diagnostic tool suite for physical platform deployment.
+
 ## [2.2.0] - 2026-06-09
 ### Added
 - **v2.2.0 Full ML Integration Milestone**.

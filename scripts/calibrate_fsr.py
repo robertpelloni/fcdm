@@ -3,6 +3,7 @@ import sys
 import time
 import json
 import argparse
+import csv
 
 # Try to use pyserial for physical hardware
 try:
@@ -12,8 +13,8 @@ except ImportError:
 
 class FSRCalibrator:
     """
-    v2.2.0 FCDM Hardware Calibration Utility.
-    Supports multi-panel sensitivity tuning and live threshold updates.
+    v2.3.0 FCDM Hardware Calibration & Diagnostic Utility.
+    Supports multi-panel sensitivity tuning, live threshold updates, and drift logging.
     """
     def __init__(self, port='/dev/ttyACM0', baud=115200):
         self.port = port
@@ -27,8 +28,10 @@ class FSRCalibrator:
                 print(f"Serial error: {e}. Simulation mode enabled.")
 
         self.profile_path = "config/calibration.json"
+        self.drift_log_path = "logs/sensor_drift.csv"
         self.profile = self.load_profile()
         self.pins = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
+        self.stuck_sensor_thresh = 5 # seconds of continuous strike to trigger alarm
 
     def load_profile(self):
         if os.path.exists(self.profile_path):
@@ -42,31 +45,48 @@ class FSRCalibrator:
             json.dump(self.profile, f, indent=2)
         print(f"Profile saved to {self.profile_path}")
 
-    def send_cmd(self, cmd, pin, val):
-        """Sends a calibration command to the hardware."""
-        if self.ser:
-            msg = f"{cmd}{pin} {val}\n".encode()
-            self.ser.write(msg)
-            print(f"  [SERIAL] Sent: {msg.decode().strip()}")
+    def log_drift(self, raw_values):
+        """Logs current raw sensor values to CSV for long-term drift analysis."""
+        os.makedirs(os.path.dirname(self.drift_log_path), exist_ok=True)
+        with open(self.drift_log_path, 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([time.ctime()] + raw_values)
 
     def run(self):
-        print("FCDM FSR Calibration Utility (v2.2.0)")
-        print("Commands: [t <idx> <val>] Set threshold, [s <idx> <val>] Set sensitivity, [w] Save, [q] Quit")
+        print("FCDM FSR Calibration Utility (v2.3.0)")
+        print("Commands: [t <idx> <val>] Threshold, [s <idx> <val>] Sensitivity, [w] Save, [q] Quit")
+
+        strike_timers = [0.0] * 9
+
         try:
             while True:
                 # Simulation raw values
                 raw_values = [300 + (i*10) for i in range(9)]
 
                 os.system('clear' if os.name == 'posix' else 'cls')
-                print("P | RAW | THR | SENS | STATUS")
-                print("--|-----|-----|------|-------")
+                print("P | RAW | THR | SENS | STATUS | DIAGNOSTIC")
+                print("--|-----|-----|------|--------|-----------")
                 for i, p in enumerate(self.pins):
                     raw = raw_values[i]
                     thr = self.profile["thresholds"][i]
                     sns = self.profile["sensitivity"][i]
-                    status = "STRIKE" if (raw * sns) > thr else "IDLE"
-                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status}")
-                print("-" * 30)
+
+                    is_strike = (raw * sns) > thr
+                    status = "STRIKE" if is_strike else "IDLE"
+
+                    # Stuck Sensor Logic
+                    diag = ""
+                    if is_strike:
+                        strike_timers[i] += 0.1
+                        if strike_timers[i] > self.stuck_sensor_thresh:
+                            diag = "!! STUCK !!"
+                    else:
+                        strike_timers[i] = 0.0
+
+                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status:6} | {diag}")
+
+                print("-" * 45)
+                self.log_drift(raw_values)
 
                 if "--sim" in sys.argv: break
                 time.sleep(0.1)
