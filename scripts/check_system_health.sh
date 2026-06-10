@@ -1,12 +1,22 @@
 #!/bin/bash
-# FCDM System Health Check (v3.3.0)
-# This script automates pre-live-testing verification.
+# FCDM System Health Check (v3.7.0)
+# This script automates pre-live-testing verification and ALSA auto-discovery.
 
 echo "--- FCDM SYSTEM HEALTH CHECK ---"
 
-# 1. ALSA Check
+# 1. ALSA Check & Auto-Discovery
 if command -v aplay > /dev/null; then
     echo "[PASS] ALSA (aplay) found."
+
+    # Discovery logic for Teensy/USB audio
+    DETECTED_CARD=$(aplay -l | grep -E "Teensy|USB" | head -n 1 | cut -d' ' -f2 | tr -d ':')
+    if [ -n "$DETECTED_CARD" ]; then
+        echo "  [INFO] Auto-detected Hardware Card Index: $DETECTED_CARD"
+    else
+        echo "  [INFO] Using default Card Index: 0"
+        DETECTED_CARD=0
+    fi
+
     # Buffer Analysis
     MEM_TOTAL=$(grep MemTotal /proc/meminfo | awk '{print $2}')
     if [ "$MEM_TOTAL" -gt 4000000 ]; then

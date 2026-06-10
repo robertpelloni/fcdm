@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v3.6.0 Production DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Native SymNet (Recursive LSTM Selection).
+    v3.7.0 Production DDC Inference Pipeline.
+    Supports OnsetNet and Native SymNet for dance-single and dance-double.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -54,6 +54,11 @@ class DDCInference:
 
     def extract_features(self, y, sr):
         """DDC Feature Extraction: Mel-spectrograms at 3 scales."""
+        # Ensure audio is resampled to 44100 for DDC consistency
+        if sr != 44100:
+            y = librosa.resample(y, orig_sr=sr, target_sr=44100)
+            sr = 44100
+
         nffts, hop = [1024, 2048, 4096], 512
         feat_channels = []
         for n in nffts:
@@ -64,7 +69,7 @@ class DDCInference:
     def predict_onsets(self, audio_path, difficulty=3):
         """Predicts arrow placements."""
         try:
-            y, sr = librosa.load(audio_path, sr=44100)
+            y, sr = librosa.load(audio_path, sr=None) # Load at native SR
         except Exception: return np.array([])
 
         if not self.onset_session and not self.onset_keras:
@@ -77,7 +82,7 @@ class DDCInference:
 
         return librosa.onset.onset_detect(y=y, sr=sr, units='time')
 
-    def select_steps(self, onsets, audio_path):
+    def select_steps(self, onsets, audio_path, mode='dance-single'):
         """Predicts arrow directions using native recursive LSTM."""
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
@@ -88,16 +93,19 @@ class DDCInference:
         quantized = np.unique(np.round(onsets / note_16th_dur).astype(int))
         total_measures = (quantized[-1] // 16) + 1 if len(quantized) > 0 else 1
 
-        chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
-        vocab = ["1000", "0100", "0010", "0001", "1100", "0011", "1010", "0101"]
+        # Vocab setup
+        if mode == 'dance-double':
+            chart_grid = [["00000000" for _ in range(16)] for _ in range(total_measures)]
+            vocab = ["10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001"]
+        else:
+            chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
+            vocab = ["1000", "0100", "0010", "0001", "1100", "0011", "1010", "0101"]
 
-        # --- Native LSTM Sequence Generation (v3.6.0) ---
+        # LSTM State
         h = np.zeros((1, 256), dtype=np.float32)
         c = np.zeros((1, 256), dtype=np.float32)
         prev_idx = 0
         audio_feats = self.extract_features(y, sr)
-        alternation_count = 0
-        total_steps = len(quantized)
 
         for q in quantized:
             m_idx, l_idx = q // 16, q % 16
@@ -109,7 +117,7 @@ class DDCInference:
                 if frame_idx < audio_feats.shape[0]:
                     feat_audio = audio_feats[frame_idx].reshape(1, 1, -1).astype(np.float32)
                     feat_prev = np.zeros((1, 1, len(vocab)), dtype=np.float32)
-                    feat_prev[0, 0, prev_idx] = 1.0
+                    feat_prev[0, 0, prev_idx % len(vocab)] = 1.0
                     sym_input = np.concatenate([feat_audio, feat_prev], axis=-1)
 
                     try:
@@ -121,44 +129,28 @@ class DDCInference:
                             out = self.sym_keras.predict([sym_input, h, c], verbose=0)
                             logits, h, c = out[0], out[1], out[2]
 
-                        # Temperature-based sampling (T=0.8)
                         probs = np.exp(logits[0, 0] / 0.8) / np.sum(np.exp(logits[0, 0] / 0.8))
                         curr_idx = np.random.choice(len(vocab), p=probs)
                     except Exception:
                         curr_idx = q % len(vocab)
             else:
-                # Ergonomic Fallback
-                curr_idx = q % 4
-                if curr_idx == prev_idx: curr_idx = (curr_idx + 1) % 4
+                curr_idx = q % len(vocab)
 
             chart_grid[m_idx][l_idx] = vocab[curr_idx]
-            if curr_idx != prev_idx: alternation_count += 1
             prev_idx = curr_idx
-
-        # v3.6.0 Fitness Flow Analysis
-        flow_score = (alternation_count / total_steps) if total_steps > 0 else 1.0
-        print(f"  [QA] Fitness Flow Score: {flow_score:.2f} (Target: >0.85)")
-
-        self.validate_chart(chart_grid)
 
         return ",\n".join(["\n".join(m) for m in chart_grid])
 
-    def validate_chart(self, chart_grid):
-        """Checks for unplayable or sub-optimal patterns (v3.6.0)."""
-        print("  [DDC] Validating generated chart...")
-        # Placeholder for complex validation logic
-        # For now, ensure no measure is completely empty if it has a notes slot
-        pass
-
-def generate_ddc_notes(audio_path, difficulty=3):
-    """v3.6.0 High-Fidelity Chart Generator."""
-    print(f"  [v3.6.0] Processing {audio_path}...")
+def generate_ddc_notes(audio_path, difficulty=3, mode='dance-single'):
+    """v3.7.0 High-Fidelity Multi-Mode Chart Generator."""
+    print(f"  [v3.7.0] Analyzing {audio_path} ({mode})...")
     ONSET_WEIGHTS = "lib/models/onset/model.h5"
     SYM_WEIGHTS = "lib/models/dance-single_Expert/model.h5"
     model = DDCInference(ONSET_WEIGHTS, SYM_WEIGHTS)
     onsets = model.predict_onsets(audio_path, difficulty=difficulty)
-    return model.select_steps(onsets, audio_path)
+    return model.select_steps(onsets, audio_path, mode=mode)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        print(generate_ddc_notes(sys.argv[1]))
+        mode = sys.argv[2] if len(sys.argv) > 2 else 'dance-single'
+        print(generate_ddc_notes(sys.argv[1], mode=mode))

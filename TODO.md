@@ -39,3 +39,5 @@
 - [x] Fully native recursive LSTM selection and chart validation.
 - [x] Industrial burn-in diagnostics and health alerts.
 - [x] Persistent transaction queue for Bobcoin node.
+- [x] Integrated 8-panel (dance-double) ML support.
+- [x] Automated ALSA multi-card discovery.

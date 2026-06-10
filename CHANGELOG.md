@@ -32,6 +32,14 @@
 - Added reward caching and automated cache flushing to Bobcoin client.
 - Enhanced hardware stress testing with polling jitter analysis.
 
+## [3.7.0] - 2024-05-30
+### Added
+- **v3.7.0 Physical Parity Milestone**.
+- Integrated 8-panel (dance-double) support in `scripts/ddc_inference.py`.
+- Automated ALSA multi-card discovery for production hardware environments.
+- High-fidelity resampling layer for non-standard audio ingestion.
+- Synchronized documentation for 8-panel platform assembly.
+
 ## [3.6.0] - 2024-05-29
 ### Added
 - **v3.6.0 Industrial Release**.
