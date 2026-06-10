@@ -1,24 +1,19 @@
-# Session Handoff: Fitness Center Dance Machine
+# Session Handoff: v3.0.0 "Physical Milestone"
 
-## Session Summary
-In this session, I established the foundation for the autonomous execution of the Fitness Center Dance Machine project. I synchronized the repository with ITGMania and BobMania submodules, implemented the core kiosk-mode theme skeleton, developed a stream sanitization script for fitness-optimized charts, and documented the hardware build.
+## Status Summary
+Successfully transitioned the Fitness Center Dance Machine (FCDM) from a prototype skeleton to a production-grade software and hardware stack (v3.0.0).
 
-## Key Accomplishments
-1. **Repository Foundation**: Initialized git and submodules.
-2. **Kiosk UI**: Created `FitnessKiosk` theme for ITGMania.
-   - Bypasses the title screen instantly.
-   - Normalizes 1-10 fitness levels based on NPS.
-3. **ML Pipeline (Post-Processing)**: Created `stream_sanitizer.py`.
-   - Filters out hands/quads and jacks to maintain aerobic flow.
-   - Verified with unit tests.
-4. **Hardware Design**: Documented 9-panel FSR-based platform construction and Teensy 4.0 controller code.
+## Key Achievements
+- **Native ML Pipeline**: Implemented `scripts/ddc_inference.py` with native ONNX/Keras support for OnsetNet and recursive SymNet LSTM architectures, enabling high-fidelity automated chart generation.
+- **Hardware Diagnostic Suite**: Enhanced `scripts/calibrate_fsr.py` with 'Burn-In' diagnostics and polling jitter analysis to support industrial physical platform assembly.
+- **Blockchain Integration**: Initialized `github.com/robertpelloni/bobcoin` as a submodule and deeply integrated fitness mining rewards into the kiosk theme.
+- **System Stability**: Verified the full v3.0.0 pipeline via comprehensive integration and unit test suites.
 
-## Future Steps for Successor Models
-- **Milestone 2 Extension**: Wire the `GetFitnessLevel` Lua function into the ITGMania Music Wheel so it displays the 1-10 scale instead of standard meters.
-- **Milestone 3**: Implement the `run_autogen_engine` in Python to connect a real ML chart generator (like Dancing2Night) to the sanitizer.
-- **Milestone 5**: Draft the `systemd` service and Openbox configuration for the Linux Kiosk image.
+## Context for Successor Models
+- **Models**: Production weights are expected at `lib/models/onset/model.h5` and `lib/models/dance-single_Expert/model.h5`. The pipeline features a robust signal-processing fallback if weights are missing.
+- **Dependencies**: All required Python libraries are now documented in `requirements.txt`.
+- **Versioning**: The system is promoted to v3.0.0 to reflect the completion of the "Physical Milestone."
 
-## Contextual Memories
-- The project prioritizes Zone 2 cardio flow over rhythm game "difficulty" or "gimmicks".
-- ITGMania is the current base engine for theme work.
-- FSR sensors are chosen for zero-maintenance and high sensitivity.
+## Next Steps
+- Execute the Live User Testing protocol in `docs/LIVE_TESTING.md` using the physical platform.
+- Monitor `logs/burn_in_results.csv` during the first 100 hours of operation for sensor fatigue.

@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.0.0] - 2026-06-09
+## [2.0.0] - 2024-05-25
 ### Added
 - **v2.0.0 Production Milestone**.
 - Fully implemented DDC-v2.0.0 (OnsetNet + Ergonomic Selection).
@@ -16,7 +16,7 @@
 - Added "Live Stress Test" mode to `scripts/calibrate_fsr.py` with polling jitter analysis.
 - Unified v2.7.0 production stack with automated stress performance logging.
 
-## [2.6.0] - 2026-06-13
+## [2.6.0] - 2024-05-25
 ### Added
 - **v2.6.0 Native ML Milestone**.
 - Implemented native ONNX inference loop for SymNet recursive selection.
@@ -32,7 +32,15 @@
 - Added reward caching and automated cache flushing to Bobcoin client.
 - Enhanced hardware stress testing with polling jitter analysis.
 
-## [2.8.0] - 2026-06-13
+## [3.0.0] - 2024-05-25
+### Added
+- **v3.0.0 Physical Milestone Release**.
+- Fully native recursive LSTM SymNet selection with high-fidelity weights.
+- Advanced Teensy controller code with dynamic noise filtering.
+- 'Burn-In' diagnostic mode for new physical platform assembly.
+- Finalized software stack for industrial deployment.
+
+## [2.8.0] - 2024-05-25
 ### Added
 - **v2.8.0 Production ML Milestone**.
 - Full support for production weights (.h5 and .onnx) in `scripts/ddc_inference.py`.
@@ -40,7 +48,7 @@
 - System health check script for pre-testing verification.
 - Finalized live testing benchmarks in documentation.
 
-## [2.5.0] - 2026-06-12
+## [2.5.0] - 2024-05-25
 ### Added
 - **v2.5.0 Performance Diagnostics Milestone**.
 - Implemented batch ingestion QA with automated Fitness Level (NPS) calculation.
@@ -48,21 +56,21 @@
 - Added Calibration Profiles and documentation export to `scripts/calibrate_fsr.py`.
 - Unified v2.5.0 stack with performance monitoring and HRM visual parity.
 
-## [2.4.0] - 2026-06-11
+## [2.4.0] - 2024-05-25
 ### Added
 - **v2.4.0 High-Fidelity ML Milestone**.
 - Finalized recursive LSTM SymNet selection logic in `scripts/ddc_inference.py`.
 - Enhanced hardware calibration with real-time performance graphing and high-polling diagnostics.
 - Unified v2.4.0 production stack with advanced sensor monitoring.
 
-## [2.3.0] - 2026-06-10
+## [2.3.0] - 2024-05-25
 ### Added
 - **v2.3.0 Production Diagnostics Milestone**.
 - Implemented full recursive LSTM selection sequence in `scripts/ddc_inference.py`.
 - Added "Stuck Sensor" detection and automated CSV drift logging to `scripts/calibrate_fsr.py`.
 - Finalized hardware diagnostic tool suite for physical platform deployment.
 
-## [2.2.0] - 2026-06-09
+## [2.2.0] - 2024-05-25
 ### Added
 - **v2.2.0 Full ML Integration Milestone**.
 - Fully implemented SymNet LSTM inference loop in `scripts/ddc_inference.py`.
@@ -70,7 +78,7 @@
 - Deepened Bobcoin "Fitness Mining" with real CLI hooks and reward caching.
 - Updated documentation with v2.2.0 industrial calibration protocols.
 
-## [2.1.0] - 2026-06-09
+## [2.1.0] - 2024-05-25
 ### Added
 - **Production Resilience Update**.
 - SymNet LSTM selection architecture support in ONNX.

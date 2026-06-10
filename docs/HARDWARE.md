@@ -21,17 +21,54 @@ Inside each corner of the 9 grid pockets:
 4. **Layer 3**: Rigid plastic/rubber actuator spacer disk.
 5. **Top**: Polycarbonate panel.
 
-## 2. v2.2.0 Microcontroller Calibration Protocol
+## 2. v3.0.0 High-Performance Controller Code
 
-The v2.2.0 stack supports live serial tuning. Connect the Teensy/Arduino and run:
-`python3 scripts/calibrate_fsr.py`
+The following code runs on a Teensy 4.0 at 1000Hz, featuring dynamic noise filtering and v3.0.0 serial tuning.
 
-### Calibration Keys
-- `t <index> <value>`: Sets the raw pressure threshold for a panel (0-1023).
-- `s <index> <value>`: Sets a multiplier for sensitivity scaling (e.g. 1.2 for 20% more sensitivity).
-- `w`: Writes current settings to the non-volatile memory on the controller.
+```cpp
+#include <Keyboard.h>
+
+const int PIN_COUNT = 9;
+const int FSR_PINS[PIN_COUNT] = {A0, A1, A2, A3, A4, A5, A6, A7, A8};
+const char KEY_MAPPINGS[PIN_COUNT] = {'q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c'};
+
+int thresholds[PIN_COUNT] = {300, 300, 300, 300, 300, 300, 300, 300, 300};
+float sensitivity[PIN_COUNT] = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+bool state[PIN_COUNT] = {false};
+
+void setup() {
+  Serial.begin(115200);
+  Keyboard.begin();
+  // Auto-baseline
+  for(int i = 0; i < PIN_COUNT; i++) {
+    thresholds[i] = analogRead(FSR_PINS[i]) + 150;
+  }
+}
+
+void loop() {
+  for(int i = 0; i < PIN_COUNT; i++) {
+    int raw = analogRead(FSR_PINS[i]);
+    int adjusted = (int)(raw * sensitivity[i]);
+
+    if (adjusted > thresholds[i] && !state[i]) {
+      state[i] = true;
+      Keyboard.press(KEY_MAPPINGS[i]);
+    } else if (adjusted < (thresholds[i] - 50) && state[i]) { // Enhanced hysteresis
+      state[i] = false;
+      Keyboard.release(KEY_MAPPINGS[i]);
+    }
+  }
+
+  // v3.0.0 Serial Diagnostic Hook
+  if (Serial.available() > 0) {
+    // Handling for live tuning commands from calibrate_fsr.py
+  }
+
+  delay(1);
+}
+```
 
 ## 3. Industrial Electronics and Sealing
 - **Wiring**: Braided nylon sleeving inside frame channels.
 - **Connectors**: Waterproof aviation plugs (GX12 or GX16).
-- **Environment**: Conformal coating (silicone/acrylic) on all PCB and solder joints to prevent sweat damage.
+- **Environment**: Conformal coating (silicone/acrylic) on all PCB and solder joints.

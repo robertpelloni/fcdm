@@ -26,3 +26,5 @@
 - [x] Pre-live system health check script.
 - [x] Fully implemented native LSTM selection with state tracking.
 - [x] Bobcoin node resilience (caching and flushing).
+- [x] Fully native recursive LSTM implementation.
+- [x] Burn-in diagnostics for physical assembly.
