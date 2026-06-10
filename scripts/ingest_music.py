@@ -10,26 +10,16 @@ from functools import partial
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from stream_sanitizer import sanitize_ssc
 from ddc_inference import generate_ddc_notes
+from audio_processor import analyze_audio
 
-def calculate_fitness_level(ssc_path):
+def calculate_fitness_level(notes_block):
     """
-    Analyzes a generated chart and returns a 1-10 Fitness Level based on NPS.
+    Analyzes a notes block and returns a 1-10 Fitness Level based on NPS.
     """
     try:
-        with open(ssc_path, 'r', encoding='utf-8', errors='ignore') as f:
-            content = f.read()
-
-        # Extract notes section
-        notes_match = re.search(r'#NOTES:.*?\n(.*?;)', content, re.DOTALL)
-        if not notes_match: return 1
-
-        notes = notes_match.group(1)
-        step_count = notes.count('1') + notes.count('2') + notes.count('4')
-
-        # Determine duration from measures (16 rows per measure)
-        measures = notes.count(',') + 1
-        approx_seconds = measures * 2 # Assume 120bpm, 2s per measure
-
+        step_count = notes_block.count('1') + notes_block.count('2') + notes_block.count('4')
+        measures = notes_block.count(',') + 1
+        approx_seconds = measures * 2
         nps = step_count / approx_seconds
         level = min(10, max(1, int(nps * 1.5)))
         return level
@@ -37,7 +27,7 @@ def calculate_fitness_level(ssc_path):
         return 3
 
 def process_single_song(audio_path, difficulty, force, dry_run):
-    """Worker function for multiprocessing."""
+    """Worker function for multiprocessing bulk ingestion (v3.8.1)."""
     dir_name = os.path.dirname(audio_path)
     base_name = os.path.splitext(os.path.basename(audio_path))[0]
     ssc_path = os.path.join(dir_name, f"{base_name}.ssc")
@@ -53,70 +43,69 @@ def process_single_song(audio_path, difficulty, force, dry_run):
         return f"DRY-RUN: {base_name}"
 
     try:
-        # 1. Generate skeleton with ML notes
-        notes_data = generate_ddc_notes(audio_path, difficulty=difficulty)
+        # 1. High-fidelity Audio Analysis
+        audio_info = analyze_audio(audio_path)
+        bpm_str = ",".join([f"{t}={b}" for t, b in audio_info['bpms']])
+
+        # 2. Generate multi-mode charts
+        notes_single = generate_ddc_notes(audio_path, difficulty=difficulty, mode='dance-single')
+        notes_double = generate_ddc_notes(audio_path, difficulty=difficulty, mode='dance-double')
+
+        fit_single = calculate_fitness_level(notes_single)
+        fit_double = calculate_fitness_level(notes_double)
 
         content = f"""#VERSION:0.81;
 #TITLE:{base_name};
 #ARTIST:FCDM-AI;
 #MUSIC:{os.path.basename(audio_path)};
-#OFFSET:0.000;
-#BPMS:0.000=120.000;
+#OFFSET:{audio_info['offset']};
+#BPMS:{bpm_str};
+
+//---------------dance-single -
 #NOTES:
 #STEPSTYPE:dance-single;
-#DESCRIPTION:Automated;
+#DESCRIPTION:Fitness Level {fit_single} (Fitness);
 #DIFFICULTY:Medium;
 #METER:{difficulty};
-#CREDIT:FCDM-v3.4.0;
-{notes_data}
+#CREDIT:FCDM-v3.8.1;
+{notes_single}
+;
+
+//---------------dance-double -
+#NOTES:
+#STEPSTYPE:dance-double;
+#DESCRIPTION:Fitness Level {fit_double} (Fitness);
+#DIFFICULTY:Medium;
+#METER:{difficulty};
+#CREDIT:FCDM-v3.8.1;
+{notes_double}
 ;
 """
         with open(ssc_path, 'w', encoding='utf-8') as f:
             f.write(content)
 
-        # 2. Sanitize
+        # 3. Sanitize resulting charts
         sanitize_ssc(ssc_path, ssc_path)
 
-        # 3. QA: Calculate and embed final Fitness Level
-        fit_level = calculate_fitness_level(ssc_path)
-
-        with open(ssc_path, 'r', encoding='utf-8') as f:
-            ssc_content = f.read()
-        new_content = ssc_content.replace("#DESCRIPTION:Automated;", f"#DESCRIPTION:Fitness Level {fit_level} (Fitness);")
-        with open(ssc_path, 'w', encoding='utf-8') as f:
-            f.write(new_content)
-
-        return f"SUCCESS: {base_name} (Level {fit_level})"
+        return f"SUCCESS: {base_name} (S:{fit_single}, D:{fit_double})"
     except Exception as e:
         return f"ERROR: {base_name} ({e})"
 
 def ingest_songs(songs_dir, difficulty=3, force=False, dry_run=False, cores=None):
-    """
-    Industrial Music Ingestion Pipeline (v3.4.0)
-    Supports multiprocessing for bulk ingestion.
-    """
     if cores is None:
         cores = max(1, multiprocessing.cpu_count() - 1)
 
-    print(f"Ingesting songs from: {songs_dir} (Diff: {difficulty}, Cores: {cores})")
-
+    print(f"Ingesting songs (Single+Double) from: {songs_dir} (Cores: {cores})")
     audio_files = []
-    extensions = ['*.mp3', '*.ogg', '*.wav']
-    for ext in extensions:
+    for ext in ['*.mp3', '*.ogg', '*.wav']:
         audio_files.extend(glob.glob(os.path.join(songs_dir, "**", ext), recursive=True))
 
-    if not audio_files:
-        print("No audio files found.")
-        return
-
-    print(f"Found {len(audio_files)} files. Starting pool...")
+    if not audio_files: return
 
     worker_func = partial(process_single_song, difficulty=difficulty, force=force, dry_run=dry_run)
-
     with multiprocessing.Pool(processes=cores) as pool:
-        # Using imap_unordered for better performance in long lists
         for result in pool.imap_unordered(worker_func, audio_files):
-            print(f"  [{multiprocessing.current_process().name}] {result}")
+            print(f"  [Worker] {result}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -126,5 +115,4 @@ if __name__ == "__main__":
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--cores", type=int, default=None)
     args = parser.parse_args()
-
     ingest_songs(args.dir, difficulty=args.difficulty, force=args.force, dry_run=args.dry_run, cores=args.cores)

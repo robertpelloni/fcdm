@@ -32,6 +32,13 @@
 - Added reward caching and automated cache flushing to Bobcoin client.
 - Enhanced hardware stress testing with polling jitter analysis.
 
+## [3.8.1] - 2024-06-01
+### Added
+- **v3.8.0 Production Optimization Milestone**.
+- Implemented multi-mode (Single+Double) concurrent ingestion in `scripts/ingest_music.py`.
+- Added automated 'Calibration Export' to shell environment for low-latency engine integration.
+- Enhanced Fitness Flow QA with per-mode efficiency metrics.
+
 ## [3.7.0] - 2024-05-30
 ### Added
 - **v3.7.0 Physical Parity Milestone**.

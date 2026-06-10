@@ -41,3 +41,5 @@
 - [x] Persistent transaction queue for Bobcoin node.
 - [x] Integrated 8-panel (dance-double) ML support.
 - [x] Automated ALSA multi-card discovery.
+- [x] Multi-mode (Single+Double) concurrent ingestion.
+- [x] Environment-based calibration export.

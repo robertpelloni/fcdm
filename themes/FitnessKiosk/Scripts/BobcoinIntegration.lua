@@ -1,5 +1,5 @@
 -- themes/FitnessKiosk/Scripts/BobcoinIntegration.lua
--- v3.2.0 Deep Bobcoin Integration
+-- v3.8.1 Deep Bobcoin Integration (Industrial Standard)
 
 local MINT_REQUEST_DIR = "logs/mint_requests/"
 
@@ -14,8 +14,8 @@ function MintBobcoinReward(calories, duration)
     local reward = GetBobcoinReward(calories, duration)
     local filename = MINT_REQUEST_DIR .. "req_" .. os.time() .. ".json"
 
-    -- In StepMania/ITGMania, we use RageFile for writing
-    local f = RageFileObj:new()
+    -- Correct StepMania/ITGMania Lua File API
+    local f = RageFileUtil.CreateRageFile()
     if f:Open(filename, 2) then -- 2 = write
         f:Write(string.format('{"calories": %f, "duration": %d, "reward": %.2f}', calories, duration, reward))
         f:Close()

@@ -14,9 +14,8 @@ except ImportError:
 
 class FSRCalibrator:
     """
-    v3.6.0 FCDM Industrial Hardware Diagnostic Utility.
-    Supports multi-panel sensitivity tuning, live threshold updates,
-    and 'Burn-In' diagnostic mode for platform assembly.
+    v3.8.0 FCDM Industrial Hardware Diagnostic Utility.
+    Supports Calibration Export for shell integration.
     """
     def __init__(self, port='/dev/ttyACM0', baud=115200):
         self.port = port
@@ -31,7 +30,7 @@ class FSRCalibrator:
 
         self.profile_dir = "config/profiles"
         self.active_profile = "default"
-        self.log_path = "logs/burn_in_diagnostics.csv"
+        self.env_script_path = "scripts/set_fsr_env.sh"
         self.pins = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
 
         os.makedirs(self.profile_dir, exist_ok=True)
@@ -44,72 +43,53 @@ class FSRCalibrator:
                 return json.load(f)
         return {"thresholds": [450]*9, "sensitivity": [1.0]*9}
 
-    def save_profile(self, name):
-        path = os.path.join(self.profile_dir, f"{name}.json")
-        os.makedirs(self.profile_dir, exist_ok=True)
-        with open(path, 'w') as f:
-            json.dump(self.profile, f, indent=2)
-        print(f"Profile '{name}' saved.")
+    def export_env(self):
+        """Generates a shell script to source FSR settings as environment variables."""
+        with open(self.env_script_path, 'w') as f:
+            f.write("#!/bin/bash\n")
+            f.write("# FCDM Auto-Generated Calibration Environment (v3.8.0)\n\n")
 
-    def log_burn_in(self, raw_values, strike_count, jitter):
-        os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
-        with open(self.log_path, 'a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([time.ctime(), strike_count, jitter] + raw_values)
+            # Export Thresholds as comma-separated string
+            thr_str = ",".join(map(str, self.profile["thresholds"]))
+            f.write(f"export FSR_THRESHOLDS=\"{thr_str}\"\n")
 
-    def run(self, burn_in=False):
-        print(f"FCDM FSR Utility (v3.6.0) - Mode: {'BURN-IN' if burn_in else 'CALIB'}")
+            # Export Sensitivities
+            sns_str = ",".join(map(str, self.profile["sensitivity"]))
+            f.write(f"export FSR_SENSITIVITIES=\"{sns_str}\"\n")
 
-        strike_count = 0
-        last_poll = time.time()
+            f.write("\necho \"FCDM: FSR Calibration Environment Loaded.\"\n")
+
+        os.chmod(self.env_script_path, 0o755)
+        print(f"Exported environment settings to {self.env_script_path}")
+
+    def run(self):
+        print(f"FCDM FSR Utility (v3.8.0) - Mode: CALIB")
         try:
             while True:
-                # Simulation raw values
-                raw_values = [300 + (i*10) + int(np.random.normal(0, 3)) for i in range(9)]
-
-                # Jitter analysis
-                now = time.time()
-                jitter = (now - last_poll) * 1000
-                last_poll = now
-
+                # Simulation
+                raw_values = [300 + (i*10) for i in range(9)]
                 os.system('clear' if os.name == 'posix' else 'cls')
-                print(f"--- FCDM {'INDUSTRIAL BURN-IN' if burn_in else 'CALIBRATION'} ---")
-                print(f"Strikes: {strike_count} | Jitter: {jitter:.2f}ms | Profile: {self.active_profile}")
-                print("P | RAW | THR | SENS | STATUS | HEALTH")
-                print("--|-----|-----|------|--------|-------")
-
+                print(f"--- FCDM CALIBRATION ---")
+                print("P | RAW | THR | STATUS")
+                print("--|-----|-----|-------")
                 for i, p in enumerate(self.pins):
                     raw = raw_values[i]
                     thr = self.profile["thresholds"][i]
-                    sns = self.profile["sensitivity"][i]
-                    is_strike = (raw * sns) > thr
-                    status = "STRIKE" if is_strike else "IDLE"
-                    if is_strike: strike_count += 1
-
-                    health = "OK"
-                    if raw > (thr * 0.95): health = "ALERT"
-
-                    graph = "#" * (int(raw * sns) // 20)
-                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status:6} | {health:5} {graph}")
-
-                print("-" * 55)
-                if burn_in and strike_count % 100 == 0:
-                    self.log_burn_in(raw_values, strike_count, jitter)
-
+                    status = "STRIKE" if raw > thr else "IDLE"
+                    print(f"{p} | {raw:03} | {thr} | {status}")
                 if "--sim" in sys.argv: break
                 time.sleep(0.1)
-
         except KeyboardInterrupt:
             print("\nExiting.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--burnin", action="store_true")
+    parser.add_argument("--export-env", action="store_true")
     parser.add_argument("--sim", action="store_true")
-    parser.add_argument("--profile", default="default")
     args = parser.parse_args()
 
     cal = FSRCalibrator()
-    cal.active_profile = args.profile
-    cal.profile = cal.load_profile(args.profile)
-    cal.run(burn_in=args.burnin)
+    if args.export_env:
+        cal.export_env()
+    else:
+        cal.run()
