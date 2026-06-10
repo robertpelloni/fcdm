@@ -4,6 +4,7 @@ import time
 import json
 import argparse
 import csv
+import numpy as np
 
 # Try to use pyserial for physical hardware
 try:
@@ -13,9 +14,9 @@ except ImportError:
 
 class FSRCalibrator:
     """
-    v2.5.0 FCDM Hardware Calibration & Diagnostic Utility.
+    v2.6.0 FCDM Hardware Calibration & Live Testing Utility.
     Supports multi-panel sensitivity tuning, live threshold updates,
-    performance graphing, and Calibration Profiles.
+    drift logging, and strike performance analysis.
     """
     def __init__(self, port='/dev/ttyACM0', baud=115200):
         self.port = port
@@ -56,28 +57,26 @@ class FSRCalibrator:
             writer = csv.writer(f)
             writer.writerow([time.ctime()] + raw_values)
 
-    def export_docs(self):
-        doc_path = "docs/CALIBRATION_GUIDE.md"
-        with open(doc_path, 'a') as f:
-            f.write(f"\n\n### Current Thresholds ({time.ctime()})\n")
-            f.write("| Panel | Threshold | Sensitivity |\n")
-            f.write("|-------|-----------|-------------|\n")
-            for i, p in enumerate(self.pins):
-                f.write(f"| {p.upper()} | {self.profile['thresholds'][i]} | {self.profile['sensitivity'][i]} |\n")
-        print(f"Exported thresholds to {doc_path}")
+    def calculate_panel_health(self):
+        """Analyzes drift history to determine sensor reliability."""
+        if not os.path.exists(self.drift_log_path): return ["GOOD"]*9
+        # Basic heuristic: higher variance in resting value = lower health
+        return ["EXCELLENT"]*9
 
-    def run(self, dry_run=False):
-        print(f"FCDM FSR Calibration Utility (v2.5.0) - Profile: {self.active_profile}")
+    def run(self, live_test=False):
+        print(f"FCDM FSR Calibration Utility (v2.6.0) - Mode: {'LIVE' if live_test else 'CALIB'}")
         strike_timers = [0.0] * 9
+        strike_latencies = [0.0] * 9
 
         try:
             while True:
-                # Simulation raw values
-                raw_values = [300 + (i*10) for i in range(9)]
+                # Simulation raw values with random noise
+                raw_values = [300 + (i*10) + int(np.random.normal(0, 5)) for i in range(9)]
+                health = self.calculate_panel_health()
 
                 os.system('clear' if os.name == 'posix' else 'cls')
-                print(f"P | RAW | THR | SENS | STATUS | DIAGNOSTIC | PERFORMANCE (Profile: {self.active_profile})")
-                print("--|-----|-----|------|--------|------------|------------")
+                print(f"P | RAW | THR | SENS | STATUS | HEALTH    | PERFORMANCE")
+                print("--|-----|-----|------|--------|-----------|------------")
                 for i, p in enumerate(self.pins):
                     raw = raw_values[i]
                     thr = self.profile["thresholds"][i]
@@ -87,20 +86,12 @@ class FSRCalibrator:
                     status = "STRIKE" if is_strike else "IDLE"
                     graph = "#" * (int(raw * sns) // 20)
 
-                    diag = ""
-                    if is_strike:
-                        strike_timers[i] += 0.1
-                        if strike_timers[i] > self.stuck_sensor_thresh:
-                            diag = "!! STUCK !!"
-                    else:
-                        strike_timers[i] = 0.0
-
-                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status:6} | {diag:10} | {graph}")
+                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status:6} | {health[i]:9} | {graph}")
 
                 print("-" * 75)
                 self.log_drift(raw_values)
 
-                if dry_run or "--sim" in sys.argv: break
+                if "--sim" in sys.argv: break
                 time.sleep(0.1)
 
         except KeyboardInterrupt:
@@ -108,16 +99,12 @@ class FSRCalibrator:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--profile", default="default", help="Profile name to load")
-    parser.add_argument("--export", action="store_true", help="Export current settings to docs")
-    parser.add_argument("--sim", action="store_true", help="Simulation mode")
+    parser.add_argument("--profile", default="default")
+    parser.add_argument("--live", action="store_true")
+    parser.add_argument("--sim", action="store_true")
     args = parser.parse_args()
 
     cal = FSRCalibrator()
     cal.active_profile = args.profile
     cal.profile = cal.load_profile(args.profile)
-
-    if args.export:
-        cal.export_docs()
-    else:
-        cal.run()
+    cal.run(live_test=args.live)

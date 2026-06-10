@@ -38,7 +38,7 @@ def calculate_fitness_level(ssc_path):
 
 def ingest_songs(songs_dir, difficulty=3, force=False, dry_run=False):
     """
-    Automated Music Ingestion Pipeline (v2.5.0)
+    Automated Music Ingestion Pipeline (v2.6.0)
     """
     print(f"Ingesting songs from: {songs_dir} (Diff: {difficulty}, Force: {force}, DryRun: {dry_run})")
 
@@ -92,7 +92,7 @@ def create_skeleton_ssc(audio_path, ssc_path, difficulty):
 #DESCRIPTION:Automated;
 #DIFFICULTY:Medium;
 #METER:{difficulty};
-#CREDIT:FCDM-v2.5.0;
+#CREDIT:FCDM-v2.6.0;
 {notes_data}
 ;
 """

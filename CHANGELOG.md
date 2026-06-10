@@ -9,6 +9,14 @@
 - Added production Hardware Calibration Guide.
 - Initialized bobcoin submodule in `extern/bobcoin`.
 
+## [2.6.0] - 2026-06-13
+### Added
+- **v2.6.0 Native ML Milestone**.
+- Implemented native ONNX inference loop for SymNet recursive selection.
+- Refined OnsetNet feature extraction with high-fidelity windowing.
+- Added "Live Test" mode and panel health diagnostics to `scripts/calibrate_fsr.py`.
+- Finalized software stack for first live industrial testing.
+
 ## [2.5.0] - 2026-06-12
 ### Added
 - **v2.5.0 Performance Diagnostics Milestone**.

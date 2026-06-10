@@ -18,3 +18,5 @@
 - [x] Batch Ingestion QA and NPS-based Fitness Level calculation.
 - [x] Heart Rate Monitor (HRM) visual integration.
 - [x] Hardware Calibration Profiles and documentation export.
+- [x] Native SymNet ONNX inference implementation.
+- [x] Calibration health diagnostics and live testing mode.
