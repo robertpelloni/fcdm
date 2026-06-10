@@ -28,3 +28,6 @@
 - [x] Bobcoin node resilience (caching and flushing).
 - [x] Fully native recursive LSTM implementation.
 - [x] Burn-in diagnostics for physical assembly.
+- [x] Multiprocessing bulk ingestion (imap_unordered).
+- [x] ALSA buffer tuning and real-time process priorities.
+- [x] Industrial sensor health monitoring.

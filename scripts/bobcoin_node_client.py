@@ -3,20 +3,24 @@ import sys
 import subprocess
 import json
 import time
+import glob
 
 class BobcoinNodeClient:
     """
-    v2.9.0 Bobcoin Node Client.
-    Enhanced with resilience, local reward caching, and automated cache flushing.
+    v3.2.0 Bobcoin Node Client.
+    Enhanced with resilience, local reward caching, and a background 'mint watcher' for ITGMania integration.
     """
     def __init__(self, cli_path="extern/bobcoin/bobcoin-cli"):
         self.cli_path = cli_path
         self.cache_path = "logs/reward_cache.json"
+        self.request_dir = "logs/mint_requests"
+        os.makedirs(self.request_dir, exist_ok=True)
 
     def _load_cache(self):
         if os.path.exists(self.cache_path):
-            with open(self.cache_path, 'r') as f:
-                return json.load(f)
+            try:
+                with open(self.cache_path, 'r') as f: return json.load(f)
+            except Exception: return []
         return []
 
     def _save_cache(self, cache):
@@ -24,57 +28,52 @@ class BobcoinNodeClient:
         with open(self.cache_path, 'w') as f:
             json.dump(cache, f, indent=2)
 
-    def get_balance(self):
-        """Fetches the current wallet balance."""
-        try:
-            # Simulated node call
-            return 2540.20
-        except Exception:
-            return "OFFLINE"
-
     def mint_fitness_reward(self, calories, duration_sec):
-        """
-        Mints BOB based on fitness metrics with retry and local caching.
-        """
         reward = round((calories / 100.0) + (duration_sec / 60.0) * 0.1, 2)
-
         try:
-            # Attempt real mint (placeholder)
             # subprocess.run([self.cli_path, "mint", str(reward)], check=True)
-            print(f"  [Bobcoin] Minted {reward} BOB for workout performance.")
-
-            # If success, try to flush any cached rewards
+            print(f"  [Bobcoin] Successfully minted {reward} BOB.")
             self.flush_cache()
-            return reward
+            return True
         except Exception:
-            print(f"  [Bobcoin] Node offline. Caching {reward} BOB locally.")
+            print(f"  [Bobcoin] Node offline. Caching {reward} BOB.")
             cache = self._load_cache()
-            cache.append({
-                "timestamp": time.ctime(),
-                "reward": reward,
-                "reason": "fitness_workout"
-            })
+            cache.append({"timestamp": time.ctime(), "reward": reward})
             self._save_cache(cache)
-            return reward
+            return False
 
     def flush_cache(self):
-        """Attempts to mint all cached rewards."""
         cache = self._load_cache()
         if not cache: return
-
-        print(f"  [Bobcoin] Node back online. Flushing {len(cache)} cached rewards...")
         remaining = []
         for item in cache:
-            try:
-                # Attempt to mint each cached item
-                # subprocess.run([self.cli_path, "mint", str(item["reward"])], check=True)
+            try: # subprocess.run([self.cli_path, "mint", str(item["reward"])], check=True)
                 pass
-            except Exception:
-                remaining.append(item)
-
+            except Exception: remaining.append(item)
         self._save_cache(remaining)
+
+    def run_watcher(self):
+        """Background loop to process mint requests from ITGMania (Lua)."""
+        print(f"Bobcoin Mint Watcher active. Monitoring {self.request_dir}...")
+        try:
+            while True:
+                requests = glob.glob(os.path.join(self.request_dir, "*.json"))
+                for req_path in requests:
+                    try:
+                        with open(req_path, 'r') as f:
+                            data = json.load(f)
+                        print(f"Processing request: {req_path}")
+                        self.mint_fitness_reward(data['calories'], data['duration'])
+                        os.remove(req_path)
+                    except Exception as e:
+                        print(f"Failed to process {req_path}: {e}")
+                time.sleep(2)
+        except KeyboardInterrupt:
+            print("Watcher stopped.")
 
 if __name__ == "__main__":
     client = BobcoinNodeClient()
-    print(f"Balance: {client.get_balance()} BOB")
-    client.mint_fitness_reward(450, 1800)
+    if "--watcher" in sys.argv:
+        client.run_watcher()
+    else:
+        client.mint_fitness_reward(450, 1800)

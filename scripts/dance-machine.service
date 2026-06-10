@@ -6,10 +6,16 @@ After=network.target sound.target
 Type=simple
 User=jules
 WorkingDirectory=/app
-ExecStart=/app/scripts/kiosk-standalone.sh
+ExecStart=/usr/bin/bash scripts/kiosk-standalone.sh
 Restart=always
-RestartSec=10
-Environment=DISPLAY=:0
+RestartSec=5
+
+# v3.1.0 Industrial Process Scheduling
+CPUSchedulingPolicy=rr
+CPUSchedulingPriority=99
+Nice=-20
+IOSchedulingClass=realtime
+IOSchedulingPriority=0
 
 [Install]
 WantedBy=multi-user.target

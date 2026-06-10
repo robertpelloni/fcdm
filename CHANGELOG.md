@@ -32,6 +32,14 @@
 - Added reward caching and automated cache flushing to Bobcoin client.
 - Enhanced hardware stress testing with polling jitter analysis.
 
+## [3.1.0] - 2024-05-26
+### Added
+- **v3.1.0 Industrial Release**.
+- Implemented multiprocessing bulk ingestion in `scripts/ingest_music.py`.
+- Optimized kiosk launch with ALSA buffer tuning and real-time scheduling.
+- Added 'Industrial Diagnostics' for sensor fatigue analysis.
+- Finalized production stability for high-volume physical deployments.
+
 ## [3.0.0] - 2024-05-25
 ### Added
 - **v3.0.0 Physical Milestone Release**.
