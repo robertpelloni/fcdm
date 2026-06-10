@@ -32,6 +32,14 @@
 - Added reward caching and automated cache flushing to Bobcoin client.
 - Enhanced hardware stress testing with polling jitter analysis.
 
+## [3.4.0] - 2024-05-27
+### Added
+- **v3.4.0 Production Parity Milestone**.
+- Fully implemented native SymNet recursive LSTM selection with hidden-state tracking.
+- Refined OnsetNet windowing and temperature-based pattern sampling (T=0.8).
+- Added 'Industrial Burn-In' diagnostic mode for automated hardware stress testing.
+- Enhanced Fitness Flow QA with alternation efficiency analysis.
+
 ## [3.3.0] - 2024-05-26
 ### Added
 - **v3.3.0 Resilience Milestone Release**.

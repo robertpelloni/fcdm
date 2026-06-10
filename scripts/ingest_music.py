@@ -67,7 +67,7 @@ def process_single_song(audio_path, difficulty, force, dry_run):
 #DESCRIPTION:Automated;
 #DIFFICULTY:Medium;
 #METER:{difficulty};
-#CREDIT:FCDM-v3.1.0;
+#CREDIT:FCDM-v3.4.0;
 {notes_data}
 ;
 """
@@ -92,7 +92,7 @@ def process_single_song(audio_path, difficulty, force, dry_run):
 
 def ingest_songs(songs_dir, difficulty=3, force=False, dry_run=False, cores=None):
     """
-    Industrial Music Ingestion Pipeline (v3.1.0)
+    Industrial Music Ingestion Pipeline (v3.4.0)
     Supports multiprocessing for bulk ingestion.
     """
     if cores is None:
