@@ -14,7 +14,7 @@ except ImportError:
 
 class FSRCalibrator:
     """
-    v2.7.0 FCDM Hardware Calibration & Stress Testing Utility.
+    v2.9.0 FCDM Hardware Calibration & Diagnostic Utility.
     Supports multi-panel sensitivity tuning, live threshold updates,
     drift logging, and strike performance jitter analysis.
     """
@@ -31,7 +31,7 @@ class FSRCalibrator:
 
         self.profile_dir = "config/profiles"
         self.active_profile = "default"
-        self.log_path = "logs/live_test_results.json"
+        self.log_path = "logs/sensor_drift.csv"
         self.pins = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
 
         os.makedirs(self.profile_dir, exist_ok=True)
@@ -45,7 +45,7 @@ class FSRCalibrator:
         return {"thresholds": [450]*9, "sensitivity": [1.0]*9}
 
     def run(self, stress_test=False):
-        print(f"FCDM FSR Utility (v2.7.0) - Mode: {'STRESS' if stress_test else 'CALIB'}")
+        print(f"FCDM FSR Utility (v2.9.0) - Mode: {'STRESS' if stress_test else 'CALIB'}")
 
         jitter_log = []
         last_poll = time.time()
@@ -76,26 +76,12 @@ class FSRCalibrator:
                     print(f"{p} | {raw:03} | {thr} | {status:6} | {jit_str}")
 
                 print("-" * 40)
-                if stress_test and len(jitter_log) % 100 == 0:
-                    self.save_stress_log(jitter_log)
 
                 if "--sim" in sys.argv: break
-                time.sleep(0.01 if stress_test else 0.1) # Fast polling for stress test
+                time.sleep(0.01 if stress_test else 0.1)
 
         except KeyboardInterrupt:
             print("\nExiting.")
-
-    def save_stress_log(self, data):
-        os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
-        results = {
-            "timestamp": time.ctime(),
-            "avg_jitter_ms": float(np.mean(data)),
-            "std_jitter_ms": float(np.std(data)),
-            "max_jitter_ms": float(np.max(data))
-        }
-        with open(self.log_path, 'w') as f:
-            json.dump(results, f, indent=2)
-        print(f"Logged stress metrics to {self.log_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

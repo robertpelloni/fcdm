@@ -24,3 +24,5 @@
 - [x] Live stress test mode with polling jitter analysis.
 - [x] Production weight support (.h5/.onnx) and flow analysis.
 - [x] Pre-live system health check script.
+- [x] Fully implemented native LSTM selection with state tracking.
+- [x] Bobcoin node resilience (caching and flushing).

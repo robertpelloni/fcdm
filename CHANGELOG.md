@@ -24,6 +24,14 @@
 - Added "Live Test" mode and panel health diagnostics to `scripts/calibrate_fsr.py`.
 - Finalized software stack for first live industrial testing.
 
+## [2.9.0] - 2026-06-14
+### Added
+- **v2.9.0 Resilient Production Milestone**.
+- Fully implemented recursive LSTM hidden-state tracking in SymNet.
+- Refined OnsetNet feature windowing architecture for production weights.
+- Added reward caching and automated cache flushing to Bobcoin client.
+- Enhanced hardware stress testing with polling jitter analysis.
+
 ## [2.8.0] - 2026-06-13
 ### Added
 - **v2.8.0 Production ML Milestone**.
