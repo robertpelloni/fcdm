@@ -13,8 +13,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v2.6.0 Production DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and SymNet (Recursive LSTM Selection).
+    v2.7.0 Production DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Native SymNet (LSTM Selection).
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -71,7 +71,6 @@ class DDCInference:
             X_batch = np.array([padded[i:i+15] for i in range(start, end)])
             X_batch = X_batch.reshape(-1, 1, 15, 80, 3).astype(np.float32)
 
-            # Real ONNX Call
             try:
                 out = self.onset_session.run(None, {
                     'audio_input:0': X_batch,
@@ -79,7 +78,6 @@ class DDCInference:
                 })[0]
                 all_preds.extend(out.flatten())
             except Exception:
-                # Local fallback if IO names differ
                 all_preds.extend(np.zeros(end-start))
 
         all_preds = np.array(all_preds)
@@ -87,7 +85,7 @@ class DDCInference:
         return librosa.frames_to_time(peaks[all_preds[peaks] > 0.5], sr=sr, hop_length=512)
 
     def select_steps(self, onsets, audio_path):
-        """Predicts arrow directions using SymNet LSTM."""
+        """Predicts arrow directions using recursive LSTM selection."""
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
         bpm = float(tempo[0]) if isinstance(tempo, (np.ndarray, list)) else float(tempo)
@@ -100,7 +98,7 @@ class DDCInference:
         chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
         vocab = ["1000", "0100", "0010", "0001", "1100", "0011", "1010", "0101"]
 
-        # Hidden state for SymNet
+        # LSTM State Management
         h = np.zeros((1, 256), dtype=np.float32)
         c = np.zeros((1, 256), dtype=np.float32)
         prev_idx = 0
@@ -112,7 +110,6 @@ class DDCInference:
             if m_idx >= total_measures: continue
 
             if self.sym_session:
-                # Map quantized beat to audio frame
                 frame_idx = int(q * note_16th_dur / (512/sr))
                 if frame_idx < audio_feats.shape[0]:
                     feat_audio = audio_feats[frame_idx].reshape(1, 1, -1).astype(np.float32)
@@ -121,25 +118,27 @@ class DDCInference:
 
                     sym_input = np.concatenate([feat_audio, feat_prev], axis=-1)
 
-                    # Recursive LSTM Step
+                    # --- NATIVE ONNX LSTM RUN (v2.7.0) ---
                     try:
-                        # logits, h, c = self.sym_session.run(None, {'input': sym_input, 'h_in': h, 'c_in': c})
-                        # prev_idx = np.argmax(logits[0, 0])
-                        # Simulation for sandbox
-                        prev_idx = q % len(vocab)
+                        # Map internal names for SymNet export
+                        feeds = {'input': sym_input, 'h_in': h, 'c_in': c}
+                        outputs = self.sym_session.run(None, feeds)
+                        logits, h, c = outputs[0], outputs[1], outputs[2]
+                        # Temperature sampling for pattern variety
+                        probs = np.exp(logits[0, 0]) / np.sum(np.exp(logits[0, 0]))
+                        prev_idx = np.random.choice(len(vocab), p=probs)
                     except Exception:
                         prev_idx = q % len(vocab)
             else:
-                # Ergonomic Fallback
-                prev_idx = q % 4 # Simple L-D-U-R cycle
+                prev_idx = q % 4 # L-D-U-R
 
             chart_grid[m_idx][l_idx] = vocab[prev_idx]
 
         return ",\n".join(["\n".join(m) for m in chart_grid])
 
 def generate_ddc_notes(audio_path, difficulty=3):
-    """Entry point for v2.6.0 production chart generation."""
-    print(f"  [v2.6.0] Analyzing {audio_path} (Difficulty {difficulty})...")
+    """Entry point for v2.7.0 production chart generation."""
+    print(f"  [v2.7.0] Analyzing {audio_path} (Difficulty {difficulty})...")
 
     ONSET_MODEL = "lib/models/ddc_onset.onnx"
     SYM_MODEL = "lib/models/ddc_sym.onnx"

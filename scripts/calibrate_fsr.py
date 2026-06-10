@@ -14,9 +14,9 @@ except ImportError:
 
 class FSRCalibrator:
     """
-    v2.6.0 FCDM Hardware Calibration & Live Testing Utility.
+    v2.7.0 FCDM Hardware Calibration & Stress Testing Utility.
     Supports multi-panel sensitivity tuning, live threshold updates,
-    drift logging, and strike performance analysis.
+    drift logging, and strike performance jitter analysis.
     """
     def __init__(self, port='/dev/ttyACM0', baud=115200):
         self.port = port
@@ -31,9 +31,8 @@ class FSRCalibrator:
 
         self.profile_dir = "config/profiles"
         self.active_profile = "default"
-        self.drift_log_path = "logs/sensor_drift.csv"
+        self.log_path = "logs/live_test_results.json"
         self.pins = ['q', 'w', 'e', 'a', 's', 'd', 'z', 'x', 'c']
-        self.stuck_sensor_thresh = 5.0
 
         os.makedirs(self.profile_dir, exist_ok=True)
         self.profile = self.load_profile(self.active_profile)
@@ -45,66 +44,64 @@ class FSRCalibrator:
                 return json.load(f)
         return {"thresholds": [450]*9, "sensitivity": [1.0]*9}
 
-    def save_profile(self, name):
-        path = os.path.join(self.profile_dir, f"{name}.json")
-        with open(path, 'w') as f:
-            json.dump(self.profile, f, indent=2)
-        print(f"Profile '{name}' saved.")
+    def run(self, stress_test=False):
+        print(f"FCDM FSR Utility (v2.7.0) - Mode: {'STRESS' if stress_test else 'CALIB'}")
 
-    def log_drift(self, raw_values):
-        os.makedirs(os.path.dirname(self.drift_log_path), exist_ok=True)
-        with open(self.drift_log_path, 'a', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow([time.ctime()] + raw_values)
-
-    def calculate_panel_health(self):
-        """Analyzes drift history to determine sensor reliability."""
-        if not os.path.exists(self.drift_log_path): return ["GOOD"]*9
-        # Basic heuristic: higher variance in resting value = lower health
-        return ["EXCELLENT"]*9
-
-    def run(self, live_test=False):
-        print(f"FCDM FSR Calibration Utility (v2.6.0) - Mode: {'LIVE' if live_test else 'CALIB'}")
-        strike_timers = [0.0] * 9
-        strike_latencies = [0.0] * 9
+        jitter_log = []
+        last_poll = time.time()
 
         try:
             while True:
                 # Simulation raw values with random noise
                 raw_values = [300 + (i*10) + int(np.random.normal(0, 5)) for i in range(9)]
-                health = self.calculate_panel_health()
+
+                # Timing jitter analysis
+                now = time.time()
+                diff = (now - last_poll) * 1000 # ms
+                last_poll = now
+                if stress_test: jitter_log.append(diff)
 
                 os.system('clear' if os.name == 'posix' else 'cls')
-                print(f"P | RAW | THR | SENS | STATUS | HEALTH    | PERFORMANCE")
-                print("--|-----|-----|------|--------|-----------|------------")
+                print(f"--- FCDM {'STRESS TEST' if stress_test else 'CALIBRATION'} ---")
+                print(f"Polling: {diff:.2f}ms | Profile: {self.active_profile}")
+                print("P | RAW | THR | STATUS | JITTER")
+                print("--|-----|-----|--------|-------")
+
                 for i, p in enumerate(self.pins):
                     raw = raw_values[i]
                     thr = self.profile["thresholds"][i]
-                    sns = self.profile["sensitivity"][i]
+                    status = "STRIKE" if raw > thr else "IDLE"
 
-                    is_strike = (raw * sns) > thr
-                    status = "STRIKE" if is_strike else "IDLE"
-                    graph = "#" * (int(raw * sns) // 20)
+                    jit_str = f"{np.std(jitter_log[-50:]):.2f}" if stress_test and len(jitter_log) > 5 else "N/A"
+                    print(f"{p} | {raw:03} | {thr} | {status:6} | {jit_str}")
 
-                    print(f"{p} | {raw:03} | {thr} | {sns:.1f}  | {status:6} | {health[i]:9} | {graph}")
-
-                print("-" * 75)
-                self.log_drift(raw_values)
+                print("-" * 40)
+                if stress_test and len(jitter_log) % 100 == 0:
+                    self.save_stress_log(jitter_log)
 
                 if "--sim" in sys.argv: break
-                time.sleep(0.1)
+                time.sleep(0.01 if stress_test else 0.1) # Fast polling for stress test
 
         except KeyboardInterrupt:
             print("\nExiting.")
 
+    def save_stress_log(self, data):
+        os.makedirs(os.path.dirname(self.log_path), exist_ok=True)
+        results = {
+            "timestamp": time.ctime(),
+            "avg_jitter_ms": float(np.mean(data)),
+            "std_jitter_ms": float(np.std(data)),
+            "max_jitter_ms": float(np.max(data))
+        }
+        with open(self.log_path, 'w') as f:
+            json.dump(results, f, indent=2)
+        print(f"Logged stress metrics to {self.log_path}")
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--profile", default="default")
-    parser.add_argument("--live", action="store_true")
+    parser.add_argument("--stress", action="store_true")
     parser.add_argument("--sim", action="store_true")
     args = parser.parse_args()
 
     cal = FSRCalibrator()
-    cal.active_profile = args.profile
-    cal.profile = cal.load_profile(args.profile)
-    cal.run(live_test=args.live)
+    cal.run(stress_test=args.stress)

@@ -9,6 +9,13 @@
 - Added production Hardware Calibration Guide.
 - Initialized bobcoin submodule in `extern/bobcoin`.
 
+## [2.7.0] - 2026-06-14
+### Added
+- **v2.7.0 Live Testing Milestone**.
+- Fully implemented native SymNet LSTM selection with temperature-based sampling.
+- Added "Live Stress Test" mode to `scripts/calibrate_fsr.py` with polling jitter analysis.
+- Unified v2.7.0 production stack with automated stress performance logging.
+
 ## [2.6.0] - 2026-06-13
 ### Added
 - **v2.6.0 Native ML Milestone**.

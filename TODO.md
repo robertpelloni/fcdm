@@ -20,3 +20,5 @@
 - [x] Hardware Calibration Profiles and documentation export.
 - [x] Native SymNet ONNX inference implementation.
 - [x] Calibration health diagnostics and live testing mode.
+- [x] Native SymNet LSTM selection with temperature sampling.
+- [x] Live stress test mode with polling jitter analysis.

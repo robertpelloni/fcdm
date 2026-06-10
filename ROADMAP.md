@@ -26,7 +26,7 @@
 - [x] Implement systemd service for auto-start.
 - [x] Final testing and calibration (v1.0.0).
 
-### v2.6.0 Native ML Milestone
+### v2.7.0 Live Testing Milestone
 - [x] Full DDC-Deep ML Chart Generation (OnsetNet + SymNet).
 - [x] Bobcoin "Fitness Mining" Deep Integration.
 - [x] Enhanced FSR Hardware Calibration Utility with History Logging.
