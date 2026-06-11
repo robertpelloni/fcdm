@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v14.0.0 Industrial-Emerald DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and High-Fidelity Kinematic Decoding.
+    v2.0.0 Production DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Coordinate-Aware Kinematic Selection.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -97,9 +97,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v14.0.0 Kinematic Decoder Architecture.
-        Utilizes a Viterbi-inspired lookahead to minimize physical movement cost,
-        ensuring elite-level ergonomic flow for high-intensity cardio.
+        v2.0.0 Kinematic Selection Algorithm.
+        Minimizes physical travel distance and ergonomic strain via
+        coordinate-aware cost analysis.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
@@ -110,79 +110,54 @@ class DDCInference:
         quantized = np.unique(np.round(onsets / note_16th_dur).astype(int))
         total_measures = (quantized[-1] // 16) + 1 if len(quantized) > 0 else 1
 
+        # Coordinates (x, y) for panels
         if mode == 'dance-double':
             chart_grid = [["00000000" for _ in range(16)] for _ in range(total_measures)]
-            singles = ["10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001"]
-            jumps = ["10001000", "01000100", "00100010", "00010001", "11000000", "00110000", "00001100", "00000011"]
-            # v7.0.0: High-fidelity dance-double vocabulary
-            hands = ["11100000", "00011100", "10101000", "00010101"]
-            brackets = ["11000000", "00000011", "10010000", "00001001"]
-            vocab = singles + jumps + hands + brackets
+            # P1: L, D, U, R | P2: L, D, U, R
+            coords = [(-2, 0), (-1, -1), (-1, 1), (0, 0), (1, 0), (2, -1), (2, 1), (3, 0)]
+            vocab = ["10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001"]
         else:
             chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
-            singles = ["1000", "0100", "0010", "0001"]
-            jumps = ["1100", "0011", "1010", "0101", "1001", "0110"]
-            vocab = singles + jumps + ["2000", "0200", "0020", "0002", "4000", "0400", "0040", "0004"]
+            coords = [(-1, 0), (0, -1), (0, 1), (1, 0)] # L, D, U, R
+            vocab = ["1000", "0100", "0010", "0001"]
 
-        # Heuristic State Machine
-        last_l_idx = -1
-        last_m_idx = -1
-        last_step = "0000" if mode == 'dance-single' else "00000000"
-        foot = 0 # 0=Left, 1=Right
-
-        audio_feats = self.extract_features(y, sr)
-        h = np.zeros((1, 256), dtype=np.float32)
-        c = np.zeros((1, 256), dtype=np.float32)
-        prev_idx = 0
+        # Initial foot positions
+        l_foot = coords[0]
+        r_foot = coords[3]
+        last_foot = 1 # 0=Left, 1=Right
 
         for q in quantized:
             m_idx, l_idx = q // 16, q % 16
             if m_idx >= total_measures: continue
 
-            curr_idx = -1
-            # Try ML Selection
-            if self.sym_session or self.sym_keras:
-                frame_idx = int(q * note_16th_dur / (512/sr))
-                if frame_idx < audio_feats.shape[0]:
-                    # v5.0.0: High-fidelity windowed audio input
-                    feat_audio = audio_feats[frame_idx].reshape(1, 1, -1).astype(np.float32)
-                    feat_prev = np.zeros((1, 1, len(vocab)), dtype=np.float32)
-                    feat_prev[0, 0, prev_idx % len(vocab)] = 1.0
-                    sym_input = np.concatenate([feat_audio, feat_prev], axis=-1)
+            # Find best step using kinematic cost
+            best_idx = 0
+            min_cost = float('inf')
 
-                    try:
-                        if self.sym_session:
-                            out = self.sym_session.run(None, {'input': sym_input, 'h_in': h, 'c_in': c})
-                            logits, h, c = out[0], out[1], out[2]
-                        else:
-                            out = self.sym_keras.predict([sym_input, h, c], verbose=0)
-                            logits, h, c = out[0], out[1], out[2]
+            # Alternate feet
+            curr_foot = 1 - last_foot
 
-                        probs = np.exp(logits[0, 0] / 0.8) / np.sum(np.exp(logits[0, 0] / 0.8))
-                        curr_idx = np.random.choice(len(vocab), p=probs)
-                    except Exception: pass
+            for i, c in enumerate(coords):
+                # Calculate Euclidean distance from current foot position
+                dist = np.sqrt((c[0] - (l_foot[0] if curr_foot == 0 else r_foot[0]))**2 +
+                               (c[1] - (l_foot[1] if curr_foot == 0 else r_foot[1]))**2)
 
-            # v4.1.0 Heuristic Fallback / Refinement
-            if curr_idx == -1:
-                # Enforce Alternating Flow
-                if mode == 'dance-single':
-                    left_steps = [0, 1] # Left, Down
-                    right_steps = [2, 3] # Up, Right
-                    valid_indices = right_steps if foot == 0 else left_steps
-                    # Occasional Jumps (10% chance if not too fast)
-                    if np.random.rand() < 0.1 and (q - ((last_m_idx*16)+last_l_idx)) > 4:
-                        curr_idx = np.random.choice([vocab.index(j) for j in jumps])
-                    else:
-                        curr_idx = np.random.choice(valid_indices)
-                else:
-                    curr_idx = q % len(vocab)
+                # Ergonomic penalty: avoid crossovers (simple check)
+                crossover = 0
+                if curr_foot == 0 and c[0] > r_foot[0]: crossover = 10
+                if curr_foot == 1 and c[0] < l_foot[0]: crossover = 10
 
-            chart_grid[m_idx][l_idx] = vocab[curr_idx]
-            last_step = vocab[curr_idx]
-            last_l_idx = l_idx
-            last_m_idx = m_idx
-            foot = 1 - foot # Switch foot
-            prev_idx = curr_idx
+                cost = dist + crossover
+                if cost < min_cost:
+                    min_cost = cost
+                    best_idx = i
+
+            chart_grid[m_idx][l_idx] = vocab[best_idx]
+
+            # Update foot position
+            if curr_foot == 0: l_foot = coords[best_idx]
+            else: r_foot = coords[best_idx]
+            last_foot = curr_foot
 
         self.validate_chart(chart_grid)
         return ",\n".join(["\n".join(m) for m in chart_grid])

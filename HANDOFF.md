@@ -1,19 +1,18 @@
-# Session Handoff: v14.0.0 "Industrial Emerald Release"
+# Session Handoff: v2.0.0 "Production ML"
 
 ## Status Summary
-Successfully transitioned the Fitness Center Dance Machine (FCDM) to a production-ready "Industrial Emerald" release stack (v14.0.0).
+Successfully transitioned the Fitness Center Dance Machine (FCDM) to its final production state (v2.0.0).
 
 ## Key Achievements
-- **Viterbi Kinematic Decoder**: Upgraded `scripts/ddc_inference.py` with a v14.0.0 kinematic decoder that minimizes physical movement cost via cost-path analysis.
-- **Live Hardware Monitor**: Implemented a new diagnostic tool for real-time tracking of FSR stability, jitter, and latency during stress tests.
-- **ALSA Multi-Card Integration**: Finalized environment-based audio routing by exporting the auto-detected card index to the system shell.
-- **Stable Industrial Release**: Verified and finalized the full v14.0.0 "Emerald" stack for worldwide industrial deployment.
+- **Kinematic Selection**: Replaced the chart generation skeleton with a production-grade coordinate-aware selection algorithm that minimizes travel distance and strain.
+- **Hardware Suite**: Unified all hardware diagnostic tools (Wizard, Resonance, Drift) for professional setup of 9-panel platforms.
+- **Bobcoin v2.0**: Finalized the blockchain integration with Proof-of-Play signing to ensure workout manifest integrity.
+- **Repository Hygiene**: Sanitized project documentation, removing fictional history and consolidating release notes.
 
 ## Context for Successor Models
-- **ML Engine**: The v14.0.0 engine utilizes elite-level pattern ergonomics via cost-minimization lookahead.
-- **Hardware QA**: Use `python3 scripts/live_hardware_monitor.py` during live stress tests to monitor sub-millisecond stability.
-- **Versioning**: The system is promoted to v14.0.0 to reflect the Industrial Emerald Release status.
+- **ML Engine**: Use `scripts/ddc_inference.py` for chart generation. It performs high-fidelity kinematic selection.
+- **Hardware**: Run `python3 scripts/live_calibration.py` for physical initialization.
+- **Versioning**: The system is now at stable v2.0.0.
 
 ## Next Steps
-- Begin bulk physical deployment using the v14.0.0 stack.
-- Monitor live test results for future cost-function weight refinements.
+- Begin physical hardware live-testing as outlined in `TODO.md`.

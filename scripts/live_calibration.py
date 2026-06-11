@@ -10,10 +10,10 @@ from calibrate_fsr import FSRCalibrator
 
 def run_live_setup(sim=False):
     """
-    v8.0.0 Live Hardware Calibration and Setup Tool.
+    v15.0.0 Live Hardware Calibration and Setup Tool.
     Automates the sequence: ALSA Discovery -> FSR Wizard -> Drift Analysis.
     """
-    print("--- FCDM v8.0.0 LIVE HARDWARE SETUP ---")
+    print("--- FCDM v15.0.0 LIVE HARDWARE SETUP ---")
 
     # 1. System Health & ALSA Card Selection
     print("\n[1/3] Running System Health & Audio Auto-Discovery...")
@@ -29,9 +29,13 @@ def run_live_setup(sim=False):
     else:
         cal.run_wizard()
 
-    # 3. Drift Verification
-    print("\n[3/3] Verifying Baseline Drift...")
+    # 3. Drift Verification & Endurance Test
+    print("\n[3/3] Verifying Baseline Drift & Running endurance Test...")
     cal.analyze_drift()
+
+    if not sim:
+        print("\nStarting 5-minute automated sensor dropout check...")
+        cal.run_burn_in(300) # 5m burn-in
 
     print("\n--- SETUP COMPLETE: Ready for Live Deployment ---")
 
