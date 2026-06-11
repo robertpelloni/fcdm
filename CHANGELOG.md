@@ -1,5 +1,13 @@
 # Changelog
 
+## [9.0.0] - 2024-06-02
+### Added
+- **v9.0.0 Industrial Alpha Milestone**.
+- Upgraded `scripts/ddc_inference.py` to Industrial-Deep standard with multi-state tracking and flow-aware lookahead.
+- Enhanced `scripts/stream_sanitizer.py` with Alternation Efficiency Flow-QA metrics.
+- Added `scripts/hardware_stress_test.py` for 1000Hz FSR jitter analysis.
+- Finalized v9.0.0 stack for physical hardware QA.
+
 ## [8.0.0] - 2024-06-01
 ### Added
 - **v8.0.0 Live Deployment Milestone**.
