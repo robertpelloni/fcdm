@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v4.1.0 Production DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Native Heuristic SymNet (Recursive Selection).
+    v5.0.0 Production DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Native High-Fidelity SymNet (Recursive Selection).
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -56,7 +56,10 @@ class DDCInference:
                 print(f"  [DDC] Keras Load Failed: {e}")
 
     def extract_features(self, y, sr):
-        """DDC Feature Extraction: Mel-spectrograms at 3 scales."""
+        """
+        v5.0.0 High-Fidelity DDC Feature Extraction.
+        Mel-spectrograms at 3 scales with sliding-window stacking.
+        """
         if sr != 44100:
             y = librosa.resample(y, orig_sr=sr, target_sr=44100)
             sr = 44100
@@ -65,7 +68,15 @@ class DDCInference:
         for n in nffts:
             mel = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=n, hop_length=hop, n_mels=80, fmin=27.5, fmax=16000)
             feat_channels.append(librosa.power_to_db(mel, ref=np.max))
-        return np.stack(feat_channels, axis=-1).transpose(1, 0, 2)
+
+        feats = np.stack(feat_channels, axis=-1).transpose(1, 0, 2) # (Time, Mels, Scales)
+
+        # v5.0.0: Stack 5-frame window (2 before, 2 after)
+        padded = np.pad(feats, ((2, 2), (0, 0), (0, 0)), mode='constant')
+        stacked = []
+        for i in range(feats.shape[0]):
+            stacked.append(padded[i:i+5].flatten())
+        return np.stack(stacked)
 
     def predict_onsets(self, audio_path, difficulty=3):
         """Predicts arrow placements."""
@@ -130,6 +141,7 @@ class DDCInference:
             if self.sym_session or self.sym_keras:
                 frame_idx = int(q * note_16th_dur / (512/sr))
                 if frame_idx < audio_feats.shape[0]:
+                    # v5.0.0: High-fidelity windowed audio input
                     feat_audio = audio_feats[frame_idx].reshape(1, 1, -1).astype(np.float32)
                     feat_prev = np.zeros((1, 1, len(vocab)), dtype=np.float32)
                     feat_prev[0, 0, prev_idx % len(vocab)] = 1.0

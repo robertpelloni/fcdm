@@ -47,3 +47,8 @@
 - [x] Production Heuristic SymNet (Alternating Flow).
 - [x] Interactive Hardware Calibration Wizard.
 - [x] Unified v4.1.0 Industrial Documentation.
+
+### v5.0.0 Industrial Production Release [DONE]
+- [x] High-Fidelity DDC ML Inference (5-frame stacking).
+- [x] Real-Time Adaptive Hardware Calibration.
+- [x] Robust Cross-Distro CLI Discovery.

@@ -4,14 +4,15 @@ import subprocess
 import json
 import time
 import glob
+import shutil
 
 class BobcoinNodeClient:
     """
-    v3.9.0 Bobcoin Node Client.
-    Enhanced with persistent transaction queue, automated retry, and 'mint watcher'.
+    v5.0.0 Bobcoin Node Client.
+    Enhanced with robust CLI discovery, persistent queuing, and 'mint watcher'.
     """
-    def __init__(self, cli_path="extern/bobcoin/bobcoin-cli"):
-        self.cli_path = cli_path
+    def __init__(self, cli_path=None):
+        self.cli_path = self._discover_cli(cli_path)
         self.queue_path = "logs/transaction_queue.json"
         self.request_dir = "logs/mint_requests"
         os.makedirs(self.request_dir, exist_ok=True)
@@ -27,6 +28,29 @@ class BobcoinNodeClient:
         os.makedirs(os.path.dirname(self.queue_path), exist_ok=True)
         with open(self.queue_path, 'w') as f:
             json.dump(queue, f, indent=2)
+
+    def _discover_cli(self, provided_path):
+        """v5.0.0 Robust CLI path discovery for standard Linux distros."""
+        paths = [
+            provided_path,
+            "extern/bobcoin/bobcoin-cli",
+            "extern/bobcoin/bin/bobcoin-cli",
+            "/usr/local/bin/bobcoin-cli",
+            "/usr/bin/bobcoin-cli",
+            os.path.expanduser("~/bin/bobcoin-cli")
+        ]
+        for p in paths:
+            if p and os.path.exists(p) and os.access(p, os.X_OK):
+                print(f"  [Bobcoin] Discovered CLI at: {p}")
+                return p
+
+        system_path = shutil.which("bobcoin-cli")
+        if system_path:
+            print(f"  [Bobcoin] Discovered CLI in PATH: {system_path}")
+            return system_path
+
+        print("  [Bobcoin] WARNING: Bobcoin CLI not found. Node features may fail.")
+        return provided_path or "bobcoin-cli"
 
     def node_heartbeat(self):
         """Checks if the bobcoin node is responding."""

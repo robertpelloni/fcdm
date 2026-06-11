@@ -52,3 +52,6 @@
 - [x] Production stress test suite (`scripts/stress_test.py`).
 - [x] Implement Heuristic SymNet for v4.1.0.
 - [x] Implement Calibration Wizard for v4.1.0.
+- [x] High-Fidelity ML Inference (v5.0.0).
+- [x] Adaptive Calibration (v5.0.0).
+- [x] Robust Bobcoin CLI discovery.

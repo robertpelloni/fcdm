@@ -1,5 +1,5 @@
 #!/bin/bash
-# FCDM System Health Check (v4.0.0)
+# FCDM System Health Check (v5.0.0)
 # This script automates pre-live-testing verification and ALSA auto-discovery.
 
 echo "--- FCDM SYSTEM HEALTH CHECK ---"
@@ -47,5 +47,22 @@ fi
 # 3. ML Environment
 python3 -c "import onnxruntime; print('[PASS] ONNX Runtime loaded.')" 2>/dev/null || echo "[WARN] onnxruntime missing. Using fallback inference."
 python3 -c "import librosa; print('[PASS] Librosa loaded.')" 2>/dev/null || echo "[FAIL] librosa missing."
+
+# 4. Bobcoin Node Connectivity
+if [ -e "scripts/bobcoin_node_client.py" ]; then
+    python3 scripts/bobcoin_node_client.py --sim > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        echo "[PASS] Bobcoin Node Client functional."
+    else
+        echo "[WARN] Bobcoin Node Client initialization failed."
+    fi
+fi
+
+# 5. Submodule Check
+if [ -d "itgmania/.git" ] && [ -d "bobmania/.git" ]; then
+    echo "[PASS] Submodules initialized."
+else
+    echo "[WARN] Submodules missing. Run fetch-submodules.sh."
+fi
 
 echo "--------------------------------"

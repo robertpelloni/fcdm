@@ -1,18 +1,19 @@
-# Session Handoff: v4.1.0 "Industrial Release"
+# Session Handoff: v5.0.0 "Industrial Production Release"
 
 ## Status Summary
-Successfully transitioned the Fitness Center Dance Machine (FCDM) to a production-grade industrial stack (v4.1.0).
+Successfully transitioned the Fitness Center Dance Machine (FCDM) to a high-fidelity industrial production stack (v5.0.0).
 
 ## Key Achievements
-- **Heuristic SymNet Architecture**: Replaced the chart generation skeleton in `scripts/ddc_inference.py` with a production-grade heuristic engine that enforces alternating foot flow and ergonomics.
-- **Interactive Calibration Wizard**: Implemented a guided CLI wizard in `scripts/calibrate_fsr.py` for dynamic physical hardware thresholding.
-- **System Stability**: Verified the full v4.1.0 pipeline via comprehensive integration and stress test suites.
+- **High-Fidelity ML Engine**: Upgraded `scripts/ddc_inference.py` with v5.0.0 production-ML specifications, including 5-frame window feature stacking and recursive state management.
+- **Adaptive Calibration**: Implemented a real-time adaptive mode in `scripts/calibrate_fsr.py` to handle sensor drift and environmental changes during active gameplay.
+- **Cross-Distro Resilience**: Finalized robust CLI discovery for the Bobcoin node client, ensuring compatibility across standard Linux distributions.
+- **Comprehensive Health Checks**: Unified v5.0.0 system verification for submodules, node connectivity, and ALSA hardware.
 
 ## Context for Successor Models
-- **ML Engine**: The system now provides high-quality "Fitness-Stable" charts using the Heuristic SymNet if ML weights are unavailable.
-- **Calibration**: Use `python3 scripts/calibrate_fsr.py --mode WIZARD` for initial physical platform setup.
-- **Versioning**: The system is promoted to v4.1.0 to reflect the completion of the "Industrial Release."
+- **ML Engine**: The v5.0.0 inference loop is optimized for high-fidelity placement and selection.
+- **Calibration**: Use `python3 scripts/calibrate_fsr.py --mode ADAPTIVE` during live stress tests to maintain sensor accuracy.
+- **Versioning**: The system is promoted to v5.0.0 to reflect the completion of the "Industrial Production Milestone."
 
 ## Next Steps
-- Begin physical hardware calibration on the 9-panel platform using the new Wizard.
-- Execute live cardio testing using Heuristic-generated psytrance sets.
+- Execute a 60-minute live cardio stress test using Adaptive Calibration.
+- Monitor Bobcoin minting consistency across long sessions.

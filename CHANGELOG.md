@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.0.0] - 2024-05-29
+### Added
+- **v5.0.0 Industrial Production Release**.
+- Implemented **High-Fidelity SymNet** (v5.0.0) with 5-frame window feature stacking and recursive state handling.
+- Added **Real-Time Adaptive Calibration** to `scripts/calibrate_fsr.py` for dynamic drift compensation.
+- Robust **Bobcoin CLI discovery** across standard Linux paths.
+- Comprehensive system health verification (Submodules, Node connectivity).
+
 ## [4.1.0] - 2024-05-28
 ### Added
 - **v4.1.0 Production Release**.

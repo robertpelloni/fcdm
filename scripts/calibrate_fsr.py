@@ -117,6 +117,40 @@ class FSRCalibrator:
             drift = np.max(col) - np.min(col)
             print(f"Pin {self.pins[i]}: Drift={drift:.2f}, Mean={np.mean(col):.2f}")
 
+    def run_adaptive_mode(self, duration_sec=300):
+        """v5.0.0 Real-Time Adaptive Calibration Mode."""
+        print(f"--- FCDM v5.0.0 ADAPTIVE CALIBRATION ({duration_sec}s) ---")
+        start_time = time.time()
+        hits = [[] for _ in range(9)]
+
+        try:
+            while time.time() - start_time < duration_sec:
+                raw = self.get_raw_values()
+                for i in range(9):
+                    if raw[i] > self.profile["thresholds"][i]:
+                        hits[i].append(raw[i])
+
+                    # Every 10 hits, adjust threshold
+                    if len(hits[i]) >= 10:
+                        avg_hit = np.mean(hits[i])
+                        # Adjust threshold to 40% of average hit intensity
+                        new_thr = int(300 + (avg_hit - 300) * 0.4)
+                        print(f"  [Adaptive] Adjusting P{self.pins[i]} Thr: {self.profile['thresholds'][i]} -> {new_thr}")
+                        self.profile["thresholds"][i] = new_thr
+                        hits[i] = []
+
+                time.sleep(0.01)
+        except KeyboardInterrupt:
+            pass
+
+        self.save_profile()
+        self.export_env()
+
+    def save_profile(self):
+        path = os.path.join(self.profile_dir, f"{self.active_profile}.json")
+        with open(path, 'w') as f:
+            json.dump(self.profile, f, indent=2)
+
     def run_wizard(self):
         """v4.1.0 Interactive Calibration Wizard."""
         print("--- FCDM v4.1.0 CALIBRATION WIZARD ---")
@@ -152,14 +186,12 @@ class FSRCalibrator:
             new_thresholds.append(thr)
 
         self.profile["thresholds"] = new_thresholds
-        path = os.path.join(self.profile_dir, f"{self.active_profile}.json")
-        with open(path, 'w') as f:
-            json.dump(self.profile, f, indent=2)
+        self.save_profile()
         print("\n[SUCCESS] Calibration Profile Updated.")
         self.export_env()
 
     def run(self, mode="CALIB"):
-        print(f"FCDM FSR Utility (v4.1.0) - Mode: {mode}")
+        print(f"FCDM FSR Utility (v5.0.0) - Mode: {mode}")
         try:
             while True:
                 raw_values = self.get_raw_values()
@@ -182,7 +214,7 @@ class FSRCalibrator:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["CALIB", "BURNIN", "DRIFT", "WIZARD"], default="CALIB")
+    parser.add_argument("--mode", choices=["CALIB", "BURNIN", "DRIFT", "WIZARD", "ADAPTIVE"], default="CALIB")
     parser.add_argument("--export-env", action="store_true")
     parser.add_argument("--sim", action="store_true")
     parser.add_argument("--duration", type=int, default=60)
@@ -197,5 +229,7 @@ if __name__ == "__main__":
         cal.analyze_drift()
     elif args.mode == "WIZARD":
         cal.run_wizard()
+    elif args.mode == "ADAPTIVE":
+        cal.run_adaptive_mode(args.duration)
     else:
         cal.run(args.mode)
