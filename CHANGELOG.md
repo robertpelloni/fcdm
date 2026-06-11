@@ -1,5 +1,12 @@
 # Changelog
 
+## [13.0.0] - 2024-06-06
+### Added
+- **v13.0.0 Industrial Diamond Release**.
+- Implemented **Coordinate-Aware Kinematic Selection** in `scripts/ddc_inference.py` for elite-level pattern ergonomics.
+- Upgraded **Multi-BPM Analysis** in `scripts/audio_processor.py` for industrial-grade timing precision.
+- Unified v13.0.0 industrial release documentation and verified stable production stack.
+
 ## [12.0.0] - 2024-06-05
 ### Added
 - **v12.0.0 Industrial Gold Release**.

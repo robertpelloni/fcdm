@@ -87,3 +87,8 @@
 - [x] Kinematic Cost-Function (Travel-Distance Minimization).
 - [x] Industrial Panel Response Surface Mapping.
 - [x] Unified v12.0.0 Industrial Gold Documentation.
+
+### v13.0.0 Industrial Diamond Release [DONE]
+- [x] Coordinate-Aware Kinematic ML Selection.
+- [x] Industrial Multi-BPM Timing Analysis.
+- [x] Unified v13.0.0 Industrial Diamond Documentation.

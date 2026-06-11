@@ -6,8 +6,8 @@ from scipy.signal import argrelextrema
 
 def analyze_audio(audio_path):
     """
-    Analyzes an audio file and returns its estimated BPM segments and downbeat timestamps.
-    v1.8.0 Production Implementation: Multi-BPM segment detection and sub-beat offset alignment.
+    v13.0.0 Industrial-Diamond Multi-BPM Analysis.
+    Windowed tempo estimation and sub-beat alignment for complex psytrance tracks.
     """
     if not os.path.exists(audio_path):
         raise FileNotFoundError(f"Audio file not found: {audio_path}")
