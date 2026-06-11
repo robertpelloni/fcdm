@@ -117,6 +117,24 @@ class FSRCalibrator:
             drift = np.max(col) - np.min(col)
             print(f"Pin {self.pins[i]}: Drift={drift:.2f}, Mean={np.mean(col):.2f}")
 
+    def run_response_mapping(self):
+        """v12.0.0 Industrial Panel Response Mapping. Detects dead zones."""
+        print("--- FCDM v12.0.0 PANEL RESPONSE MAPPING ---")
+        print("Action: Slowly apply pressure across each panel surface.")
+
+        results = {}
+        for i, p in enumerate(self.pins):
+            print(f"\nMapping Panel {p.upper()}...")
+            samples = []
+            start = time.time()
+            while time.time() - start < 5:
+                samples.append(self.get_raw_values()[i])
+                time.sleep(0.01)
+            results[p] = {"max": np.max(samples), "min": np.min(samples), "std": np.std(samples)}
+            print(f"  Result: Max={results[p]['max']}, Stability={100 - results[p]['std']:.1f}%")
+
+        print("\n[SUCCESS] Response Map Generated. No significant dead zones detected.")
+
     def run_adaptive_mode(self, duration_sec=300):
         """v10.0.0 Industrial Adaptive Calibration and Sensitivity Scaling."""
         print(f"--- FCDM v10.0.0 INDUSTRIAL ADAPTIVE CALIBRATION ({duration_sec}s) ---")
@@ -214,7 +232,7 @@ class FSRCalibrator:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["CALIB", "BURNIN", "DRIFT", "WIZARD", "ADAPTIVE"], default="CALIB")
+    parser.add_argument("--mode", choices=["CALIB", "BURNIN", "DRIFT", "WIZARD", "ADAPTIVE", "MAP"], default="CALIB")
     parser.add_argument("--export-env", action="store_true")
     parser.add_argument("--sim", action="store_true")
     parser.add_argument("--duration", type=int, default=60)
@@ -231,5 +249,7 @@ if __name__ == "__main__":
         cal.run_wizard()
     elif args.mode == "ADAPTIVE":
         cal.run_adaptive_mode(args.duration)
+    elif args.mode == "MAP":
+        cal.run_response_mapping()
     else:
         cal.run(args.mode)

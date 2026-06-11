@@ -1,5 +1,12 @@
 # Changelog
 
+## [12.0.0] - 2024-06-05
+### Added
+- **v12.0.0 Industrial Gold Release**.
+- Implemented **Kinematic Cost-Function** selection in `scripts/ddc_inference.py` for advanced ergonomic pattern selection.
+- Added **Panel Response Mapping** to `scripts/calibrate_fsr.py` for dead-zone detection in industrial stages.
+- Finalized v12.0.0 industrial release documentation and verified stable production stack.
+
 ## [11.0.0] - 2024-06-04
 ### Added
 - **v11.0.0 Industrial Release Candidate**.

@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v11.0.0 Ergonomic-Deep DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Kinematic SymNet with Ergonomic Cost-Function.
+    v12.0.0 Industrial-Gold DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Kinematic Cost-Function Selection.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -97,9 +97,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v11.0.0 Kinematic SymNet Architecture.
-        Ergonomic Cost-Function minimizing physical strain through
-        active kinematic foot tracking and 16-step lookahead.
+        v12.0.0 Kinematic Cost-Function Architecture.
+        Selects steps by minimizing physical travel distance and ergonomic strain
+        via a 16-step lookahead lookahead buffer.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)

@@ -69,3 +69,5 @@
 - [x] Ergonomic-Deep ML Engine (v11.0.0).
 - [x] Hardware Resonance Analysis (v11.0.0).
 - [x] Proof of Play Cryptographic Signing (v11.0.0).
+- [x] Kinematic Cost-Function (v12.0.0).
+- [x] Panel Response Mapping (v12.0.0).
