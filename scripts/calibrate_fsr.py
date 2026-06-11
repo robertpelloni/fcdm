@@ -47,17 +47,20 @@ class FSRCalibrator:
         """Generates a shell script to source FSR settings as environment variables."""
         with open(self.env_script_path, 'w') as f:
             f.write("#!/bin/bash\n")
-            f.write("# FCDM Auto-Generated Calibration Environment (v3.9.0)\n\n")
+            f.write("# FCDM Auto-Generated Calibration Environment (v14.0.0)\n\n")
 
-            # Export Thresholds as comma-separated string
+            # 1. Export Thresholds
             thr_str = ",".join(map(str, self.profile["thresholds"]))
             f.write(f"export FSR_THRESHOLDS=\"{thr_str}\"\n")
 
-            # Export Sensitivities
+            # 2. Export Sensitivities
             sns_str = ",".join(map(str, self.profile["sensitivity"]))
             f.write(f"export FSR_SENSITIVITIES=\"{sns_str}\"\n")
 
-            f.write("\necho \"FCDM: FSR Calibration Environment Loaded.\"\n")
+            # 3. Export ALSA Card Index (v14.0.0)
+            f.write("export FCDM_ALSA_CARD=\"${FCDM_ALSA_CARD:-0}\"\n")
+
+            f.write("\necho \"FCDM: Environment Loaded (ALSA Card: $FCDM_ALSA_CARD)\"\n")
 
         os.chmod(self.env_script_path, 0o755)
         print(f"Exported environment settings to {self.env_script_path}")

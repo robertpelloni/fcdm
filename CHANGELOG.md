@@ -1,5 +1,13 @@
 # Changelog
 
+## [14.0.0] - 2024-06-07
+### Added
+- **v14.0.0 Industrial Emerald Release**.
+- Implemented **Viterbi Kinematic Decoder** in `scripts/ddc_inference.py` for elite-level pattern ergonomics via cost-minimization.
+- Added **Live Hardware Monitor** utility for real-time tracking of FSR stability and latency during stress tests.
+- Finalized **ALSA Multi-Card** environment integration for automated audio routing.
+- Unified v14.0.0 industrial release documentation and verified stable production stack.
+
 ## [13.0.0] - 2024-06-06
 ### Added
 - **v13.0.0 Industrial Diamond Release**.

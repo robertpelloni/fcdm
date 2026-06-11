@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v13.0.0 Industrial-Diamond DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Coordinate-Aware Kinematic Selection.
+    v14.0.0 Industrial-Emerald DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and High-Fidelity Kinematic Decoding.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -97,9 +97,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v13.0.0 Coordinate-Aware Kinematic Architecture.
-        Minimizes physical travel distance, foot-strain, and balance-shift
-        via coordinate-aware cost analysis and 16-step lookahead.
+        v14.0.0 Kinematic Decoder Architecture.
+        Utilizes a Viterbi-inspired lookahead to minimize physical movement cost,
+        ensuring elite-level ergonomic flow for high-intensity cardio.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)

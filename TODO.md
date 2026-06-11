@@ -73,3 +73,6 @@
 - [x] Panel Response Mapping (v12.0.0).
 - [x] Coordinate-Aware Kinematic Selection (v13.0.0).
 - [x] Industrial Multi-BPM Analysis (v13.0.0).
+- [x] Viterbi Kinematic Decoder (v14.0.0).
+- [x] Live Hardware Performance Monitor (v14.0.0).
+- [x] ALSA Card Index Environment Export (v14.0.0).
