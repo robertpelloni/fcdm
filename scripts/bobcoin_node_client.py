@@ -7,7 +7,7 @@ import glob
 
 class BobcoinNodeClient:
     """
-    v3.6.0 Bobcoin Node Client.
+    v3.9.0 Bobcoin Node Client.
     Enhanced with persistent transaction queue, automated retry, and 'mint watcher'.
     """
     def __init__(self, cli_path="extern/bobcoin/bobcoin-cli"):
@@ -28,20 +28,27 @@ class BobcoinNodeClient:
         with open(self.queue_path, 'w') as f:
             json.dump(queue, f, indent=2)
 
+    def node_heartbeat(self):
+        """Checks if the bobcoin node is responding."""
+        try:
+            subprocess.run([self.cli_path, "ping"], check=True, capture_output=True)
+            return True
+        except Exception:
+            return False
+
     def mint_fitness_reward(self, calories, duration_sec):
         reward = round((calories / 100.0) + (duration_sec / 60.0) * 0.1, 2)
         print(f"  [Bobcoin] Calculated Reward: {reward} BOB")
 
         try:
-            # Simulated node call check
-            # if not self.node_heartbeat(): raise ConnectionError()
+            if not self.node_heartbeat(): raise ConnectionError("Node unreachable")
 
-            # subprocess.run([self.cli_path, "mint", str(reward)], check=True)
+            subprocess.run([self.cli_path, "mint", str(reward)], check=True)
             print(f"  [Bobcoin] Node Online: Successfully minted {reward} BOB.")
             self.flush_queue()
             return True
-        except Exception:
-            print(f"  [Bobcoin] Node Offline: Queuing {reward} BOB for later.")
+        except Exception as e:
+            print(f"  [Bobcoin] Node Offline/Error ({e}): Queuing {reward} BOB for later.")
             queue = self._load_queue()
             queue.append({
                 "timestamp": time.ctime(),
@@ -56,12 +63,14 @@ class BobcoinNodeClient:
         queue = self._load_queue()
         if not queue: return
 
+        if not self.node_heartbeat():
+            return
+
         print(f"  [Bobcoin] Connection Restored: Flushing {len(queue)} transactions...")
         remaining = []
         for tx in queue:
             try:
-                # subprocess.run([self.cli_path, "mint", str(tx["reward"])], check=True)
-                pass
+                subprocess.run([self.cli_path, "mint", str(tx["reward"])], check=True)
             except Exception:
                 tx["retry_count"] += 1
                 if tx["retry_count"] < 10: # Limit retries

@@ -43,3 +43,7 @@
 - [x] Automated ALSA multi-card discovery.
 - [x] Multi-mode (Single+Double) concurrent ingestion.
 - [x] Environment-based calibration export.
+- [x] Multi-mode ML support (Single/Double) in `ddc_inference.py`.
+- [x] Post-generation chart validator for v3.9.0.
+- [x] Industrial diagnostic modes (BURNIN, DRIFT) in `calibrate_fsr.py`.
+- [x] Bobcoin v3.9.0 resilience protocol and node client refinement.

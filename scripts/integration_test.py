@@ -1,7 +1,10 @@
 import os
 import sys
 import unittest
-from scripts.stream_sanitizer import process_chart
+
+# Ensure we can import from the scripts directory
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from stream_sanitizer import process_chart
 
 class StagingIntegrationTest(unittest.TestCase):
     def test_pipeline_components(self):

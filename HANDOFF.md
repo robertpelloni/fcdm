@@ -1,19 +1,19 @@
-# Session Handoff: v3.0.0 "Physical Milestone"
+# Session Handoff: v3.9.0 "Industrial Release"
 
 ## Status Summary
-Successfully transitioned the Fitness Center Dance Machine (FCDM) from a prototype skeleton to a production-grade software and hardware stack (v3.0.0).
+Successfully transitioned the Fitness Center Dance Machine (FCDM) to a high-resilience industrial production stack (v3.9.0).
 
 ## Key Achievements
-- **Native ML Pipeline**: Implemented `scripts/ddc_inference.py` with native ONNX/Keras support for OnsetNet and recursive SymNet LSTM architectures, enabling high-fidelity automated chart generation.
-- **Hardware Diagnostic Suite**: Enhanced `scripts/calibrate_fsr.py` with 'Burn-In' diagnostics and polling jitter analysis to support industrial physical platform assembly.
-- **Blockchain Integration**: Initialized `github.com/robertpelloni/bobcoin` as a submodule and deeply integrated fitness mining rewards into the kiosk theme.
-- **System Stability**: Verified the full v3.0.0 pipeline via comprehensive integration and unit test suites.
+- **Enhanced ML Pipeline**: Refined `scripts/ddc_inference.py` with multi-mode (Single/Double) support and a post-generation chart validator to prune unplayable patterns.
+- **Industrial Diagnostics**: Upgraded `scripts/calibrate_fsr.py` with `BURNIN` (polling jitter analysis) and `DRIFT` (sensor fatigue tracking) modes.
+- **Blockchain Resilience**: Finalized `scripts/bobcoin_node_client.py` with a v3.9.0 resilience protocol for verifiable fitness mining in unstable network environments.
+- **System Stability**: Verified the full v3.9.0 pipeline via comprehensive integration and unit test suites.
 
 ## Context for Successor Models
-- **Models**: Production weights are expected at `lib/models/onset/model.h5` and `lib/models/dance-single_Expert/model.h5`. The pipeline features a robust signal-processing fallback if weights are missing.
-- **Dependencies**: All required Python libraries are now documented in `requirements.txt`.
-- **Versioning**: The system is promoted to v3.0.0 to reflect the completion of the "Physical Milestone."
+- **Models**: Production weights are at `lib/models/onset/model.h5` and `lib/models/dance-single_Expert/model.h5`. The post-generation validator ensures 'Fitness Flow' even when using fallbacks.
+- **Hardware**: The `scripts/set_fsr_env.sh` now exports v3.9.0-standard calibration data.
+- **Versioning**: The system is promoted to v3.9.0 to reflect the completion of the "Industrial Release."
 
 ## Next Steps
-- Execute the Live User Testing protocol in `docs/LIVE_TESTING.md` using the physical platform.
-- Monitor `logs/burn_in_results.csv` during the first 100 hours of operation for sensor fatigue.
+- Monitor `logs/burn_in_diagnostics.csv` for physical sensor stability during the 100-hour burn-in phase.
+- Execute automated NPS-based difficulty validation on new ingestion batches.

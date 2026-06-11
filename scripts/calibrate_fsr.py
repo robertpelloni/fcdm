@@ -47,7 +47,7 @@ class FSRCalibrator:
         """Generates a shell script to source FSR settings as environment variables."""
         with open(self.env_script_path, 'w') as f:
             f.write("#!/bin/bash\n")
-            f.write("# FCDM Auto-Generated Calibration Environment (v3.8.0)\n\n")
+            f.write("# FCDM Auto-Generated Calibration Environment (v3.9.0)\n\n")
 
             # Export Thresholds as comma-separated string
             thr_str = ",".join(map(str, self.profile["thresholds"]))
@@ -62,21 +62,78 @@ class FSRCalibrator:
         os.chmod(self.env_script_path, 0o755)
         print(f"Exported environment settings to {self.env_script_path}")
 
-    def run(self):
-        print(f"FCDM FSR Utility (v3.8.0) - Mode: CALIB")
+    def get_raw_values(self):
+        """Reads raw values from serial or simulates them."""
+        if self.ser:
+            try:
+                line = self.ser.readline().decode('utf-8').strip()
+                if line:
+                    return [int(v) for v in line.split(',')]
+            except Exception:
+                pass
+        return [300 + (i*10) + np.random.randint(-5, 5) for i in range(9)]
+
+    def run_burn_in(self, duration_sec=3600):
+        """v3.9.0 Industrial Burn-In Test."""
+        log_path = "logs/burn_in_diagnostics.csv"
+        print(f"Starting {duration_sec}s Burn-In. Logging to {log_path}")
+
+        with open(log_path, 'a', newline='') as f:
+            writer = csv.writer(f)
+            # If file is new or empty, write header
+            if not os.path.exists(log_path) or os.stat(log_path).st_size == 0:
+                writer.writerow(["timestamp", "jitter_ms"] + [f"p{i}_raw" for i in range(9)])
+
+            start_time = time.time()
+            last_poll = start_time
+            try:
+                while time.time() - start_time < duration_sec:
+                    now = time.time()
+                    jitter = (now - last_poll) * 1000
+                    last_poll = now
+
+                    raw_values = self.get_raw_values()
+                    writer.writerow([now, jitter] + raw_values)
+
+                    if int(now) % 10 == 0:
+                        print(f"  [Burn-In] {int(now - start_time)}s elapsed...")
+                    time.sleep(0.01)
+            except KeyboardInterrupt:
+                print("Burn-In interrupted.")
+
+    def analyze_drift(self):
+        """Analyzes sensor fatigue from logs/sensor_drift.csv."""
+        log_path = "logs/sensor_drift.csv"
+        if not os.path.exists(log_path):
+            print("No drift data found.")
+            return
+
+        data = np.genfromtxt(log_path, delimiter=',', skip_header=1)
+        if data.ndim < 2: return
+
+        print("--- Baseline Drift Analysis ---")
+        for i in range(9):
+            col = data[:, i+1]
+            drift = np.max(col) - np.min(col)
+            print(f"Pin {self.pins[i]}: Drift={drift:.2f}, Mean={np.mean(col):.2f}")
+
+    def run(self, mode="CALIB"):
+        print(f"FCDM FSR Utility (v3.9.0) - Mode: {mode}")
         try:
             while True:
-                # Simulation
-                raw_values = [300 + (i*10) for i in range(9)]
-                os.system('clear' if os.name == 'posix' else 'cls')
-                print(f"--- FCDM CALIBRATION ---")
-                print("P | RAW | THR | STATUS")
-                print("--|-----|-----|-------")
-                for i, p in enumerate(self.pins):
-                    raw = raw_values[i]
-                    thr = self.profile["thresholds"][i]
-                    status = "STRIKE" if raw > thr else "IDLE"
-                    print(f"{p} | {raw:03} | {thr} | {status}")
+                raw_values = self.get_raw_values()
+
+                if mode == "CALIB":
+                    os.system('clear' if os.name == 'posix' else 'cls')
+                    print(f"--- FCDM CALIBRATION ---")
+                    print("P | RAW | THR | STATUS")
+                    print("--|-----|-----|-------")
+                    for i, p in enumerate(self.pins):
+                        raw = raw_values[i]
+                        thr = self.profile["thresholds"][i]
+                        status = "STRIKE" if raw > thr else "IDLE"
+                        print(f"{p} | {raw:03} | {thr} | {status}")
+
                 if "--sim" in sys.argv: break
                 time.sleep(0.1)
         except KeyboardInterrupt:
@@ -84,12 +141,18 @@ class FSRCalibrator:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=["CALIB", "BURNIN", "DRIFT"], default="CALIB")
     parser.add_argument("--export-env", action="store_true")
     parser.add_argument("--sim", action="store_true")
+    parser.add_argument("--duration", type=int, default=60)
     args = parser.parse_args()
 
     cal = FSRCalibrator()
     if args.export_env:
         cal.export_env()
+    elif args.mode == "BURNIN":
+        cal.run_burn_in(args.duration)
+    elif args.mode == "DRIFT":
+        cal.analyze_drift()
     else:
-        cal.run()
+        cal.run(args.mode)

@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.9.0] - 2024-05-26
+### Added
+- **v3.9.0 Industrial Release**.
+- Enhanced `scripts/ddc_inference.py` with multi-mode (Single/Double) support and a post-generation chart validator.
+- Upgraded `scripts/calibrate_fsr.py` with `BURNIN` and `DRIFT` industrial diagnostic modes.
+- Refined `scripts/bobcoin_node_client.py` with v3.9.0 resilience protocol.
+- Synchronized all internal version references to 3.9.0.
+
 ## [2.0.0] - 2024-05-25
 ### Added
 - **v2.0.0 Production Milestone**.
