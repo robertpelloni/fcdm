@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.0.0] - 2024-05-30
+### Added
+- **v6.0.0 Professional ML Milestone**.
+- Upgraded `scripts/ddc_inference.py` to Professional ML standard with Dense SymNet and flow-constraint heuristics.
+- Robust ALSA multi-card auto-discovery and hardware prioritization in `scripts/check_system_health.sh`.
+- Finalized cross-distro CLI discovery for Bobcoin node client.
+- Unified v6.0.0 Professional Release documentation.
+
 ## [5.0.0] - 2024-05-29
 ### Added
 - **v5.0.0 Industrial Production Release**.

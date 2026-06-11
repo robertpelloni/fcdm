@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v5.0.0 Production DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Native High-Fidelity SymNet (Recursive Selection).
+    v6.0.0 Professional DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Dense SymNet with Flow-Constraint Heuristics.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -97,9 +97,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v4.1.0 Heuristic SymNet Architecture.
-        Enforces industrial ergonomics (alternating feet, flow-consistency) as a
-        production-grade engine for fitness-stable charts.
+        v6.0.0 Dense SymNet Architecture.
+        Professional-grade heuristic engine with flow-constraint logic and
+        multi-frame lookahead for industrial fitness-stable charts.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)

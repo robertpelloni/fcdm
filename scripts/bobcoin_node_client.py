@@ -8,8 +8,8 @@ import shutil
 
 class BobcoinNodeClient:
     """
-    v5.0.0 Bobcoin Node Client.
-    Enhanced with robust CLI discovery, persistent queuing, and 'mint watcher'.
+    v6.0.0 Bobcoin Node Client.
+    Enhanced with cross-distro CLI discovery, persistent queuing, and 'mint watcher'.
     """
     def __init__(self, cli_path=None):
         self.cli_path = self._discover_cli(cli_path)

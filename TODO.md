@@ -55,3 +55,5 @@
 - [x] High-Fidelity ML Inference (v5.0.0).
 - [x] Adaptive Calibration (v5.0.0).
 - [x] Robust Bobcoin CLI discovery.
+- [x] Professional ML Engine (v6.0.0).
+- [x] ALSA Multi-Card Priority Discovery (v6.0.0).

@@ -52,3 +52,8 @@
 - [x] High-Fidelity DDC ML Inference (5-frame stacking).
 - [x] Real-Time Adaptive Hardware Calibration.
 - [x] Robust Cross-Distro CLI Discovery.
+
+### v6.0.0 Professional ML Milestone [DONE]
+- [x] Professional ML Engine (Dense SymNet + Flow Constraints).
+- [x] Automated ALSA Multi-Card Priority Discovery.
+- [x] Unified v6.0.0 Professional Documentation.
