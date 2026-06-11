@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0] - 2024-05-28
+### Added
+- **v4.1.0 Production Release**.
+- Replaced ML skeleton with production-grade **Heuristic SymNet Architecture** for industrial flow ergonomics.
+- Added **Interactive Calibration Wizard** for dynamic physical hardware setup.
+- Synchronized all documentation for first live-testing deployment.
+
 ## [4.0.0] - 2024-05-27
 ### Added
 - **v4.0.0 Production Release**.

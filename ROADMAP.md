@@ -42,3 +42,8 @@
 - [x] Production-Grade ML Vocabulary (Holds, Rolls, Double).
 - [x] Robust Multi-Card ALSA Auto-Discovery.
 - [x] 60-Minute Production Stress Test Suite.
+
+### v4.1.0 Production Release [DONE]
+- [x] Production Heuristic SymNet (Alternating Flow).
+- [x] Interactive Hardware Calibration Wizard.
+- [x] Unified v4.1.0 Industrial Documentation.

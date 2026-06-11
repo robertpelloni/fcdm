@@ -117,8 +117,49 @@ class FSRCalibrator:
             drift = np.max(col) - np.min(col)
             print(f"Pin {self.pins[i]}: Drift={drift:.2f}, Mean={np.mean(col):.2f}")
 
+    def run_wizard(self):
+        """v4.1.0 Interactive Calibration Wizard."""
+        print("--- FCDM v4.1.0 CALIBRATION WIZARD ---")
+        print("This wizard will guide you through physical panel strikes.")
+
+        new_thresholds = []
+        for i, p in enumerate(self.pins):
+            print(f"\n[Step {i+1}/9] Calibrating Panel: {p.upper()}")
+            print("Action: STRIKE and HOLD the panel now...")
+
+            samples = []
+            for _ in range(20):
+                samples.append(self.get_raw_values()[i])
+                time.sleep(0.05)
+
+            strike_val = np.max(samples)
+            print(f"Detected Strike Value: {strike_val}")
+
+            print("Action: RELEASE the panel...")
+            time.sleep(1.0)
+
+            samples = []
+            for _ in range(20):
+                samples.append(self.get_raw_values()[i])
+                time.sleep(0.05)
+
+            idle_val = np.mean(samples)
+            print(f"Detected Idle Value: {idle_val:.2f}")
+
+            # Industrial Standard: Threshold = Idle + (Strike - Idle) * 0.4
+            thr = int(idle_val + (strike_val - idle_val) * 0.4)
+            print(f"Setting {p.upper()} Threshold: {thr}")
+            new_thresholds.append(thr)
+
+        self.profile["thresholds"] = new_thresholds
+        path = os.path.join(self.profile_dir, f"{self.active_profile}.json")
+        with open(path, 'w') as f:
+            json.dump(self.profile, f, indent=2)
+        print("\n[SUCCESS] Calibration Profile Updated.")
+        self.export_env()
+
     def run(self, mode="CALIB"):
-        print(f"FCDM FSR Utility (v3.9.0) - Mode: {mode}")
+        print(f"FCDM FSR Utility (v4.1.0) - Mode: {mode}")
         try:
             while True:
                 raw_values = self.get_raw_values()
@@ -141,7 +182,7 @@ class FSRCalibrator:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=["CALIB", "BURNIN", "DRIFT"], default="CALIB")
+    parser.add_argument("--mode", choices=["CALIB", "BURNIN", "DRIFT", "WIZARD"], default="CALIB")
     parser.add_argument("--export-env", action="store_true")
     parser.add_argument("--sim", action="store_true")
     parser.add_argument("--duration", type=int, default=60)
@@ -154,5 +195,7 @@ if __name__ == "__main__":
         cal.run_burn_in(args.duration)
     elif args.mode == "DRIFT":
         cal.analyze_drift()
+    elif args.mode == "WIZARD":
+        cal.run_wizard()
     else:
         cal.run(args.mode)

@@ -50,3 +50,5 @@
 - [x] Expanded SymNet vocabulary for v4.0.0 (Holds, Rolls, Double).
 - [x] Robust multi-card ALSA discovery.
 - [x] Production stress test suite (`scripts/stress_test.py`).
+- [x] Implement Heuristic SymNet for v4.1.0.
+- [x] Implement Calibration Wizard for v4.1.0.
