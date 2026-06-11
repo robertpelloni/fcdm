@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.0] - 2024-05-31
+### Added
+- **v7.0.0 Production Deployment Milestone**.
+- Expanded `dance-double` vocabulary with high-fidelity patterns (hands, brackets) in `scripts/ddc_inference.py`.
+- Implemented `scripts/live_deployment_test.sh` for automated 60-minute stress testing.
+- Verified stable production stack for first live industrial deployment.
+
 ## [6.0.0] - 2024-05-30
 ### Added
 - **v6.0.0 Professional ML Milestone**.

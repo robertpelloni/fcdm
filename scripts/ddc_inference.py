@@ -114,7 +114,10 @@ class DDCInference:
             chart_grid = [["00000000" for _ in range(16)] for _ in range(total_measures)]
             singles = ["10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001"]
             jumps = ["10001000", "01000100", "00100010", "00010001", "11000000", "00110000", "00001100", "00000011"]
-            vocab = singles + jumps
+            # v7.0.0: High-fidelity dance-double vocabulary
+            hands = ["11100000", "00011100", "10101000", "00010101"]
+            brackets = ["11000000", "00000011", "10010000", "00001001"]
+            vocab = singles + jumps + hands + brackets
         else:
             chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
             singles = ["1000", "0100", "0010", "0001"]

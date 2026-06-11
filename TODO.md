@@ -57,3 +57,5 @@
 - [x] Robust Bobcoin CLI discovery.
 - [x] Professional ML Engine (v6.0.0).
 - [x] ALSA Multi-Card Priority Discovery (v6.0.0).
+- [x] High-fidelity dance-double vocabulary (v7.0.0).
+- [x] Live deployment stress test script (v7.0.0).
