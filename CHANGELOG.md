@@ -1,5 +1,12 @@
 # Changelog
 
+## [19.0.0] - 2024-06-19
+### Added
+- **v19.0.0 Tournament-Grade Release**.
+- Implemented **ONNX-accelerated inference** in `scripts/ddc_inference.py` with expanded pattern vocabulary (brackets, wide jumps).
+- Robust **ALSA hardware prioritization** and card index selection in `scripts/check_system_health.sh`.
+- Finalized v19.0.0 tournament-grade stable stack and synchronized documentation.
+
 ## [18.0.0] - 2024-06-18
 ### Added
 - **v18.0.0 Industrial Onyx Stable Release**.

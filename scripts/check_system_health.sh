@@ -1,5 +1,5 @@
 #!/bin/bash
-# FCDM System Health Check (v6.0.0)
+# FCDM System Health Check (v19.0.0)
 # This script automates pre-live-testing verification and ALSA auto-discovery.
 
 echo "--- FCDM SYSTEM HEALTH CHECK ---"
@@ -8,15 +8,18 @@ echo "--- FCDM SYSTEM HEALTH CHECK ---"
 if command -v aplay > /dev/null; then
     echo "[PASS] ALSA (aplay) found."
 
-    # Robust multi-card discovery
+    # Robust multi-card discovery (v19.0.0)
     echo "  [INFO] Scanning for audio hardware..."
     CARDS=$(aplay -l | grep "card")
 
-    # Priority Auto-Discovery (v6.0.0)
-    # Priority order: Teensy -> USB -> Internal/Generic
+    # Priority Auto-Discovery
+    # Priority order: Teensy -> USB -> Generic/HDMI
     DETECTED_CARD=$(echo "$CARDS" | grep -i "Teensy" | head -n 1 | cut -d' ' -f2 | tr -d ':')
     if [ -z "$DETECTED_CARD" ]; then
         DETECTED_CARD=$(echo "$CARDS" | grep -i "USB" | head -n 1 | cut -d' ' -f2 | tr -d ':')
+    fi
+    if [ -z "$DETECTED_CARD" ]; then
+        DETECTED_CARD=$(echo "$CARDS" | grep -i "Internal" | head -n 1 | cut -d' ' -f2 | tr -d ':')
     fi
 
     if [ -n "$DETECTED_CARD" ]; then

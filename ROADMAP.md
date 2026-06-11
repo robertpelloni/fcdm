@@ -36,3 +36,8 @@
 - [x] Elite-Flow Lookahead Decoder (Tournament-Grade).
 - [x] Bobcoin Flow-Bonus Reward Algorithm.
 - [x] Unified v18.0.0 Stable Industrial Release.
+
+### v19.0.0 Tournament-Grade Release [DONE]
+- [x] ONNX-Accelerated ML Inference.
+- [x] High-Fidelity Tournament Pattern Vocabulary.
+- [x] Prioritized ALSA Hardware Auto-Discovery.
