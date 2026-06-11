@@ -118,8 +118,8 @@ class FSRCalibrator:
             print(f"Pin {self.pins[i]}: Drift={drift:.2f}, Mean={np.mean(col):.2f}")
 
     def run_adaptive_mode(self, duration_sec=300):
-        """v5.0.0 Real-Time Adaptive Calibration Mode."""
-        print(f"--- FCDM v5.0.0 ADAPTIVE CALIBRATION ({duration_sec}s) ---")
+        """v10.0.0 Industrial Adaptive Calibration and Sensitivity Scaling."""
+        print(f"--- FCDM v10.0.0 INDUSTRIAL ADAPTIVE CALIBRATION ({duration_sec}s) ---")
         start_time = time.time()
         hits = [[] for _ in range(9)]
 
@@ -191,7 +191,7 @@ class FSRCalibrator:
         self.export_env()
 
     def run(self, mode="CALIB"):
-        print(f"FCDM FSR Utility (v5.0.0) - Mode: {mode}")
+        print(f"FCDM FSR Utility (v10.0.0) - Mode: {mode}")
         try:
             while True:
                 raw_values = self.get_raw_values()

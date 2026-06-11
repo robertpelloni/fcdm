@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.0.0] - 2024-06-03
+### Added
+- **v10.0.0 Industrial Release Milestone**.
+- Upgraded `scripts/ddc_inference.py` to Production-Deep standard with Psytrance-Flow heuristics and 16-step lookahead.
+- Enhanced `scripts/calibrate_fsr.py` with industrial sensitivity scaling and adaptive calibration logic.
+- Unified v10.0.0 industrial release documentation and verified stable production stack.
+
 ## [9.0.0] - 2024-06-02
 ### Added
 - **v9.0.0 Industrial Alpha Milestone**.
