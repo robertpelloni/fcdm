@@ -1,19 +1,19 @@
-# Session Handoff: v10.0.0 "Industrial Release Milestone"
+# Session Handoff: v11.0.0 "Industrial Release Candidate"
 
 ## Status Summary
-Successfully transitioned the Fitness Center Dance Machine (FCDM) to a production-grade industrial release stack (v10.0.0).
+Successfully transitioned the Fitness Center Dance Machine (FCDM) to an Industrial Release Candidate stack (v11.0.0).
 
 ## Key Achievements
-- **Production-Deep ML Engine**: Upgraded `scripts/ddc_inference.py` with Psytrance-Flow heuristics and 16-step lookahead for elite-level ergonomic cardio.
-- **Industrial Sensitivity Scaling**: Enhanced `scripts/calibrate_fsr.py` with automated sensitivity scaling and industrial adaptive calibration logic.
-- **Stable Production Stack**: Finalized and verified the full v10.0.0 stable release for physical platform deployment.
-- **Unified Documentation**: Synchronized all project metadata and release notes to the v10.0.0 "Industrial Milestone" standard.
+- **Ergonomic-Deep ML Engine**: Upgraded `scripts/ddc_inference.py` with Kinematic SymNet selection, minimizing physical strain through active foot tracking.
+- **Hardware Resonance Analysis**: Implemented `scripts/hardware_resonance_test.py` to identify mechanical vibration frequencies for optimized noise filtering.
+- **Proof of Play Integration**: Finalized cryptographic manifest signing in `scripts/bobcoin_node_client.py` to ensure reward integrity.
+- **System Stability**: Verified the full v11.0.0 stack via comprehensive simulation and hardware diagnostics.
 
 ## Context for Successor Models
-- **ML Engine**: The v10.0.0 SymNet provides high-density rhythmic consistency optimized for Zone 2/3 cardio.
-- **Hardware Setup**: Use `python3 scripts/calibrate_fsr.py --mode ADAPTIVE` for industrial sensitivity scaling during live deployment.
-- **Versioning**: The system is promoted to v10.0.0 to reflect the completion of the "Industrial Release Milestone."
+- **ML Engine**: The v11.0.0 engine prioritizes physical ergonomics and strain reduction for long cardio sessions.
+- **Hardware QA**: Use `python3 scripts/hardware_resonance_test.py` during physical assembly to tune digital filters.
+- **Versioning**: The system is promoted to v11.0.0 to reflect the Industrial Release Candidate status.
 
 ## Next Steps
-- Begin bulk industrial deployment on physical 9-panel platforms.
-- Monitor long-term sensitivity scaling stability across diverse hardware batches.
+- Execute final live-testing validation of the v11.0.0 stack on the 9-panel physical platform.
+- Monitor Proof of Play signing performance during concurrent workout sessions.

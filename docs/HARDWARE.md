@@ -57,7 +57,12 @@ void loop() {
       state[i] = false;
       Keyboard.release(KEY_MAPPINGS[i]);
     }
+
+    // v11.0.0: Continuous raw value streaming for calibrate_fsr.py
+    Serial.print(raw);
+    if (i < PIN_COUNT - 1) Serial.print(",");
   }
+  Serial.println();
 
   // v3.0.0 Serial Diagnostic Hook
   if (Serial.available() > 0) {

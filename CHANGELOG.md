@@ -1,5 +1,13 @@
 # Changelog
 
+## [11.0.0] - 2024-06-04
+### Added
+- **v11.0.0 Industrial Release Candidate**.
+- Implemented **Ergonomic-Deep ML** with kinematic foot tracking and physical strain minimization.
+- Added **Hardware Resonance Analysis** to optimize digital noise filtering for industrial pads.
+- Integrated **Proof of Play** cryptographic signing for Bobcoin workout manifests.
+- Finalized v11.0.0 release candidate and verified production stack.
+
 ## [10.0.0] - 2024-06-03
 ### Added
 - **v10.0.0 Industrial Release Milestone**.

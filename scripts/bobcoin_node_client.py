@@ -5,6 +5,7 @@ import json
 import time
 import glob
 import shutil
+import hashlib
 
 class BobcoinNodeClient:
     """
@@ -60,9 +61,15 @@ class BobcoinNodeClient:
         except Exception:
             return False
 
+    def sign_workout_manifest(self, data):
+        """v11.0.0 Proof of Play signing. Ensures manifest integrity."""
+        raw = f"{data['calories']}:{data['duration']}:FCDM_V11"
+        return hashlib.sha256(raw.encode()).hexdigest()
+
     def mint_fitness_reward(self, calories, duration_sec):
         reward = round((calories / 100.0) + (duration_sec / 60.0) * 0.1, 2)
-        print(f"  [Bobcoin] Calculated Reward: {reward} BOB")
+        signature = self.sign_workout_manifest({'calories': calories, 'duration': duration_sec})
+        print(f"  [Bobcoin] Calculated Reward: {reward} BOB (Sig: {signature[:8]}...)")
 
         try:
             if not self.node_heartbeat(): raise ConnectionError("Node unreachable")

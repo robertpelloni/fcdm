@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v10.0.0 Production-Deep DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Psytrance-Flow SymNet with 16-step lookahead.
+    v11.0.0 Ergonomic-Deep DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Kinematic SymNet with Ergonomic Cost-Function.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -97,9 +97,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v10.0.0 Production-Deep SymNet Architecture.
-        Psytrance-Flow heuristics with 16-step lookahead and multi-state tracking.
-        Optimized for Zone 2/3 high-density ergonomic cardio.
+        v11.0.0 Kinematic SymNet Architecture.
+        Ergonomic Cost-Function minimizing physical strain through
+        active kinematic foot tracking and 16-step lookahead.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)

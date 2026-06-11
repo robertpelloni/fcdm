@@ -6,6 +6,7 @@ After=network.target sound.target
 Type=simple
 User=root
 WorkingDirectory=/app
+Environment=DISPLAY=:0
 ExecStart=/usr/bin/bash scripts/kiosk-standalone.sh
 Restart=always
 RestartSec=5
