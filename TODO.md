@@ -7,4 +7,6 @@
 - [x] Elite-Flow ML Inference (v17.0.0).
 - [x] Live Diagnostic Dashboard (v17.0.0).
 - [x] Production Stack Orchestrator (v17.0.0).
+- [x] Elite-Flow Lookahead Decoder (v18.0.0).
+- [x] Bobcoin Flow-Bonus reward logic (v18.0.0).
 - [ ] Perform first full-scale industrial stress test on physical platform.

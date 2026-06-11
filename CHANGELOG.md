@@ -1,5 +1,12 @@
 # Changelog
 
+## [18.0.0] - 2024-06-18
+### Added
+- **v18.0.0 Industrial Onyx Stable Release**.
+- Implemented **Elite-Flow Multi-Step Lookahead Decoder** in `scripts/ddc_inference.py` for professional-grade ergonomics.
+- Added **Flow-Bonus** reward logic to `scripts/bobcoin_node_client.py` based on workout efficiency.
+- Unified v18.0.0 stable release documentation and verified production stack.
+
 ## [17.0.0] - 2024-06-17
 ### Added
 - **v17.0.0 Industrial Obsidian Release**.

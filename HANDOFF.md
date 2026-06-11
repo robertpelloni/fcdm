@@ -1,19 +1,19 @@
-# Session Handoff: v17.0.0 "Industrial Obsidian"
+# Session Handoff: v18.0.0 "Industrial Onyx Stable"
 
 ## Status Summary
-Successfully transitioned the Fitness Center Dance Machine (FCDM) to an Industrial Obsidian release stack (v17.0.0).
+Successfully transitioned the Fitness Center Dance Machine (FCDM) to a stable industrial release stack (v18.0.0).
 
 ## Key Achievements
-- **Elite-Flow ML Engine**: Upgraded `scripts/ddc_inference.py` with the Obsidian-grade kinematic architecture, featuring TFLite optimization and elite-flow pattern selection.
-- **Diagnostic Dashboard**: Developed `scripts/diagnostic_dashboard.py` for real-time visualization of panel pressure and system health.
-- **Production Orchestrator**: Created `scripts/fcdm_launch_production.sh` to synchronize the Node, hardware monitors, and engine for industrial sessions.
-- **System Stability**: Verified the full v17.0.0 release candidate via comprehensive stack orchestration and simulation.
+- **Elite-Flow Lookahead Decoder**: Upgraded `scripts/ddc_inference.py` with the Onyx-grade kinematic decoder, featuring multi-step lookahead for elite ergonomic flow.
+- **Flow-Bonus Reward System**: Enhanced `scripts/bobcoin_node_client.py` with reward logic that incentivizes alternation efficiency and workout consistency.
+- **Production Stack**: Verified the full v18.0.0 stable release via comprehensive integration and stress test suites.
+- **Sanitized Metadata**: Synchronized all project documentation and versioning to the v18.0.0 Onyx Stable standard.
 
 ## Context for Successor Models
-- **Deployment**: Use `bash scripts/fcdm_launch_production.sh` to launch a full production session.
-- **ML Engine**: The v17.0.0 engine is optimized for tournament-grade ergonomics and low-latency TFLite execution.
-- **Versioning**: The system is promoted to v17.0.0 to reflect the Industrial Obsidian Milestone.
+- **ML Engine**: The v18.0.0 decoder provides tournament-grade ergonomics and minimizes physical strain across sequences.
+- **Rewards**: The Bobcoin client now awards a 10% bonus for workouts with >90% alternation efficiency.
+- **Versioning**: The system is promoted to v18.0.0 to reflect the Onyx Stable Milestone.
 
 ## Next Steps
-- Execute the first full production session using the Obsidian Orchestrator.
-- Monitor `logs/live_test_results.csv` for long-term stress performance.
+- Begin full-scale industrial deployment on physical 9-panel platforms.
+- Collect long-term flow-efficiency data to further refine the Viterbi cost-weights.

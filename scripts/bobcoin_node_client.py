@@ -9,8 +9,8 @@ import hashlib
 
 class BobcoinNodeClient:
     """
-    v6.0.0 Bobcoin Node Client.
-    Enhanced with cross-distro CLI discovery, persistent queuing, and 'mint watcher'.
+    v18.0.0 Industrial-Onyx Bobcoin Client.
+    Includes Flow-Bonus reward logic and Proof of Play manifest signing.
     """
     def __init__(self, cli_path=None):
         self.cli_path = self._discover_cli(cli_path)
@@ -66,8 +66,12 @@ class BobcoinNodeClient:
         raw = f"{data['calories']}:{data['duration']}:FCDM_V11"
         return hashlib.sha256(raw.encode()).hexdigest()
 
-    def mint_fitness_reward(self, calories, duration_sec):
-        reward = round((calories / 100.0) + (duration_sec / 60.0) * 0.1, 2)
+    def mint_fitness_reward(self, calories, duration_sec, flow_efficiency=0.95):
+        """v18.0.0: Reward calculation with Flow-Bonus (Alternation Efficiency)."""
+        base_reward = (calories / 100.0) + (duration_sec / 60.0) * 0.1
+        bonus = base_reward * 0.1 if flow_efficiency > 0.9 else 0
+        reward = round(base_reward + bonus, 2)
+
         signature = self.sign_workout_manifest({'calories': calories, 'duration': duration_sec})
         print(f"  [Bobcoin] Calculated Reward: {reward} BOB (Sig: {signature[:8]}...)")
 

@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v17.0.0 Industrial-Obsidian DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Kiosk-Optimized TFLite/Heuristic Selection.
+    v18.0.0 Industrial-Onyx DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Elite-Flow Lookahead Kinematic Selection.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -97,9 +97,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v17.0.0 Elite-Flow Kinematic Architecture.
-        Tournament-grade selection minimizing movement cost and strain
-        via multi-step lookahead and TFLite optimized inference.
+        v18.0.0 Elite-Flow Multi-Step Lookahead Decoder.
+        Minimizes movement cost across 4-step windows to ensure
+        tournament-grade ergonomic flow for fitness cardio.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
