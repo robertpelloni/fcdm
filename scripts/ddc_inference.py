@@ -19,7 +19,7 @@ except ImportError:
 
 class DDCInference:
     """
-    v3.9.0 Production DDC Inference Pipeline.
+    v4.0.0 Production DDC Inference Pipeline.
     Implements OnsetNet (Placement) and Native SymNet (Recursive LSTM Selection).
     """
     def __init__(self, onset_model_path, sym_model_path=None):
@@ -97,10 +97,22 @@ class DDCInference:
 
         if mode == 'dance-double':
             chart_grid = [["00000000" for _ in range(16)] for _ in range(total_measures)]
-            vocab = ["10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001"]
+            # Expanded dance-double vocab (v4.0.0)
+            vocab = [
+                "10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001", # Singles
+                "10001000", "01000100", "00100010", "00010001", # Parallel Jumps
+                "11000000", "00110000", "00001100", "00000011", # Adjacent Jumps
+                "10000001", "01000010", "00100100", "00011000"  # Wide Jumps
+            ]
         else:
             chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
-            vocab = ["1000", "0100", "0010", "0001", "1100", "0011", "1010", "0101"]
+            # Expanded dance-single vocab (v4.0.0)
+            vocab = [
+                "1000", "0100", "0010", "0001", # Singles
+                "1100", "0011", "1010", "0101", "1001", "0110", # Jumps
+                "2000", "0200", "0020", "0002", # Holds
+                "4000", "0400", "0040", "0004"  # Rolls
+            ]
 
         # LSTM State
         h = np.zeros((1, 256), dtype=np.float32)

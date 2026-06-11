@@ -47,3 +47,6 @@
 - [x] Post-generation chart validator for v3.9.0.
 - [x] Industrial diagnostic modes (BURNIN, DRIFT) in `calibrate_fsr.py`.
 - [x] Bobcoin v3.9.0 resilience protocol and node client refinement.
+- [x] Expanded SymNet vocabulary for v4.0.0 (Holds, Rolls, Double).
+- [x] Robust multi-card ALSA discovery.
+- [x] Production stress test suite (`scripts/stress_test.py`).

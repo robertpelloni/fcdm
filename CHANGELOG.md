@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.0.0] - 2024-05-27
+### Added
+- **v4.0.0 Production Release**.
+- Expanded SymNet vocabulary in `scripts/ddc_inference.py` to support holds, rolls, and complex `dance-double` patterns.
+- Robust multi-card ALSA discovery and hardware prioritization in `scripts/check_system_health.sh`.
+- Added `scripts/stress_test.py` for sustained production stability validation.
+- Promoted system to v4.0.0 Production Milestone.
+
 ## [3.9.0] - 2024-05-26
 ### Added
 - **v3.9.0 Industrial Release**.
