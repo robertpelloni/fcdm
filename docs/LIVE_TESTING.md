@@ -1,4 +1,4 @@
-# Live User Testing Protocol: v0.5.0-rc1
+# FCDM v16.0.0 Live Deployment Protocols
 
 ## Test Environment
 - **OS**: Linux (Ubuntu 22.04+ or Arch)
@@ -15,9 +15,11 @@
 - [ ] **Flow Consistency**: Does the generated chart maintain a sustainable L-R flow for 90% of the duration?
 - [ ] **Ergonomics**: Are there any "deadly" patterns (cross-overs or double-steps) that break Zone 2 aerobic pacing?
 
-## 3. Hardware Diagnostics
-- [ ] **Calibration Drift**: Run `scripts/calibrate_fsr.py --stress` before and after each session. Max allowable drift in 1 hour is <10% of threshold.
-- [ ] **Poll Jitter**: Verify average polling jitter is <2ms.
+## 3. Hardware Diagnostics & Stress Testing
+- [ ] **Industrial Stress Test**: Run `python3 scripts/industrial_stress_test.py --duration 60`.
+- [ ] **Benchmark**: Jitter variance < 5ms for 99.9% of samples.
+- [ ] **ML Latency**: Lookahead decoder must average < 10ms per window.
+- [ ] **Calibration Drift**: Run `scripts/calibrate_fsr.py --mode DRIFT` before and after each session.
 
 ## Benchmarks
 | Metric | Target | Pass/Fail |

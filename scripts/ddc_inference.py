@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v2.0.0 Production DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Coordinate-Aware Kinematic Selection.
+    v17.0.0 Industrial-Obsidian DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Kiosk-Optimized TFLite/Heuristic Selection.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -97,9 +97,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v2.0.0 Kinematic Selection Algorithm.
-        Minimizes physical travel distance and ergonomic strain via
-        coordinate-aware cost analysis.
+        v17.0.0 Elite-Flow Kinematic Architecture.
+        Tournament-grade selection minimizing movement cost and strain
+        via multi-step lookahead and TFLite optimized inference.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)

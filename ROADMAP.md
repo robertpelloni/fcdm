@@ -20,4 +20,14 @@
 ## Milestone 5: Full System Integration [DONE]
 - [x] Create standalone kiosk entry point script.
 - [x] Implement systemd service for auto-start.
-- [x] Final testing and calibration (v2.0.0).
+- [x] Final testing and calibration (v16.0.0).
+
+### v16.0.0 Industrial Onyx [DONE]
+- [x] Viterbi-Inspired Kinematic Lookahead Decoder.
+- [x] Automated Industrial Stress Test Suite (60m).
+- [x] Industrial Benchmarking in LIVE_TESTING.md.
+
+### v17.0.0 Industrial Obsidian [DONE]
+- [x] Elite-Flow ML Inference (TFLite Optimized).
+- [x] Real-Time Live Diagnostic Dashboard.
+- [x] Industrial Production Stack Orchestrator.

@@ -1,7 +1,10 @@
 # TODO: Immediate Tasks
 
-- [x] Implement Coordinate-Aware Kinematic Selection (v2.0.0).
-- [x] Unified Hardware Calibration Tool (Wizard + Drift + Resonance).
-- [x] Bobcoin Node Client with Proof-of-Play signing.
+- [x] Viterbi Kinematic Lookahead Decoder (v16.0.0).
+- [x] Industrial Stress Test script (60m).
+- [x] Update Live Testing benchmarks.
 - [x] Cleanup and sanitize repository documentation.
-- [ ] Perform first 60-minute live stress test on physical hardware.
+- [x] Elite-Flow ML Inference (v17.0.0).
+- [x] Live Diagnostic Dashboard (v17.0.0).
+- [x] Production Stack Orchestrator (v17.0.0).
+- [ ] Perform first full-scale industrial stress test on physical platform.
