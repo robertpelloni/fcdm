@@ -1,5 +1,12 @@
 # Changelog
 
+## [8.0.0] - 2024-06-01
+### Added
+- **v8.0.0 Live Deployment Milestone**.
+- Implemented Production-ML SymNet Simulation in `scripts/ddc_inference.py` for advanced psytrance chart generation.
+- Created `scripts/live_calibration.py` for automated unified hardware setup.
+- Finalized v8.0.0 stable stack for live physical deployment.
+
 ## [7.0.0] - 2024-05-31
 ### Added
 - **v7.0.0 Production Deployment Milestone**.

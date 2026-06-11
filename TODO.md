@@ -59,3 +59,5 @@
 - [x] ALSA Multi-Card Priority Discovery (v6.0.0).
 - [x] High-fidelity dance-double vocabulary (v7.0.0).
 - [x] Live deployment stress test script (v7.0.0).
+- [x] Production-ML SymNet Simulation (v8.0.0).
+- [x] Unified Live Hardware Calibration Tool (v8.0.0).

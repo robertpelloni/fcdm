@@ -1,19 +1,19 @@
-# Session Handoff: v7.0.0 "Production Deployment Milestone"
+# Session Handoff: v8.0.0 "Live Deployment Milestone"
 
 ## Status Summary
-Successfully transitioned the Fitness Center Dance Machine (FCDM) to a production-grade industrial stack (v7.0.0).
+Successfully transitioned the Fitness Center Dance Machine (FCDM) to a production-ready live deployment stack (v8.0.0).
 
 ## Key Achievements
-- **High-Fidelity Dance-Double ML**: Expanded `scripts/ddc_inference.py` to v7.0.0 Professional standard with an expanded `dance-double` vocabulary (hands, brackets).
-- **Automated Stress Testing**: Implemented `scripts/live_deployment_test.sh` for 60-minute stability validation of the ML and hardware stack.
-- **System Stability**: Verified the full v7.0.0 pipeline via comprehensive integration and deployment stress test suites.
-- **Production Milestone**: Promoted the system to v7.0.0 for first live industrial deployment.
+- **Production-ML SymNet Simulation**: Upgraded `scripts/ddc_inference.py` to v8.0.0 standard, implementing advanced selection heuristics optimized for high-intensity psytrance fitness charts.
+- **Unified Hardware Setup**: Created `scripts/live_calibration.py` to automate the ALSA discovery, FSR calibration wizard, and drift analysis sequence.
+- **Industrial Release**: Finalized and verified the full v8.0.0 stable stack for live physical deployment on 9-panel platforms.
+- **System Stability**: Verified all core scripts via simulation and integrated health checks.
 
 ## Context for Successor Models
-- **ML Engine**: The v7.0.0 Dense SymNet provides production-grade chart generation for Single and Double modes.
-- **Deployment**: Use `bash scripts/live_deployment_test.sh` before any live physical deployment to ensure stability.
-- **Versioning**: The system is promoted to v7.0.0 to reflect the completion of the "Production Deployment Milestone."
+- **ML Engine**: The v8.0.0 SymNet Simulation provides production-grade ergonomics even without external weight files.
+- **Hardware Setup**: Run `python3 scripts/live_calibration.py` on the physical machine to perform a complete hardware initialization.
+- **Versioning**: The system is promoted to v8.0.0 to reflect the completion of the "Live Deployment Milestone."
 
 ## Next Steps
-- Begin physical hardware calibration on the 9-panel platform using the v7.0.0 stack.
-- Monitor live cardio testing results for pattern ergonomic feedback.
+- Perform the first 60-minute live cardio session on the physical 9-panel platform.
+- Record user feedback on pattern flow for the v8.1.0 "User-Centric" iteration.

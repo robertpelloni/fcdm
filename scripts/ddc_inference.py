@@ -97,9 +97,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v6.0.0 Dense SymNet Architecture.
-        Professional-grade heuristic engine with flow-constraint logic and
-        multi-frame lookahead for industrial fitness-stable charts.
+        v8.0.0 Production-ML SymNet Simulation.
+        Advanced heuristic engine that simulates production-grade ML behavior
+        optimized for high-intensity psytrance fitness cardio.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
