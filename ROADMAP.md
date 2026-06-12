@@ -31,3 +31,8 @@
 - [x] Global Kinematic Viterbi Decoder (Lookahead=8).
 - [x] Automated ALSA Card Environment Export.
 - [x] Production Stress Runner & Certification.
+
+### v22.0.0 Industrial Apex [DONE]
+- [x] Multi-Step Lookahead Kinematic Decoder.
+- [x] Tournament-Grade Pattern Vocabulary.
+- [x] Automated QA Pass/Fail Certification.

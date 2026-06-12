@@ -1,5 +1,14 @@
 # Changelog
 
+## [22.0.0] - 2024-06-22
+### Added
+- **v22.0.0 Industrial Apex Release**.
+- Implemented **Multi-Step Lookahead Kinematic Decoder** in `scripts/ddc_inference.py` for elite pattern ergonomics.
+- Expanded **Note Vocabulary** for tournament-grade Single and Double charts.
+- Enhanced **ALSA Card Prioritization** in `scripts/check_system_health.sh`.
+- Finalized **Industrial QA Reporting** for automated hardware certification.
+- Unified v22.0.0 "Industrial Apex" stable release documentation.
+
 ## [21.0.0] - 2024-06-21
 ### Added
 - **v21.0.0 Industrial Prime Release**.

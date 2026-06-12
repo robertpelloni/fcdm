@@ -9,8 +9,8 @@ import hashlib
 
 class BobcoinNodeClient:
     """
-    v20.0.0 Industrial-Diamond Bobcoin Client.
-    Includes Flow-Bonus reward logic and Proof of Play manifest signing.
+    v22.0.0 Industrial-Apex Bobcoin Client.
+    Includes robust CLI discovery, Flow-Bonus rewards, and Proof of Play.
     """
     def __init__(self, cli_path=None):
         self.cli_path = self._discover_cli(cli_path)

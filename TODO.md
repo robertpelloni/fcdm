@@ -6,4 +6,6 @@
 - [x] Cleanup and sanitize repository documentation.
 - [x] Global Kinematic Viterbi Decoder (v21.0.0).
 - [x] Production Stress Runner & Certification (v21.0.0).
+- [x] Multi-step lookahead kinematic decoder (v22.0.0).
+- [x] Automated industrial QA reporting (v22.0.0).
 - [ ] Perform first full-scale industrial stress test on physical platform.

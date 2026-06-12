@@ -1,5 +1,5 @@
 #!/bin/bash
-# FCDM System Health Check (v21.0.0)
+# FCDM System Health Check (v22.0.0)
 # This script automates pre-live-testing verification and ALSA auto-discovery.
 
 echo "--- FCDM SYSTEM HEALTH CHECK ---"

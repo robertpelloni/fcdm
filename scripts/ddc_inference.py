@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v21.0.0 Industrial-Prime DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Global Kinematic Viterbi Decoding.
+    v22.0.0 Industrial-Apex DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Multi-Step Lookahead Kinematic Selection.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -109,8 +109,8 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v21.0.0 Global Kinematic Viterbi Decoder.
-        Minimizes total physical cost across windowed sequences (lookahead=8)
+        v22.0.0 Multi-Step Lookahead Kinematic Decoder.
+        Minimizes physical travel and strain across 8-step windows (Viterbi-inspired)
         to ensure elite-level ergonomic flow for high-intensity cardio.
         """
         y, sr = librosa.load(audio_path, sr=44100)
@@ -127,11 +127,18 @@ class DDCInference:
             chart_grid = [["00000000" for _ in range(16)] for _ in range(total_measures)]
             # P1: L, D, U, R | P2: L, D, U, R
             coords = [(-2, 0), (-1, -1), (-1, 1), (0, 0), (1, 0), (2, -1), (2, 1), (3, 0)]
-            vocab = ["10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001"]
+            # v22.0.0 Expanded dance-double vocab
+            singles = ["10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001"]
+            hands = ["11100000", "00011100", "10101000", "00010101"]
+            brackets = ["11000000", "00000011", "10010000", "00001001"]
+            vocab = singles + hands + brackets
         else:
             chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
             coords = [(-1, 0), (0, -1), (0, 1), (1, 0)] # L, D, U, R
-            vocab = ["1000", "0100", "0010", "0001"]
+            # v22.0.0 Expanded dance-single vocab
+            singles = ["1000", "0100", "0010", "0001"]
+            jumps = ["1100", "0011", "1010", "0101", "1001", "0110"]
+            vocab = singles + jumps
 
         # Initial foot positions
         l_foot = coords[0]

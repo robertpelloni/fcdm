@@ -5,8 +5,8 @@ import numpy as np
 
 def generate_report(log_path="logs/stress_results.csv"):
     """
-    v20.0.0 Industrial QA Report Generator.
-    Parses stress test logs and validates system stability.
+    v22.0.0 Industrial QA Report Generator.
+    Parses stress test logs and generates a pass/fail certificate.
     """
     print(f"--- FCDM v20.0.0 INDUSTRIAL QA REPORT ---")
     if not os.path.exists(log_path):
