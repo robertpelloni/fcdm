@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v22.0.0 Industrial-Apex DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Multi-Step Lookahead Kinematic Selection.
+    v23.0.0 Industrial-Apex DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Windowed Viterbi Kinematic Selection.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -109,9 +109,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v22.0.0 Multi-Step Lookahead Kinematic Decoder.
-        Minimizes physical travel and strain across 8-step windows (Viterbi-inspired)
-        to ensure elite-level ergonomic flow for high-intensity cardio.
+        v23.0.0 Windowed Viterbi Kinematic Decoder.
+        Optimizes step sequences by minimizing cumulative kinematic cost
+        including distance, strain, and lateral momentum balance.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)

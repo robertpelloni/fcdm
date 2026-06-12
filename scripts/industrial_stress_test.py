@@ -8,6 +8,7 @@ import numpy as np
 # Ensure we can import from scripts/
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from calibrate_fsr import FSRCalibrator
+from ddc_inference import DDCInference
 
 def run_stress_test(duration_min=60):
     """
@@ -27,15 +28,18 @@ def run_stress_test(duration_min=60):
         end_time = start_time + (duration_min * 60)
         last_poll = start_time
 
+        # Load ML Engine for real load testing
+        ml = DDCInference("lib/models/onset/model.h5")
+
         try:
             while time.time() < end_time:
                 now = time.time()
                 jitter = (now - last_poll) * 1000
                 last_poll = now
 
-                # Mock inference latency for stress analysis
+                # Real ML Load Test (v23.0.0)
                 inf_start = time.perf_counter()
-                time.sleep(0.002) # simulated 2ms inference
+                ml.predict_onsets("test_audio.wav") # Triggers real signal processing
                 inf_latency = (time.perf_counter() - inf_start) * 1000
 
                 raw = cal.get_raw_values()[:2]

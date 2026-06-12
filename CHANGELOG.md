@@ -1,5 +1,13 @@
 # Changelog
 
+## [23.0.0] - 2024-06-23
+### Added
+- **v23.0.0 Industrial Apex Stable Release**.
+- Implemented **Windowed Viterbi Kinematic Decoder** in `scripts/ddc_inference.py` for elite sequence ergonomics.
+- Integrated **Real ML Load Testing** into `scripts/industrial_stress_test.py`.
+- Added **Teensy Config Generator** (`scripts/generate_teensy_config.py`) for automated threshold optimization.
+- Unified v23.0.0 "Industrial Apex" release documentation and verified stable production stack.
+
 ## [22.0.0] - 2024-06-22
 ### Added
 - **v22.0.0 Industrial Apex Release**.

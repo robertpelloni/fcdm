@@ -36,3 +36,8 @@
 - [x] Multi-Step Lookahead Kinematic Decoder.
 - [x] Tournament-Grade Pattern Vocabulary.
 - [x] Automated QA Pass/Fail Certification.
+
+### v23.0.0 Industrial Apex Stable [DONE]
+- [x] Windowed Viterbi Kinematic Decoder.
+- [x] Real ML-Load Stress Test Orchestration.
+- [x] Automated Hardware Threshold Optimization.
