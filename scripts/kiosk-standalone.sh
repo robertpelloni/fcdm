@@ -27,6 +27,11 @@ xset s off 2>/dev/null
 xset -dpms 2>/dev/null
 xset s noblank 2>/dev/null
 
-# 5. Process-level priority (if run as root)
+# 5. Process-level priority (with fallback)
 cd itgmania
-nice -n -20 ./itgmania --theme FitnessKiosk --kiosk
+if nice -n -20 true 2>/dev/null; then
+    nice -n -20 ./itgmania --theme FitnessKiosk --kiosk
+else
+    echo "WARNING: Insufficient permissions for real-time priority (nice -20)."
+    ./itgmania --theme FitnessKiosk --kiosk
+fi

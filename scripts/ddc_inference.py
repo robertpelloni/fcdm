@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v19.0.0 Tournament-Grade DDC Inference Pipeline.
-    Implements ONNX-accelerated OnsetNet (Placement) and Elite-Flow Selection.
+    v2.0.0 Production DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Recursive LSTM Selection (SymNet).
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -79,28 +79,36 @@ class DDCInference:
         return np.stack(stacked)
 
     def predict_onsets(self, audio_path, difficulty=3):
-        """Predicts arrow placements."""
+        """v2.0.0 Production OnsetNet Inference."""
         try:
-            y, sr = librosa.load(audio_path, sr=None)
+            y, sr = librosa.load(audio_path, sr=44100)
         except Exception: return np.array([])
 
         if not self.onset_session and not self.onset_keras:
-            print(f"  [DDC] Using signal-processing fallback for {os.path.basename(audio_path)} (Missing OnsetNet weights)")
-            # High-quality fallback
+            print(f"  [DDC] WARNING: Using signal-processing fallback (Missing OnsetNet weights)")
             onset_env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=512)
             thresh = 0.8 - (difficulty * 0.1)
             peaks = argrelextrema(onset_env, np.greater)[0]
-            onset_env_norm = onset_env / (np.max(onset_env) + 1e-6)
-            return librosa.frames_to_time(peaks[onset_env_norm[peaks] > thresh], sr=sr, hop_length=512)
+            return librosa.frames_to_time(peaks[onset_env[peaks] / np.max(onset_env) > thresh], sr=sr)
 
-        return librosa.onset.onset_detect(y=y, sr=sr, units='time')
+        # 1. Feature Extraction
+        feats = self.extract_features(y, sr) # (T, 80, 3) -> stacked (T, 1200)
+
+        # 2. Model Inference
+        if self.onset_session:
+            probs = self.onset_session.run(None, {'input': feats.astype(np.float32)})[0]
+        else:
+            probs = self.onset_keras.predict(feats.reshape(1, *feats.shape), verbose=0)[0]
+
+        # 3. Peak Picking
+        peaks = argrelextrema(probs.flatten(), np.greater)[0]
+        thresh = 0.5 - (difficulty * 0.05)
+        onsets = librosa.frames_to_time(peaks[probs.flatten()[peaks] > thresh], sr=sr, hop_length=512)
+
+        return onsets
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
-        """
-        v19.0.0 Elite-Flow Kinematic Architecture.
-        Tournament-grade selection minimizing movement cost and strain
-        via ONNX-accelerated lookahead and expanded pattern vocabulary.
-        """
+        """v2.0.0 Production SymNet Recursive LSTM Inference."""
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
         bpm = float(tempo[0]) if isinstance(tempo, (np.ndarray, list)) else float(tempo)
@@ -126,38 +134,57 @@ class DDCInference:
         r_foot = coords[3]
         last_foot = 1 # 0=Left, 1=Right
 
+        # LSTM State
+        h = np.zeros((1, 256), dtype=np.float32)
+        c = np.zeros((1, 256), dtype=np.float32)
+        prev_idx = 0
+        audio_feats = self.extract_features(y, sr)
+
         for q in quantized:
             m_idx, l_idx = q // 16, q % 16
             if m_idx >= total_measures: continue
 
-            # Find best step using kinematic cost
-            best_idx = 0
-            min_cost = float('inf')
+            curr_idx = 0
+            if self.sym_session or self.sym_keras:
+                frame_idx = int(q * note_16th_dur / (512/sr))
+                if frame_idx < audio_feats.shape[0]:
+                    # v2.0.0: High-fidelity model selection
+                    feat_audio = audio_feats[frame_idx].reshape(1, 1, -1).astype(np.float32)
+                    feat_prev = np.zeros((1, 1, len(vocab)), dtype=np.float32)
+                    feat_prev[0, 0, prev_idx % len(vocab)] = 1.0
+                    sym_input = np.concatenate([feat_audio, feat_prev], axis=-1)
 
-            # Alternate feet
-            curr_foot = 1 - last_foot
+                    try:
+                        if self.sym_session:
+                            out = self.sym_session.run(None, {'input': sym_input, 'h_in': h, 'c_in': c})
+                            logits, h, c = out[0], out[1], out[2]
+                        else:
+                            out = self.sym_keras.predict([sym_input, h, c], verbose=0)
+                            logits, h, c = out[0], out[1], out[2]
 
-            for i, c in enumerate(coords):
-                # Calculate Euclidean distance from current foot position
-                dist = np.sqrt((c[0] - (l_foot[0] if curr_foot == 0 else r_foot[0]))**2 +
-                               (c[1] - (l_foot[1] if curr_foot == 0 else r_foot[1]))**2)
+                        probs = np.exp(logits[0, 0] / 0.8) / np.sum(np.exp(logits[0, 0] / 0.8))
+                        curr_idx = np.random.choice(len(vocab), p=probs)
+                    except Exception:
+                        curr_idx = q % len(vocab)
+            else:
+                # Heuristic Fallback: Alternating foot kinematic selection
+                curr_foot = 1 - last_foot
+                best_idx = 0
+                min_cost = float('inf')
+                for i, coord in enumerate(coords):
+                    dist = np.sqrt((coord[0] - (l_foot[0] if curr_foot == 0 else r_foot[0]))**2 +
+                                   (coord[1] - (l_foot[1] if curr_foot == 0 else r_foot[1]))**2)
+                    crossover = 10 if (curr_foot == 0 and coord[0] > r_foot[0]) or (curr_foot == 1 and coord[0] < l_foot[0]) else 0
+                    if dist + crossover < min_cost:
+                        min_cost = dist + crossover
+                        best_idx = i
+                curr_idx = best_idx
+                if curr_foot == 0: l_foot = coords[best_idx]
+                else: r_foot = coords[best_idx]
+                last_foot = curr_foot
 
-                # Ergonomic penalty: avoid crossovers (simple check)
-                crossover = 0
-                if curr_foot == 0 and c[0] > r_foot[0]: crossover = 10
-                if curr_foot == 1 and c[0] < l_foot[0]: crossover = 10
-
-                cost = dist + crossover
-                if cost < min_cost:
-                    min_cost = cost
-                    best_idx = i
-
-            chart_grid[m_idx][l_idx] = vocab[best_idx]
-
-            # Update foot position
-            if curr_foot == 0: l_foot = coords[best_idx]
-            else: r_foot = coords[best_idx]
-            last_foot = curr_foot
+            chart_grid[m_idx][l_idx] = vocab[curr_idx]
+            prev_idx = curr_idx
 
         self.validate_chart(chart_grid)
         return ",\n".join(["\n".join(m) for m in chart_grid])
