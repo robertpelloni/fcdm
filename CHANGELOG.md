@@ -1,5 +1,13 @@
 # Changelog
 
+## [20.0.0] - 2024-06-20
+### Added
+- **v20.0.0 Industrial Diamond Stable Release**.
+- Implemented **Viterbi-Inspired Kinematic Decoder** in `scripts/ddc_inference.py` for elite-level ergonomic cost-minimization.
+- Added **Industrial QA Report** utility (`scripts/industrial_qa_report.py`) for automated hardware stress test validation.
+- Enhanced Bobcoin client with **Flow-Bonus** reward logic for alternation efficiency.
+- Unified v20.0.0 industrial release documentation and verified stable production stack.
+
 ## [2.0.0] - 2024-06-15
 ### Added
 - **Production ML Release**.

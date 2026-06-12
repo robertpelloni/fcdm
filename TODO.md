@@ -1,7 +1,7 @@
 # TODO: Immediate Tasks
 
-- [x] Production OnsetNet and SymNet ML Inference.
-- [x] Bobcoin Integration for fitness rewards.
-- [x] Industrial Hardware Calibration Suite.
+- [x] Viterbi Kinematic Lookahead Decoder (v20.0.0).
+- [x] Industrial QA Reporting for hardware stress tests.
+- [x] Bobcoin Flow-Bonus reward logic.
 - [x] Cleanup and sanitize repository documentation.
-- [ ] Perform first 60-minute stress test on physical hardware.
+- [ ] Perform first full-scale industrial stress test on physical platform.

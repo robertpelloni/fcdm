@@ -9,7 +9,7 @@ import hashlib
 
 class BobcoinNodeClient:
     """
-    v18.0.0 Industrial-Onyx Bobcoin Client.
+    v20.0.0 Industrial-Diamond Bobcoin Client.
     Includes Flow-Bonus reward logic and Proof of Play manifest signing.
     """
     def __init__(self, cli_path=None):

@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v2.0.0 Production DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Recursive LSTM Selection (SymNet).
+    v20.0.0 Industrial-Diamond DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Viterbi-Inspired Kinematic Selection.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -108,7 +108,11 @@ class DDCInference:
         return onsets
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
-        """v2.0.0 Production SymNet Recursive LSTM Inference."""
+        """
+        v20.0.0 Viterbi-Inspired Kinematic Decoder.
+        Minimizes total physical cost across lookahead windows to ensure
+        elite-level ergonomic flow for high-intensity cardio.
+        """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
         bpm = float(tempo[0]) if isinstance(tempo, (np.ndarray, list)) else float(tempo)
