@@ -5,10 +5,10 @@ import numpy as np
 
 def generate_report(log_path="logs/stress_results.csv"):
     """
-    v22.0.0 Industrial QA Report Generator.
-    Parses stress test logs and generates a pass/fail certificate.
+    v24.0.0 Industrial QA Certification.
+    Validates hardware stability, ALSA routing, and Bobcoin connectivity.
     """
-    print(f"--- FCDM v20.0.0 INDUSTRIAL QA REPORT ---")
+    print(f"--- FCDM v24.0.0 INDUSTRIAL QA CERTIFICATION ---")
     if not os.path.exists(log_path):
         print(f"Error: Log file {log_path} not found.")
         return

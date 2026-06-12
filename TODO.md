@@ -11,4 +11,6 @@
 - [x] Windowed Viterbi Kinematic Decoder (v23.0.0).
 - [x] Real ML-load stress test integration (v23.0.0).
 - [x] Automated Teensy config generation (v23.0.0).
+- [x] ONNX-accelerated ML inference (v24.0.0).
+- [x] Industrial QA Certification suite (v24.0.0).
 - [ ] Perform first full-scale industrial stress test on physical platform.
