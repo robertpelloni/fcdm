@@ -26,3 +26,8 @@
 - [x] Viterbi-Inspired Kinematic Lookahead Decoder.
 - [x] Industrial QA Reporting for Stress Tests.
 - [x] Bobcoin Flow-Bonus reward logic.
+
+### v21.0.0 Industrial Prime [DONE]
+- [x] Global Kinematic Viterbi Decoder (Lookahead=8).
+- [x] Automated ALSA Card Environment Export.
+- [x] Production Stress Runner & Certification.

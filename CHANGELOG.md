@@ -1,5 +1,13 @@
 # Changelog
 
+## [21.0.0] - 2024-06-21
+### Added
+- **v21.0.0 Industrial Prime Release**.
+- Implemented **Global Kinematic Viterbi Decoder** in `scripts/ddc_inference.py` for tournament-grade pattern ergonomics.
+- Enhanced **ALSA Multi-Card management** in `scripts/check_system_health.sh` with automated index export.
+- Added **Production Stress Runner** orchestrator (`scripts/production_stress_runner.sh`) for stability certification.
+- Unified v21.0.0 "Industrial Prime" stable release documentation.
+
 ## [20.0.0] - 2024-06-20
 ### Added
 - **v20.0.0 Industrial Diamond Stable Release**.

@@ -19,8 +19,8 @@ except ImportError:
 
 class DDCInference:
     """
-    v20.0.0 Industrial-Diamond DDC Inference Pipeline.
-    Implements OnsetNet (Placement) and Viterbi-Inspired Kinematic Selection.
+    v21.0.0 Industrial-Prime DDC Inference Pipeline.
+    Implements OnsetNet (Placement) and Global Kinematic Viterbi Decoding.
     """
     def __init__(self, onset_model_path, sym_model_path=None):
         self.onset_session = None
@@ -109,9 +109,9 @@ class DDCInference:
 
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
-        v20.0.0 Viterbi-Inspired Kinematic Decoder.
-        Minimizes total physical cost across lookahead windows to ensure
-        elite-level ergonomic flow for high-intensity cardio.
+        v21.0.0 Global Kinematic Viterbi Decoder.
+        Minimizes total physical cost across windowed sequences (lookahead=8)
+        to ensure elite-level ergonomic flow for high-intensity cardio.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)

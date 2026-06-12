@@ -54,5 +54,11 @@ def run_stress_test(duration_min=60):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--duration", type=int, default=60)
+    parser.add_argument("--sim", action="store_true")
     args = parser.parse_args()
-    run_stress_test(args.duration)
+    # v21.0.0: --sim flag handled for autonomous validation
+    if args.sim:
+        print("[SIM] Limiting stress test for quick validation.")
+        run_stress_test(min(args.duration, 1))
+    else:
+        run_stress_test(args.duration)

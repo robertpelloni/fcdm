@@ -27,7 +27,14 @@ xset s off 2>/dev/null
 xset -dpms 2>/dev/null
 xset s noblank 2>/dev/null
 
-# 5. Process-level priority (with fallback)
+# 5. Theme Pathing (v21.0.0)
+# Ensure the FitnessKiosk theme is visible to the itgmania engine
+mkdir -p itgmania/Themes
+if [ ! -L "itgmania/Themes/FitnessKiosk" ]; then
+    ln -s "../../themes/FitnessKiosk" "itgmania/Themes/FitnessKiosk"
+fi
+
+# 6. Process-level priority (with fallback)
 cd itgmania
 if nice -n -20 true 2>/dev/null; then
     nice -n -20 ./itgmania --theme FitnessKiosk --kiosk
