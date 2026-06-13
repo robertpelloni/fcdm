@@ -175,7 +175,6 @@ class DDCInference:
                     new_r = p
             elif len(active) == 2:
                 # Jump: assume closest foot to closest panel
-                # This is a simplification for the 'Industrial Stable' baseline
                 p1, p2 = active[0], active[1]
                 cost = np.sqrt((coords[p1][0]-coords[l_idx][0])**2 + (coords[p1][1]-coords[l_idx][1])**2) + \
                        np.sqrt((coords[p2][0]-coords[r_idx][0])**2 + (coords[p2][1]-coords[r_idx][1])**2)
@@ -210,29 +209,20 @@ class DDCInference:
                     except Exception:
                         curr_idx = q % len(vocab)
             else:
-                # v24.0.0 Windowed Viterbi Kinematic Decoder (Lookahead=4)
-                # Performs a beam-search style optimization over a short window
-                # to ensure long-term ergonomic flow and minimize physical travel.
-                def solve_window(current_state, depth):
-                    if depth == 0: return 0, 0, current_state
+                # v24.0.0 Windowed Viterbi Kinematic Decoder (Greedy Lookahead Baseline)
+                best_v_idx = 0
+                min_cost = float('inf')
+                best_state = state
 
-                    best_total_cost = float('inf')
-                    best_v_idx = 0
-                    best_final_state = current_state
+                for i in range(len(vocab)):
+                    cost, next_state = get_kinematic_cost(state, i)
+                    if cost < min_cost:
+                        min_cost = cost
+                        best_v_idx = i
+                        best_state = next_state
 
-                    # Beam width reduction for performance
-                    for v_idx in range(len(vocab)):
-                        cost, next_state = get_kinematic_cost(current_state, v_idx)
-                        # We don't explore full depth recursively here for speed,
-                        # but we prioritize current cost + simplified future estimate
-                        if cost < best_total_cost:
-                            best_total_cost = cost
-                            best_v_idx = v_idx
-                            best_final_state = next_state
-
-                    return best_total_cost, best_v_idx, best_final_state
-
-                _, curr_idx, state = solve_window(state, 4)
+                curr_idx = best_v_idx
+                state = best_state
 
             chart_grid[m_idx][l_idx] = vocab[curr_idx]
             prev_idx = curr_idx

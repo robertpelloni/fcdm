@@ -39,7 +39,9 @@ class BobcoinNodeClient:
             "extern/bobcoin/target/release/bobcoin-cli",
             "/usr/local/bin/bobcoin-cli",
             "/usr/bin/bobcoin-cli",
-            os.path.expanduser("~/bin/bobcoin-cli")
+            "/opt/bobcoin/bin/bobcoin-cli",
+            os.path.expanduser("~/bin/bobcoin-cli"),
+            os.path.expanduser("~/.local/bin/bobcoin-cli")
         ]
         for p in paths:
             if p and os.path.exists(p) and os.access(p, os.X_OK):
