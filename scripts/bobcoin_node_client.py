@@ -15,10 +15,8 @@ class BobcoinNodeClient:
     def __init__(self, cli_path=None):
         self.cli_path = self._discover_cli(cli_path)
         self.queue_path = "logs/transaction_queue.json"
-        # Bridge path: monitor both root and itgmania logs for cross-platform robustness
-        self.request_dirs = ["logs/mint_requests", "itgmania/logs/mint_requests"]
-        for d in self.request_dirs:
-            os.makedirs(d, exist_ok=True)
+        self.request_dir = "logs/mint_requests"
+        os.makedirs(self.request_dir, exist_ok=True)
 
     def _load_queue(self):
         if os.path.exists(self.queue_path):
@@ -33,11 +31,12 @@ class BobcoinNodeClient:
             json.dump(queue, f, indent=2)
 
     def _discover_cli(self, provided_path):
-        """v5.0.0 Robust CLI path discovery for standard Linux distros."""
+        """v24.0.0 Robust CLI path discovery for standard Linux distros."""
         paths = [
             provided_path,
             "extern/bobcoin/bobcoin-cli",
             "extern/bobcoin/bin/bobcoin-cli",
+            "extern/bobcoin/target/release/bobcoin-cli",
             "/usr/local/bin/bobcoin-cli",
             "/usr/bin/bobcoin-cli",
             os.path.expanduser("~/bin/bobcoin-cli")
@@ -117,13 +116,10 @@ class BobcoinNodeClient:
 
     def run_watcher(self):
         """Background loop to process mint requests from ITGMania (Lua)."""
-        print(f"Bobcoin Mint Watcher active. Monitoring: {self.request_dirs}")
+        print(f"Bobcoin Mint Watcher active. Monitoring {self.request_dir}...")
         try:
             while True:
-                requests = []
-                for d in self.request_dirs:
-                    requests.extend(glob.glob(os.path.join(d, "*.json")))
-
+                requests = glob.glob(os.path.join(self.request_dir, "*.json"))
                 for req_path in requests:
                     try:
                         with open(req_path, 'r') as f:

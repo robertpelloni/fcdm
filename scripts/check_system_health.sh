@@ -12,14 +12,17 @@ if command -v aplay > /dev/null; then
     echo "  [INFO] Scanning for audio hardware..."
     CARDS=$(aplay -l | grep "card")
 
-    # Priority Auto-Discovery (v21.0.0)
-    # Priority order: Teensy -> USB -> Generic/HDMI
+    # Priority Auto-Discovery (v24.0.0)
+    # Priority order: Teensy -> USB -> Internal -> Generic/HDMI
     DETECTED_CARD=$(echo "$CARDS" | grep -i "Teensy" | head -n 1 | cut -d' ' -f2 | tr -d ':')
     if [ -z "$DETECTED_CARD" ]; then
         DETECTED_CARD=$(echo "$CARDS" | grep -i "USB" | head -n 1 | cut -d' ' -f2 | tr -d ':')
     fi
     if [ -z "$DETECTED_CARD" ]; then
         DETECTED_CARD=$(echo "$CARDS" | grep -i "Internal" | head -n 1 | cut -d' ' -f2 | tr -d ':')
+    fi
+    if [ -z "$DETECTED_CARD" ]; then
+        DETECTED_CARD=$(echo "$CARDS" | grep -i "Generic" | head -n 1 | cut -d' ' -f2 | tr -d ':')
     fi
 
     if [ -n "$DETECTED_CARD" ]; then
