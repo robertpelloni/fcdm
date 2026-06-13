@@ -9,7 +9,7 @@ import hashlib
 
 class BobcoinNodeClient:
     """
-    v22.0.0 Industrial-Apex Bobcoin Client.
+    v24.0.0 Industrial-Onyx Bobcoin Client.
     Includes robust CLI discovery, Flow-Bonus rewards, and Proof of Play.
     """
     def __init__(self, cli_path=None):

@@ -1,4 +1,4 @@
-# Ideas & Brainstorming
+# Ideas & Brainstorming (v24.0.0)
 
 - **Go Port**: A clean-room implementation of a rhythm engine in Go could provide better concurrency handling and easier deployment as a single binary.
 - **Web-based Kiosk**: Could the UI be React/Next.js communicating with a Go backend?

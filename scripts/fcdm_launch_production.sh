@@ -19,8 +19,12 @@ MONITOR_PID=$!
 
 # 4. Launch ITGMania
 echo "Launching ITGMania Engine..."
-# nice -n -20 ./itgmania/itgmania --theme FitnessKiosk
-echo "  [SIM] Engine start simulated."
+if [ -f "./itgmania/itgmania" ]; then
+    nice -n -20 ./itgmania/itgmania --theme FitnessKiosk
+else
+    echo "  [SIM] ITGMania binary not found. Simulation mode only."
+    sleep 5
+fi
 
 # 5. Cleanup on Exit
 function cleanup {
