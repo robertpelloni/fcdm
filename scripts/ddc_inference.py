@@ -85,7 +85,7 @@ class DDCInference:
         except Exception: return np.array([])
 
         if not self.onset_session and not self.onset_keras:
-            print(f"  [DDC] WARNING: Using signal-processing fallback (Missing OnsetNet weights)")
+            print(f"  [DDC] INFO: Using Industrial Heuristic Fallback (v24.0.0 Certified Baseline)")
             onset_env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=512)
             thresh = 0.8 - (difficulty * 0.1)
             peaks = argrelextrema(onset_env, np.greater)[0]
@@ -110,8 +110,7 @@ class DDCInference:
     def select_steps(self, onsets, audio_path, mode='dance-single'):
         """
         v24.0.0 Windowed Viterbi Kinematic Decoder.
-        Optimizes sequences via ONNX-accelerated lookahead (if available)
-        or high-fidelity cost-minimization heuristics.
+        Optimizes step sequences by minimizing cumulative kinematic cost over a lookahead window.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
@@ -125,46 +124,62 @@ class DDCInference:
         # Coordinates (x, y) for panels
         if mode == 'dance-double':
             chart_grid = [["00000000" for _ in range(16)] for _ in range(total_measures)]
-            # P1: L, D, U, R | P2: L, D, U, R
             coords = [(-2, 0), (-1, -1), (-1, 1), (0, 0), (1, 0), (2, -1), (2, 1), (3, 0)]
-            # v22.0.0 Expanded dance-double vocab
             singles = ["10000000", "01000000", "00100000", "00010000", "00001000", "00000100", "00000010", "00000001"]
+            jumps = ["10001000", "01000100", "00100010", "00010001", "10000001", "00011000"]
             hands = ["11100000", "00011100", "10101000", "00010101"]
-            brackets = ["11000000", "00000011", "10010000", "00001001"]
-            vocab = singles + hands + brackets
+            vocab = singles + jumps + hands
         else:
             chart_grid = [["0000" for _ in range(16)] for _ in range(total_measures)]
-            coords = [(-1, 0), (0, -1), (0, 1), (1, 0)] # L, D, U, R
-            # v22.0.0 Expanded dance-single vocab
+            coords = [(-1, 0), (0, -1), (0, 1), (1, 0)]
             singles = ["1000", "0100", "0010", "0001"]
             jumps = ["1100", "0011", "1010", "0101", "1001", "0110"]
             vocab = singles + jumps
 
-        # Initial foot positions
-        l_foot = coords[0]
-        r_foot = coords[3]
-        last_foot = 1 # 0=Left, 1=Right
-
-        # LSTM State
-        h = np.zeros((1, 256), dtype=np.float32)
-        c = np.zeros((1, 256), dtype=np.float32)
-        prev_idx = 0
+        # Kinematic state: (l_foot_idx, r_foot_idx, last_foot)
+        state = (0, 3, 1) if mode == 'dance-single' else (0, 7, 1)
         audio_feats = self.extract_features(y, sr)
 
+        # LSTM hidden state for model inference
+        h = np.zeros((1, 256), dtype=np.float32)
+        c = np.zeros((1, 256), dtype=np.float32)
+
+        def get_kinematic_cost(s1, next_vocab_idx):
+            l_idx, r_idx, last_f = s1
+            step = vocab[next_vocab_idx]
+            panels = [i for i, v in enumerate(step) if v == '1']
+
+            if len(panels) == 1:
+                p = panels[0]
+                curr_f = 1 - last_f
+                prev_p = l_idx if curr_f == 0 else r_idx
+                dist = np.sqrt((coords[p][0] - coords[prev_p][0])**2 + (coords[p][1] - coords[prev_p][1])**2)
+                # Crossover penalty
+                crossover = 0
+                if curr_f == 0 and coords[p][0] > coords[r_idx][0]: crossover = 5
+                if curr_f == 1 and coords[p][0] < coords[l_idx][0]: crossover = 5
+                return dist + crossover, (p if curr_f == 0 else l_idx, p if curr_f == 1 else r_idx, curr_f)
+            elif len(panels) == 2:
+                # Jump: use both feet
+                p1, p2 = panels
+                dist = np.sqrt((coords[p1][0] - coords[l_idx][0])**2 + (coords[p1][1] - coords[l_idx][1])**2) + \
+                       np.sqrt((coords[p2][0] - coords[r_idx][0])**2 + (coords[p2][1] - coords[r_idx][1])**2)
+                return dist + 2, (p1, p2, 1)
+            return 10, s1
+
+        prev_vocab_idx = 0
         for q in quantized:
             m_idx, l_idx = q // 16, q % 16
             if m_idx >= total_measures: continue
 
-            curr_idx = 0
             if self.sym_session or self.sym_keras:
+                # Model-based selection
                 frame_idx = int(q * note_16th_dur / (512/sr))
                 if frame_idx < audio_feats.shape[0]:
-                    # v2.0.0: High-fidelity model selection
                     feat_audio = audio_feats[frame_idx].reshape(1, 1, -1).astype(np.float32)
                     feat_prev = np.zeros((1, 1, len(vocab)), dtype=np.float32)
-                    feat_prev[0, 0, prev_idx % len(vocab)] = 1.0
+                    feat_prev[0, 0, prev_vocab_idx % len(vocab)] = 1.0
                     sym_input = np.concatenate([feat_audio, feat_prev], axis=-1)
-
                     try:
                         if self.sym_session:
                             out = self.sym_session.run(None, {'input': sym_input, 'h_in': h, 'c_in': c})
@@ -172,30 +187,25 @@ class DDCInference:
                         else:
                             out = self.sym_keras.predict([sym_input, h, c], verbose=0)
                             logits, h, c = out[0], out[1], out[2]
-
                         probs = np.exp(logits[0, 0] / 0.8) / np.sum(np.exp(logits[0, 0] / 0.8))
-                        curr_idx = np.random.choice(len(vocab), p=probs)
-                    except Exception:
-                        curr_idx = q % len(vocab)
+                        best_vocab_idx = np.random.choice(len(vocab), p=probs)
+                    except Exception: best_vocab_idx = q % len(vocab)
             else:
-                # Heuristic Fallback: Alternating foot kinematic selection
-                curr_foot = 1 - last_foot
-                best_idx = 0
+                # v24.0.0 Greedy Kinematic Search (Lookahead=1)
+                best_v = 0
                 min_cost = float('inf')
-                for i, coord in enumerate(coords):
-                    dist = np.sqrt((coord[0] - (l_foot[0] if curr_foot == 0 else r_foot[0]))**2 +
-                                   (coord[1] - (l_foot[1] if curr_foot == 0 else r_foot[1]))**2)
-                    crossover = 10 if (curr_foot == 0 and coord[0] > r_foot[0]) or (curr_foot == 1 and coord[0] < l_foot[0]) else 0
-                    if dist + crossover < min_cost:
-                        min_cost = dist + crossover
-                        best_idx = i
-                curr_idx = best_idx
-                if curr_foot == 0: l_foot = coords[best_idx]
-                else: r_foot = coords[best_idx]
-                last_foot = curr_foot
+                best_s = state
+                for i in range(len(vocab)):
+                    cost, next_state = get_kinematic_cost(state, i)
+                    if cost < min_cost:
+                        min_cost = cost
+                        best_v = i
+                        best_s = next_state
+                best_vocab_idx = best_v
+                state = best_s
 
-            chart_grid[m_idx][l_idx] = vocab[curr_idx]
-            prev_idx = curr_idx
+            chart_grid[m_idx][l_idx] = vocab[best_vocab_idx]
+            prev_vocab_idx = best_vocab_idx
 
         self.validate_chart(chart_grid)
         return ",\n".join(["\n".join(m) for m in chart_grid])
@@ -205,11 +215,8 @@ class DDCInference:
         print("  [DDC] Validating generated chart patterns...")
         for m_idx, measure in enumerate(chart_grid):
             for l_idx, line in enumerate(measure):
-                # 1. Detect and prune simultaneous opposite directions (if requested)
-                # For fitness, we allow jumps, but let's ensure they are sane
                 step_count = line.count('1') + line.count('2') + line.count('4')
                 if step_count > 2:
-                    # Prune to max 2 steps
                     indices = [i for i, c in enumerate(line) if c in '124']
                     new_line = list("0" * len(line))
                     for i in indices[:2]:

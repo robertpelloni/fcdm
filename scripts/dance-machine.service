@@ -4,8 +4,9 @@ After=network.target sound.target
 
 [Service]
 Type=simple
-User=jules
-WorkingDirectory=/app
+# User and WorkingDirectory should be configured per-installation
+# User=jules
+# WorkingDirectory=/home/jules/fcdm
 Environment=DISPLAY=:0
 ExecStart=/usr/bin/bash scripts/kiosk-standalone.sh
 Restart=always

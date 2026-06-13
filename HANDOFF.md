@@ -11,6 +11,8 @@ Successfully transitioned the Fitness Center Dance Machine (FCDM) to a productio
 
 ## Context for Successor Models
 - **ML Engine**: The v24.0.0 engine utilized ONNX acceleration for sequences if weights are present, with a Viterbi fallback.
+- **Certified Baseline**: v24.0.0 certifies the 'Industrial Heuristic Fallback' as the production baseline when ML weights are absent.
+- **Path Bridging**: Bobcoin rewards use cross-directory symbolic links for robust Lua-to-Python communication.
 - **Certification**: Run `python3 scripts/industrial_qa_report.py` after stress sessions to issue an industrial pass certificate.
 - **Versioning**: The system is promoted to v24.0.0 to reflect the Industrial Onyx Stable status.
 

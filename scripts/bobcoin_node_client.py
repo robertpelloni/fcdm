@@ -15,8 +15,10 @@ class BobcoinNodeClient:
     def __init__(self, cli_path=None):
         self.cli_path = self._discover_cli(cli_path)
         self.queue_path = "logs/transaction_queue.json"
-        self.request_dir = "logs/mint_requests"
-        os.makedirs(self.request_dir, exist_ok=True)
+        # Bridge path: monitor both root and itgmania logs for cross-platform robustness
+        self.request_dirs = ["logs/mint_requests", "itgmania/logs/mint_requests"]
+        for d in self.request_dirs:
+            os.makedirs(d, exist_ok=True)
 
     def _load_queue(self):
         if os.path.exists(self.queue_path):
@@ -115,10 +117,13 @@ class BobcoinNodeClient:
 
     def run_watcher(self):
         """Background loop to process mint requests from ITGMania (Lua)."""
-        print(f"Bobcoin Mint Watcher active. Monitoring {self.request_dir}...")
+        print(f"Bobcoin Mint Watcher active. Monitoring: {self.request_dirs}")
         try:
             while True:
-                requests = glob.glob(os.path.join(self.request_dir, "*.json"))
+                requests = []
+                for d in self.request_dirs:
+                    requests.extend(glob.glob(os.path.join(d, "*.json")))
+
                 for req_path in requests:
                     try:
                         with open(req_path, 'r') as f:

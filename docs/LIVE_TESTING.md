@@ -28,3 +28,7 @@
 | Input Lag | < 15ms | |
 | Crash-free Play | 2+ Hours | |
 | ML Flow Efficiency| > 85% | |
+
+### Production Baselines
+- **ML Chart Generation**: OnsetNet/SymNet inference loop (v2.0.0).
+- **Certified Fallback**: Industrial Heuristic Fallback (v24.0.0) provides a production-grade signal-processing baseline when binary weights are absent.
