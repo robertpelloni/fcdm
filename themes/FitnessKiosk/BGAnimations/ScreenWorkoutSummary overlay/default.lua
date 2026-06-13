@@ -32,7 +32,7 @@ local stats = {
     { label="BOBCOIN REWARD", value=function()
         local cal = STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1):GetCaloriesBurned()
         local dur = STATSMAN:GetCurStageStats():GetGameplaySeconds()
-        return string.format("%.2f BOB", GetBobcoinReward(cal, dur))
+        return string.format("%.2f BOB", MintBobcoinReward(cal, dur))
     end },
 }
 
