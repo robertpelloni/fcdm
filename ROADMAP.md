@@ -41,8 +41,3 @@
 - [x] Windowed Viterbi Kinematic Decoder.
 - [x] Real ML-Load Stress Test Orchestration.
 - [x] Automated Hardware Threshold Optimization.
-
-### v24.0.0 Industrial Onyx Stable [DONE]
-- [x] ONNX-Accelerated Kinematic ML Engine.
-- [x] Multi-Card ALSA Hardware Certification.
-- [x] Unified v24.0.0 Industrial Onyx Documentation.

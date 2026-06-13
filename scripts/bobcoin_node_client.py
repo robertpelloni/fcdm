@@ -9,7 +9,7 @@ import hashlib
 
 class BobcoinNodeClient:
     """
-    v24.0.0 Industrial-Onyx Bobcoin Client.
+    v22.0.0 Industrial-Apex Bobcoin Client.
     Includes robust CLI discovery, Flow-Bonus rewards, and Proof of Play.
     """
     def __init__(self, cli_path=None):
@@ -31,17 +31,14 @@ class BobcoinNodeClient:
             json.dump(queue, f, indent=2)
 
     def _discover_cli(self, provided_path):
-        """v24.0.0 Robust CLI path discovery for standard Linux distros."""
+        """v5.0.0 Robust CLI path discovery for standard Linux distros."""
         paths = [
             provided_path,
             "extern/bobcoin/bobcoin-cli",
             "extern/bobcoin/bin/bobcoin-cli",
-            "extern/bobcoin/target/release/bobcoin-cli",
             "/usr/local/bin/bobcoin-cli",
             "/usr/bin/bobcoin-cli",
-            "/opt/bobcoin/bin/bobcoin-cli",
-            os.path.expanduser("~/bin/bobcoin-cli"),
-            os.path.expanduser("~/.local/bin/bobcoin-cli")
+            os.path.expanduser("~/bin/bobcoin-cli")
         ]
         for p in paths:
             if p and os.path.exists(p) and os.access(p, os.X_OK):

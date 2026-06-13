@@ -1,12 +1,5 @@
 # Changelog
 
-## [24.0.0] - 2024-06-24
-### Added
-- **v24.0.0 Industrial Onyx Stable Release**.
-- Implemented **ONNX-accelerated inference** in `scripts/ddc_inference.py` with tournament-grade Viterbi selection.
-- Enhanced **Industrial QA Certification** (`scripts/industrial_qa_report.py`) with ALSA and Bobcoin health checks.
-- Unified v24.0.0 "Industrial Onyx" release documentation and verified stable production stack.
-
 ## [23.0.0] - 2024-06-23
 ### Added
 - **v23.0.0 Industrial Apex Stable Release**.

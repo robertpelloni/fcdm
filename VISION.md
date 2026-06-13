@@ -1,4 +1,4 @@
-# VISION: Fitness Center Dance Machine (v24.0.0)
+# VISION: Fitness Center Dance Machine
 
 ## The Core Concept
 A bespoke software and hardware stack optimized solely for streamlining a workout session. Unlike standard rhythm games designed for short bursts, this machine focuses on sustained, unbroken Zone 2/Zone 3 cardio using seamless 60+ minute progressive psytrance sets.

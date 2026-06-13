@@ -1,4 +1,4 @@
-# Deployment & Environment Setup (v24.0.0 Industrial)
+# Deployment & Environment Setup (Staging)
 
 ## Software Requirements
 - Linux (Ubuntu 22.04+ or Arch recommended)

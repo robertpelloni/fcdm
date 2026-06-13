@@ -1,4 +1,4 @@
-# Memory: Architectural Observations (v24.0.0)
+# Memory: Architectural Observations
 
 ## Initial State (v0.1.0)
 - Project started with a vision for a fitness-focused dance machine.

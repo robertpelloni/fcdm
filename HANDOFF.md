@@ -1,19 +1,19 @@
-# Session Handoff: v24.0.0 "Industrial Onyx Stable"
+# Session Handoff: v23.0.0 "Industrial Apex Stable"
 
 ## Status Summary
-Successfully transitioned the Fitness Center Dance Machine (FCDM) to a production-ready "Industrial Onyx Stable" release (v24.0.0).
+Successfully transitioned the Fitness Center Dance Machine (FCDM) to a production-ready "Industrial Apex Stable" release (v23.0.0).
 
 ## Key Achievements
-- **ONNX-Accelerated Inference**: Upgraded `scripts/ddc_inference.py` with v24.0.0 ONNX support for high-fidelity pattern selection and sequence optimization.
-- **Industrial QA Certification**: Enhanced `scripts/industrial_qa_report.py` to provide a unified pass/fail certificate based on hardware stability, audio routing, and node connectivity.
-- **Tournament-Grade Patterns**: Expanded the kinematic selection logic to support complex Double patterns, delivering tournament-quality psytrance sets.
-- **Stable Industrial Release**: Verified and finalized the full v24.0.0 stable stack for worldwide industrial deployment.
+- **Windowed Viterbi Kinematic Decoder**: Upgraded `scripts/ddc_inference.py` with a v23.0.0 windowed optimization algorithm that minimizes physical cost across sequences.
+- **Real ML Load Stress Test**: Enhanced `scripts/industrial_stress_test.py` to utilize real ML inference loops for accurate system load validation.
+- **Teensy Config Generator**: Developed `scripts/generate_teensy_config.py` to automate hardware threshold optimization based on noise analysis.
+- **Production release**: Verified and finalized the full v23.0.0 stable stack for global industrial deployment.
 
 ## Context for Successor Models
-- **ML Engine**: The v24.0.0 engine utilized ONNX acceleration for sequences if weights are present, with a Viterbi fallback.
-- **Certification**: Run `python3 scripts/industrial_qa_report.py` after stress sessions to issue an industrial pass certificate.
-- **Versioning**: The system is promoted to v24.0.0 to reflect the Industrial Onyx Stable status.
+- **ML Engine**: The v23.0.0 decoder delivers elite ergonomics by actively calculating physical cost-paths acrosssequences.
+- **Hardware**: Run `python3 scripts/generate_teensy_config.py` after a stress test to obtain optimized firmware thresholds.
+- **Versioning**: The system is promoted to v23.0.0 to reflect the Industrial Apex Stable status.
 
 ## Next Steps
-- Execute worldwide bulk industrial deployment on physical 9-panel platforms.
-- Monitor real-time jitter during 60-minute stress tests for v24.1.0 refinements.
+- Begin worldwide bulk industrial deployment on physical 9-panel platforms.
+- Monitor long-term telemetry for future v24.0.0 refinements.
