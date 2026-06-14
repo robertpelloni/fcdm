@@ -1,5 +1,5 @@
 #!/bin/bash
-# FCDM v17.0.0 Production Orchestrator
+# FCDM v24.1.0 Production Orchestrator
 # Launches the entire stack for industrial deployment sessions.
 
 echo "--- FCDM obsidian production launch ---"
