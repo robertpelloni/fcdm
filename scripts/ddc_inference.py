@@ -107,11 +107,11 @@ class DDCInference:
 
         return onsets
 
-    def select_steps(self, onsets, audio_path, mode='dance-single'):
+    def select_steps(self, onsets, audio_path, mode='dance-single', fitness_level=5):
         """
-        v24.1.0 Coordinate-Aware Kinematic Viterbi Decoder.
+        v24.1.1 Coordinate-Aware Kinematic Viterbi Decoder.
         Optimizes step sequences by minimizing cumulative kinematic cost over an 8-step lookahead window.
-        Ensures elite-level ergonomic flow for long-duration psytrance sessions.
+        Includes Adaptive Ergonomic Scaling based on target Fitness Level.
         """
         y, sr = librosa.load(audio_path, sr=44100)
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
@@ -138,6 +138,10 @@ class DDCInference:
             jumps = ["1100", "0011", "1010", "0101", "1001", "0110"]
             vocab = singles + jumps
 
+        # Adaptive Ergonomic Scaling (v24.1.1)
+        # Lower fitness levels use stricter kinematic penalties.
+        scale = 1.0 / (max(1, fitness_level) / 5.0)
+
         # Kinematic state: (left_foot_idx, right_foot_idx, last_foot_used)
         state = (0, 3, 1) if mode == 'dance-single' else (0, 7, 1)
         prev_idx = 0
@@ -148,7 +152,7 @@ class DDCInference:
         c = np.zeros((1, 256), dtype=np.float32)
 
         def get_kinematic_cost(s, v_idx):
-            """Calculates ergonomic cost (v24.1.0)."""
+            """Calculates ergonomic cost (v24.1.1)."""
             l_idx, r_idx, last_f = s
             step = vocab[v_idx]
             active = [i for i, char in enumerate(step) if char == '1']
@@ -163,11 +167,11 @@ class DDCInference:
                 prev_p = l_idx if f == 0 else r_idx
                 dist = np.sqrt((coords[p][0]-coords[prev_p][0])**2 + (coords[p][1]-coords[prev_p][1])**2)
 
-                if f == last_f: cost += 5.0 # Double-step penalty
+                if f == last_f: cost += 5.0 * scale # Double-step penalty
 
                 # Crossover penalty
-                if f == 0 and coords[p][0] > coords[r_idx][0]: cost += 10.0
-                if f == 1 and coords[p][0] < coords[l_idx][0]: cost += 10.0
+                if f == 0 and coords[p][0] > coords[r_idx][0]: cost += 10.0 * scale
+                if f == 1 and coords[p][0] < coords[l_idx][0]: cost += 10.0 * scale
 
                 cost += dist
                 if f == 0: new_l = p
@@ -178,7 +182,7 @@ class DDCInference:
                 p1, p2 = (active[0], active[1]) if coords[active[0]][0] < coords[active[1]][0] else (active[1], active[0])
                 dist = np.sqrt((coords[p1][0]-coords[l_idx][0])**2 + (coords[p1][1]-coords[l_idx][1])**2) + \
                        np.sqrt((coords[p2][0]-coords[r_idx][0])**2 + (coords[p2][1]-coords[r_idx][1])**2)
-                cost = dist + 2.0
+                cost = dist + 2.0 * scale
                 new_l, new_r, new_f = p1, p2, 1
 
             return cost, (new_l, new_r, new_f)
@@ -263,14 +267,14 @@ class DDCInference:
                         new_line[i] = line[i]
                     chart_grid[m_idx][l_idx] = "".join(new_line)
 
-def generate_ddc_notes(audio_path, difficulty=3, mode='dance-single'):
-    """v24.1.0 Multi-Mode Chart Generator."""
-    print(f"  [v24.1.0] Analyzing {audio_path} ({mode})...")
+def generate_ddc_notes(audio_path, difficulty=3, mode='dance-single', fitness_level=5):
+    """v24.1.1 Multi-Mode Chart Generator."""
+    print(f"  [v24.1.1] Analyzing {audio_path} ({mode}, Fit: {fitness_level})...")
     ONSET_WEIGHTS = "lib/models/onset/model.h5"
     SYM_WEIGHTS = "lib/models/dance-single_Expert/model.h5"
     model = DDCInference(ONSET_WEIGHTS, SYM_WEIGHTS)
     onsets = model.predict_onsets(audio_path, difficulty=difficulty)
-    return model.select_steps(onsets, audio_path, mode=mode)
+    return model.select_steps(onsets, audio_path, mode=mode, fitness_level=fitness_level)
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

@@ -47,9 +47,13 @@ def process_single_song(audio_path, difficulty, force, dry_run):
         audio_info = analyze_audio(audio_path)
         bpm_str = ",".join([f"{t}={b}" for t, b in audio_info['bpms']])
 
-        # 2. Generate multi-mode charts
-        notes_single = generate_ddc_notes(audio_path, difficulty=difficulty, mode='dance-single')
-        notes_double = generate_ddc_notes(audio_path, difficulty=difficulty, mode='dance-double')
+        # 2. Generate multi-mode charts (v24.1.1: Iterative Fitness Optimization)
+        # Preliminary pass to estimate fitness
+        onsets = generate_ddc_notes(audio_path, difficulty=difficulty, mode='dance-single') # Quick pass
+        fit_est = calculate_fitness_level(onsets)
+
+        notes_single = generate_ddc_notes(audio_path, difficulty=difficulty, mode='dance-single', fitness_level=fit_est)
+        notes_double = generate_ddc_notes(audio_path, difficulty=difficulty, mode='dance-double', fitness_level=fit_est)
 
         fit_single = calculate_fitness_level(notes_single)
         fit_double = calculate_fitness_level(notes_double)
