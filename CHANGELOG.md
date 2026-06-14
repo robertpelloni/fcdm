@@ -1,5 +1,14 @@
 # Changelog
 
+## [24.1.0] - 2024-06-25
+### Added
+- **v24.1.0 Industrial Onyx Stable Release**.
+- Implemented **Coordinate-Aware Kinematic Viterbi Decoder** (8-step lookahead) in `scripts/ddc_inference.py`.
+- Enhanced **ALSA Multi-Card management** and prioritization in `scripts/check_system_health.sh`.
+- Finalized **Bobcoin Node Client** with robust cross-distro CLI discovery and Flow-Bonus logic.
+- Established **Root-Level Production Scripts** (start.sh, build.sh) for industrial orchestration.
+- Unified v24.1.0 "Industrial Onyx" release documentation and verified stable production stack.
+
 ## [23.0.0] - 2024-06-23
 ### Added
 - **v23.0.0 Industrial Apex Stable Release**.

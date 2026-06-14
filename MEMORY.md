@@ -1,4 +1,4 @@
-# Memory: Architectural Observations
+# Memory: Architectural Observations (v24.1.0 Industrial Onyx Stable)
 
 ## Initial State (v0.1.0)
 - Project started with a vision for a fitness-focused dance machine.
