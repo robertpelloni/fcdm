@@ -22,22 +22,10 @@
 - [x] Implement systemd service for auto-start.
 - [x] Final testing and calibration (v24.1.0).
 
-### v24.1.0 Industrial Diamond [DONE]
-- [x] Viterbi-Inspired Kinematic Lookahead Decoder.
-- [x] Industrial QA Reporting for Stress Tests.
-- [x] Bobcoin Flow-Bonus reward logic.
-
-### v24.1.0 Industrial Prime [DONE]
-- [x] Global Kinematic Viterbi Decoder (Lookahead=8).
-- [x] Automated ALSA Card Environment Export.
-- [x] Production Stress Runner & Certification.
-
-### v24.1.0 Industrial Apex [DONE]
-- [x] Multi-Step Lookahead Kinematic Decoder.
-- [x] Tournament-Grade Pattern Vocabulary.
-- [x] Automated QA Pass/Fail Certification.
-
-### v24.1.0 Industrial Apex Stable [DONE]
-- [x] Windowed Viterbi Kinematic Decoder.
-- [x] Real ML-Load Stress Test Orchestration.
-- [x] Automated Hardware Threshold Optimization.
+### v24.1.0 Industrial Onyx Stable [DONE]
+- [x] Coordinate-Aware Kinematic Viterbi Decoder (8-step lookahead).
+- [x] Elite Tournament-Grade Pattern Vocabulary.
+- [x] ALSA Multi-Card prioritizaton and auto-discovery.
+- [x] Bobcoin Node Client robust pathing and Flow-Bonus reward logic.
+- [x] Unified management protocol via run_pipeline.py.
+- [x] Integrated v24.1.0 Coordinate-Aware decoder for elite ergonomics.
