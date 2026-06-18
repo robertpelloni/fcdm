@@ -1,19 +1,25 @@
-# Memory: Architectural Observations
+[PROJECT_MEMORY]
 
-## Initial State (v0.1.0)
-- Project started with a vision for a fitness-focused dance machine.
-- Decided to use ITGMania as the primary engine for the kiosk theme.
-- Successfully implemented a theme skeleton that bypasses the title screen.
+## Architecture & Foundational Concepts
+The **Fitness Center Dance Machine (FCDM)** is a specialized rhythm game software/hardware stack designed expressly for sustained, unbroken aerobic cardio (Zone 2/3) via 60+ minute progressive psytrance sets, deviating significantly from traditional arcade bursts.
 
-## Fitness Level Normalization (v0.3.0)
-- Implemented a 1-10 fitness scale based on Notes Per Second (NPS).
-- Logic is encapsulated in `Scripts/FitnessDifficulties.lua`.
-- Wired this scale into the `MusicWheelItem` and `StepsDisplayList` to replace standard difficulty meters.
-- This ensures the user sees a consistent fitness-oriented metric regardless of the underlying chart's original difficulty rating.
+**Engine Layer:**
+The application builds upon **ITGMania** (a StepMania 5.1 fork tailored for modern compatibility and network functions) with a custom `FitnessKiosk` minimalist Lua theme to instantly bypass typical selection menus.
 
-## Design Choices
-- **UI**: Minimalist, Kiosk-mode. Custom Lua actor in `ScreenTitleMenu overlay.lua` handles the auto-transition.
-- **Sensors**: FSR (Force Sensing Resistors) for longevity and sensitivity. Microcontroller code documented in `docs/HARDWARE.md`.
-- **Audio**: Direct ALSA access to minimize latency (planned for final kiosk image).
-- **Chart Logic**: Standard charts are too complex for long-form cardio. `scripts/stream_sanitizer.py` enforces a L-R-L-R flow by removing jacks and hands.
-- **Theme Inheritance**: `FitnessKiosk` falls back to `_fallback` but is intended to work alongside `Simply Love` if needed (though current implementation overrides core parts).
+**Hardware Stack:**
+The machine operates on industrial-grade 9-panel matrix platforms using Force Sensing Resistors (FSRs). The hardware is managed via a Teensy 4.0 microcontroller that communicates physical panel strikes via high-frequency keyboard emulation. The project prioritizes direct ALSA audio pathways over PulseAudio/PipeWire for ultra-low latency response.
+
+**Core Services & Orchestration:**
+A central python orchestrator (`run_pipeline.py`) manages the end-to-end operation, encapsulating processes through a series of shell and python scripts. Essential runtime orchestration is handled via `fcdm_launch_production.sh`, spanning the ITGMania process, Bobcoin Node Watcher, and Live Hardware monitors.
+
+## Design Patterns & Decisions
+- **Fitness Normalization:** Instead of arbitrary difficulty levels, ITGMania integrates Lua scripts (`FitnessDifficulties.lua`) to convert steps-per-second to a simple 1-10 fitness scale.
+- **ML Chart Generation & Kinematics:** Standard rhythmic charts contain dangerous physical patterns for long sessions (e.g. quad hits, jacks). The system uses machine learning inference (OnsetNet, SymNet via `ddc_inference.py`) equipped with a Kinematic Viterbi Decoder to optimize physical pathing and avoid erratic crossovers.
+- **Stream Sanitization:** Post-processing python utilities (`stream_sanitizer.py`) ensure that the resulting charts have high Alternation Efficiency (strict Left-Right-Left-Right flow), removing physical anomalies that might disrupt pacing.
+- **Hardware Simulation Fallbacks:** System bash/python pipelines robustly use `--sim` flags to execute tests cleanly when FSR hardware interfaces (`/dev/ttyACM0`) or advanced ALSA environments are missing.
+- **Monetization / Verification:** The project experiments with a built-in decentralized `Bobcoin` (a submodule node client) intended for tracking and rewarding "verifiable fitness mining".
+
+## Ongoing Codebase Trajectory
+- **Aggressive Submoduling:** The project relies on deep Git submodules (`bobmania`, `itgmania`, `bobcoin`). To avoid stale proxies or cache locks, a custom `fetch-submodules.sh` exists to selectively fetch dependencies.
+- **Production Status:** The main target state is dubbed the "Industrial Onyx Stable" (v24.1.0), aiming for high-availability unattended kiosk deployment.
+- **Future Directions:** Extensive `TODO.md` and `IDEAS.md` files suggest future shifts toward a clean-room Go rewrite, VR integration, and real-time heart-rate dynamic adjustments.
