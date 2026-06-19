@@ -67,4 +67,49 @@ end
 
 t[#t+1] = minimap
 
+-- 60-Minute Cardio Timer
+if not FCDMSessionStartTime then
+    FCDMSessionStartTime = GetTimeSinceStart()
+end
+
+t[#t+1] = Def.ActorFrame{
+    InitCommand=function(self)
+        self:y(-100) -- Position above the minimap
+    end,
+
+    LoadFont("Common Bold")..{
+        InitCommand=function(self)
+            self:zoom(0.5):y(-15):settext("CARDIO SESSION"):diffuse(color("0.8,0.8,0.8,1"))
+        end
+    },
+
+    LoadFont("Common Bold")..{
+        InitCommand=function(self)
+            self:zoom(1.2):luaeffect("Update")
+        end,
+        UpdateCommand=function(self)
+            -- 60 minutes = 3600 seconds
+            local target_duration = 3600
+            local elapsed = GetTimeSinceStart() - FCDMSessionStartTime
+            local remaining = target_duration - elapsed
+
+            if remaining < 0 then remaining = 0 end
+
+            local mins = math.floor(remaining / 60)
+            local secs = math.floor(remaining % 60)
+
+            self:settext(string.format("%02d:%02d", mins, secs))
+
+            -- Color coding based on progress
+            if remaining > 1800 then
+                self:diffuse(color("0,1,0,1")) -- Green (First half)
+            elseif remaining > 300 then
+                self:diffuse(color("1,1,0,1")) -- Yellow (Second half)
+            else
+                self:diffuse(color("1,0,0,1")) -- Red (Final 5 minutes)
+            end
+        end
+    }
+}
+
 return t
