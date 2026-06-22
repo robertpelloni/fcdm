@@ -1,4 +1,4 @@
-[PROJECT_MEMORY]
+# Memory: Architectural Observations (v24.1.0 Industrial Onyx Stable)
 
 ## Architecture & Foundational Concepts
 The **Fitness Center Dance Machine (FCDM)** is a specialized rhythm game software/hardware stack designed expressly for sustained, unbroken aerobic cardio (Zone 2/3) via 60+ minute progressive psytrance sets, deviating significantly from traditional arcade bursts.
