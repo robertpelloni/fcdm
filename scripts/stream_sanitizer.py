@@ -19,6 +19,10 @@ def sanitize_ssc(input_path, output_path):
             f.write('//---------------' + chart)
 
 def process_chart(chart_content):
+    """
+    v9.0.0 Industrial Flow-QA Processor.
+    Implements Alternation Efficiency metric and automated pattern pruning.
+    """
     # Extract notes section
     notes_match = re.search(r'#NOTES:\n(.*?);', chart_content, re.DOTALL)
     if not notes_match:
@@ -77,6 +81,15 @@ def process_chart(chart_content):
 
             sanitized_lines.append("".join(new_line))
         sanitized_measures.append("\n".join(sanitized_lines))
+
+    # Flow QA: Alternation Efficiency
+    all_notes = "".join(["".join(m.split('\n')) for m in sanitized_measures])
+    steps = [i for i, c in enumerate(all_notes) if c in '124']
+    alternations = 0
+    for i in range(1, len(steps)):
+        if steps[i] % 4 != steps[i-1] % 4: alternations += 1
+    efficiency = (alternations / (len(steps)-1)) * 100 if len(steps) > 1 else 100
+    print(f"  [Flow-QA] Alternation Efficiency: {efficiency:.2f}%")
 
     new_notes_data = "#NOTES:\n" + ",\n".join(sanitized_measures) + ";"
     return chart_content.replace(notes_match.group(0), new_notes_data)

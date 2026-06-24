@@ -54,4 +54,25 @@ for RowNumber=-2, 2 do
 end
 
 t[#t+1] = Grid
+
+-- HRM Display
+t[#t+1] = Def.ActorFrame{
+	InitCommand=function(self) self:xy(100, 0) end,
+	LoadFont("Common Normal")..{
+		InitCommand=function(self) self:zoom(0.5):halign(0) end,
+		OnCommand=function(self) self:settext("HEART RATE:"):diffusealpha(0.7) end
+	},
+	LoadFont("Common Bold")..{
+		InitCommand=function(self) self:zoom(0.6):halign(0):y(15) end,
+		OnCommand=function(self)
+			self:luaeffect("Update")
+		end,
+		UpdateCommand=function(self)
+			local hr = GetCurrentHeartRate()
+			self:settext(string.format("%d BPM", hr))
+			if hr > 150 then self:diffuse(1,0,0,1) else self:diffuse(1,1,1,1) end
+		end
+	}
+}
+
 return t

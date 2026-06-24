@@ -1,18 +1,5 @@
 # TODO: Immediate Tasks
 
-- [x] Add submodules: `bobmania` and `itgmania`.
-- [x] Create initial documentation suite.
-- [x] Implement "FitnessKiosk" theme skeleton.
-- [x] Implement initial "Stream Sanitizer" Python script.
-- [x] Document hardware build and controller code.
-- [x] Implement full audio analysis pipeline in Python (librosa).
-- [x] Connect Stream Sanitizer to a real ML generator output.
-- [x] Refine "FitnessKiosk" theme to show workout-specific stats.
-- [x] Override MusicWheelItem to display 1-10 Fitness Levels.
-- [x] Implement "Workout Summary" screen (stripped down evaluation).
-- [x] Migrate Feedback screen to Pad Panel input.
-- [x] Implement systemd service and kiosk entry point.
-- [x] Conduct Live User Testing (v0.5.0-rc1).
 - [x] v24.1.0 Industrial Onyx Stable Release.
 - [x] ONNX-accelerated ML inference engine.
 - [x] Coordinate-Aware Kinematic Viterbi Decoder.

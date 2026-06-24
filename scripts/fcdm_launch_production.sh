@@ -1,43 +1,34 @@
 #!/bin/bash
-# Kiosk Standalone Entry Point for Fitness Center Dance Machine
+# FCDM v24.1.0 Production Orchestrator
+# Launches the entire stack for industrial deployment sessions.
 
-# SIMULATION MODE ARGUMENT
-SIMULATION_MODE=false
-if [[ "$1" == "--sim" ]]; then
-    SIMULATION_MODE=true
-    echo "[FCDM] Launching in SIMULATION MODE. Bypassing ALSA restrictions and Teensy hardware checks."
-fi
+echo "--- FCDM obsidian production launch ---"
 
-# 1. Kill any existing instances
-killall -9 itgmania 2>/dev/null || true
+# 1. Environment Setup
+source scripts/set_fsr_env.sh
 
-# 2. Hardware / ALSA setup
-if [ "$SIMULATION_MODE" = false ]; then
-    # Verify Teensy hardware is connected
-    if [ ! -e "/dev/ttyACM0" ]; then
-        echo "[FCDM-CRITICAL] /dev/ttyACM0 (Teensy) not found. Cannot launch production without hardware. Use --sim to override."
-        # We handle exit via a soft return if possible
-        echo "Aborting script execution"
-    else
-        # Optimize for audio latency (ALSA)
-        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./itgmania/
-        export SDL_AUDIODRIVER=alsa
-        export ALSA_CARD=0
-    fi
-else
-    # Sim Mode defaults
-    export SDL_AUDIODRIVER=dummy
-fi
+# 2. Launch Bobcoin Node Watcher (Background)
+echo "Starting Bobcoin Node Watcher..."
+python3 scripts/bobcoin_node_client.py --watcher &
+WATCHER_PID=$!
 
-# 3. Disable screen blanking
-xset s off 2>/dev/null || true
-xset -dpms 2>/dev/null || true
-xset s noblank 2>/dev/null || true
+# 3. Launch Live Hardware Monitor (Background)
+echo "Starting Live Hardware Monitor..."
+python3 scripts/live_hardware_monitor.py --duration 120 &
+MONITOR_PID=$!
 
 # 4. Launch ITGMania
-if [ -d "itgmania" ]; then
-    cd itgmania
-    ./itgmania --theme FitnessKiosk --kiosk
-else
-    echo "Directory 'itgmania' not found. Did you run fetch-submodules.sh?"
-fi
+echo "Launching ITGMania Engine..."
+nice -n -20 ./itgmania/itgmania --theme FitnessKiosk
+# echo "  [SIM] Engine start simulated."
+
+# 5. Cleanup on Exit
+function cleanup {
+    echo "Shutting down FCDM stack..."
+    kill $WATCHER_PID
+    kill $MONITOR_PID
+}
+trap cleanup EXIT
+
+echo "FCDM Stack Active. Monitoring for 2 hours."
+sleep 5

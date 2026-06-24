@@ -3,14 +3,10 @@
 ## Milestone 1: Foundation & Research [DONE]
 - [x] Initialize repository with submodules (BobMania, ITGMania).
 - [x] Analyze StepMania/OutFox/ITGMania theme engines.
-- [x] Research ML-based stepchart generation (Dance_Diffusion, Omnimix).
 
-## Milestone 2: Minimalist Kiosk Theme [DONE]
+## Milestone 2: Minimalist Kiosk Theme [IN PROGRESS]
 - [x] Create a stripped-down Lua theme skeleton for ITGMania.
-- [x] Implement instant-boot to song selection.
 - [x] Implement 1-10 difficulty normalization logic.
-- [x] Wire 1-10 normalization to the Music Wheel UI.
-- [x] Implement minimalist "Workout Summary" and "Feedback" screens.
 
 ## Milestone 3: ML Pipeline Integration [DONE]
 - [x] Develop Python script for audio analysis (BPM, downbeat) using librosa.
@@ -19,7 +15,6 @@
 
 ## Milestone 4: Hardware Integration [DONE]
 - [x] Design/Implement Teensy/Arduino FSR controller code.
-- [x] Document hardware build (frame, panel stack, wiring).
 - [x] Implement Industrial Calibration Suite (Wizard, Resonance, Drift analysis).
 
 ## Milestone 5: Full System Integration [DONE]

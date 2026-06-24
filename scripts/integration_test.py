@@ -1,7 +1,10 @@
 import os
 import sys
 import unittest
-from scripts.stream_sanitizer import process_chart
+
+# Ensure we can import from the scripts directory
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from stream_sanitizer import process_chart
 
 class StagingIntegrationTest(unittest.TestCase):
     def test_pipeline_components(self):
@@ -36,10 +39,10 @@ class StagingIntegrationTest(unittest.TestCase):
 
     def test_kiosk_scripts(self):
         """Verify that kiosk deployment scripts exist and are executable."""
-        scripts = ["scripts/fcdm_launch_production.sh", "scripts/dance-machine.service"]
+        scripts = ["scripts/kiosk-standalone.sh", "scripts/dance-machine.service"]
         for s in scripts:
             self.assertTrue(os.path.exists(s), f"Missing deployment script: {s}")
-        self.assertTrue(os.access("scripts/fcdm_launch_production.sh", os.X_OK), "fcdm_launch_production.sh is not executable")
+        self.assertTrue(os.access("scripts/kiosk-standalone.sh", os.X_OK), "kiosk-standalone.sh is not executable")
         print("Integration: Kiosk scripts check passed.")
 
 if __name__ == "__main__":

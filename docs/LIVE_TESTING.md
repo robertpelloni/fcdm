@@ -1,4 +1,4 @@
-# Live User Testing Protocol: v0.5.0-rc1
+# FCDM v16.0.0 Live Deployment Protocols
 
 ## Test Environment
 - **OS**: Linux (Ubuntu 22.04+ or Arch)
@@ -11,15 +11,15 @@
 - [ ] **Input Latency**: Verify <10ms delay between panel strike and engine response.
 - [ ] **Audio Sync**: Verify no drift over a 60-minute continuous set.
 
-## 2. Functional Flow Test
-- [ ] **Instant Boot**: Does the machine bypass the title screen and load the Music Wheel within 5 seconds of engine start?
-- [ ] **Difficulty Normalization**: Do the 1-10 levels match the user's perceived exertion?
-- [ ] **Sanitization**: Does the chart flow feel "aerobic" (no awkward jacks or hand clusters)?
-- [ ] **Workout Summary**: Is the post-game summary clear and relevant?
+## 2. v2.8.0 ML Pattern Quality
+- [ ] **Flow Consistency**: Does the generated chart maintain a sustainable L-R flow for 90% of the duration?
+- [ ] **Ergonomics**: Are there any "deadly" patterns (cross-overs or double-steps) that break Zone 2 aerobic pacing?
 
-## 3. Feedback Loop Verification
-- [ ] **Pad Input**: Does the `ScreenFeedback` correctly record Left/Start/Right panel strikes?
-- [ ] **Logging**: Check `logs/Trace.log` for correct feedback strings.
+## 3. Hardware Diagnostics & Stress Testing
+- [ ] **Industrial Stress Test**: Run `python3 scripts/industrial_stress_test.py --duration 60`.
+- [ ] **Benchmark**: Jitter variance < 5ms for 99.9% of samples.
+- [ ] **ML Latency**: Lookahead decoder must average < 10ms per window.
+- [ ] **Calibration Drift**: Run `scripts/calibrate_fsr.py --mode DRIFT` before and after each session.
 
 ## Benchmarks
 | Metric | Target | Pass/Fail |
@@ -27,3 +27,4 @@
 | Boot to Wheel | < 10s | |
 | Input Lag | < 15ms | |
 | Crash-free Play | 2+ Hours | |
+| ML Flow Efficiency| > 85% | |
