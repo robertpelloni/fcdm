@@ -18,3 +18,7 @@ itgmania/
 logs/*.csv
 logs/transaction_queue.json
 logs/mint_requests/*.json
+src/go-orchestrator/go-orchestrator
+*.wav
+*.ssc
+logs/

@@ -1,27 +1,17 @@
-# Session Handoff: v24.1.0 "Industrial Onyx Stable"
+# Session Handoff: FCDM Autonomous Execution
 
 ## Status Summary
-<<<<<<< HEAD
-Successfully transitioned the Fitness Center Dance Machine (FCDM) to a production-ready "Industrial Onyx Stable" release (v24.1.0).
-
-## Key Achievements
-- **Windowed Viterbi Kinematic Decoder**: Upgraded `scripts/ddc_inference.py` with a v24.1.0 windowed optimization algorithm that minimizes physical cost across sequences.
-- **Real ML Load Stress Test**: Enhanced `scripts/industrial_stress_test.py` to utilize real ML inference loops for accurate system load validation.
-- **Teensy Config Generator**: Developed `scripts/generate_teensy_config.py` to automate hardware threshold optimization based on noise analysis.
-- **Production release**: Verified and finalized the full v24.1.0 stable stack for global industrial deployment.
-=======
 Successfully finalized the v24.1.1 Dual-Direction Intelligent Merge Engine sequence. Synchronized upstream, resolved merge conflicts securely, preserved all UI and thematic components, updated documentation/scripts, and pushed a clean workspace.
 
 ## Key Achievements
 1. **Upstream Sync & Branch Merging:** Selectively merged upstream feature branches into `main` and resolved conflicts in documentation (HANDOFF.md, MEMORY.md, TODO.md, ROADMAP.md) without destroying Kiosk functionality.
 2. **Workspace Cleanup:** Verified paths and incremented version strings inside deployment scripts (e.g., `start.sh`).
 3. **Execution & Health:** Successfully ran `python3 scripts/run_pipeline.py --sim` and validated the health check, CI integration suite, and system sanity.
->>>>>>> origin/jules-5238017387757734088-c295058a
 
 ## Context for Successor Models
-- **ML Engine**: The v24.1.0 decoder delivers elite ergonomics by actively calculating physical cost-paths acrosssequences.
-- **Hardware**: Run `python3 scripts/generate_teensy_config.py` after a stress test to obtain optimized firmware thresholds.
-- **Versioning**: The system is promoted to v24.1.0 to reflect the Industrial Apex Stable status.
+- **Architecture**: The FCDM operates via a Python orchestrator (`run_pipeline.py`) governing sub-processes for hardware polling, ML inference (`ddc_inference.py`), and the ITGMania Kiosk.
+- **Hardware Simulation**: The codebase is configured to fall back to simulated hardware (e.g., `--sim` flags) when physical FSR boards (`/dev/ttyACM0`) or ALSA devices are absent.
+- **Dependencies**: The `requirements.txt` is updated and properly loads `numpy`, `librosa`, `onnxruntime`, etc.
 
 ## Next Steps
 - **Worldwide Bulk Industrial Deployment:** Coordinate the initial hardware rollouts for physical 9-panel platforms based on the stable v24.1.1 stack.

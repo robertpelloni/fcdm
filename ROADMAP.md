@@ -17,6 +17,7 @@
 
 ## Milestone 4: Hardware Integration [DONE]
 - [x] Design/Implement Teensy/Arduino FSR controller code.
+- [x] Document hardware build (frame, panel stack, wiring).
 - [x] Implement Industrial Calibration Suite (Wizard, Resonance, Drift analysis).
 
 ## Milestone 5: Full System Integration [DONE]
