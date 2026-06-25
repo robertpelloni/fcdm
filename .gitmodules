@@ -1,0 +1,3 @@
+[submodule "extern/bobcoin"]
+	path = extern/bobcoin
+	url = https://github.com/robertpelloni/bobcoin

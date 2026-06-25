@@ -15,3 +15,6 @@ bin/
 # Submodule directories - fetched by fetch-submodules.sh
 bobmania/
 itgmania/
+logs/*.csv
+logs/transaction_queue.json
+logs/mint_requests/*.json

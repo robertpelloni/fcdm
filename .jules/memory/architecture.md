@@ -1,16 +1,14 @@
-# Memory: Architectural Observations (v24.1.0 Industrial Onyx Stable)
-
 ## Architecture & Foundational Concepts
 The **Fitness Center Dance Machine (FCDM)** is a specialized rhythm game software/hardware stack designed expressly for sustained, unbroken aerobic cardio (Zone 2/3) via 60+ minute progressive psytrance sets, deviating significantly from traditional arcade bursts.
 
-**Engine Layer:**
+**Engine Layer:** 
 The application builds upon **ITGMania** (a StepMania 5.1 fork tailored for modern compatibility and network functions) with a custom `FitnessKiosk` minimalist Lua theme to instantly bypass typical selection menus.
 
-**Hardware Stack:**
+**Hardware Stack:** 
 The machine operates on industrial-grade 9-panel matrix platforms using Force Sensing Resistors (FSRs). The hardware is managed via a Teensy 4.0 microcontroller that communicates physical panel strikes via high-frequency keyboard emulation. The project prioritizes direct ALSA audio pathways over PulseAudio/PipeWire for ultra-low latency response.
 
 **Core Services & Orchestration:**
-A central python orchestrator (`run_pipeline.py`) manages the end-to-end operation, encapsulating processes through a series of shell and python scripts. Essential runtime orchestration is handled via `fcdm_launch_production.sh`, spanning the ITGMania process, Bobcoin Node Watcher, and Live Hardware monitors.
+A central python orchestrator (`run_pipeline.py`) manages the end-to-end operation, encapsulating processes through a series of shell and python scripts. Essential runtime orchestration is handled via `fcdm_launch_production.sh`, spanning the ITGMania process, Bobcoin Node Watcher, and Live Hardware monitors. 
 
 ## Design Patterns & Decisions
 - **Fitness Normalization:** Instead of arbitrary difficulty levels, ITGMania integrates Lua scripts (`FitnessDifficulties.lua`) to convert steps-per-second to a simple 1-10 fitness scale.
