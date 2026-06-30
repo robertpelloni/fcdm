@@ -2,8 +2,8 @@ import os
 import sys
 import argparse
 import shutil
+import subprocess
 from scripts.audio_processor import analyze_audio
-from scripts.stream_sanitizer import sanitize_ssc
 from scripts.ddc_inference import DDCInference
 
 def generate_stepchart(audio_file, temp_dir):
@@ -111,10 +111,18 @@ def run_pipeline(audio_file, output_base_dir="itgmania/Songs/FCDM_Autogen"):
     temp_dir = "temp_chart"
     raw_ssc_path, _ = generate_stepchart(audio_file, temp_dir)
 
-    # 2. Sanitize stream
+    # 2. Sanitize stream via the Go Orchestrator native binding (Milestone 7)
     final_ssc_path = os.path.join(song_dir, f"{title}.ssc")
-    print(f"  [CoreLoop] Sanitizing stream...")
-    sanitize_ssc(raw_ssc_path, final_ssc_path)
+    print(f"  [CoreLoop] Sanitizing stream via Go Native Orchestrator...")
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    orchestrator_path = os.path.join(os.path.dirname(script_dir), "fcdm-orchestrator")
+
+    try:
+        subprocess.run([orchestrator_path, "--sanitize", raw_ssc_path, "--out", final_ssc_path], check=True)
+    except subprocess.CalledProcessError:
+        print("[CoreLoop] FATAL: Go Sanitizer failed.")
+        sys.exit(1)
 
     # 3. Copy audio
     final_audio_path = os.path.join(song_dir, os.path.basename(audio_file))
