@@ -4,12 +4,12 @@ import time
 import csv
 import argparse
 import numpy as np
+import subprocess
 
 # Ensure we can import from scripts/
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from calibrate_fsr import FSRCalibrator
 from ddc_inference import DDCInference
-from stream_sanitizer import process_chart
 
 def run_stress_test(duration_min=60, sim=False):
     """
@@ -49,9 +49,12 @@ def run_stress_test(duration_min=60, sim=False):
                    mock_chart_block += "1111\n" # Highly dangerous pattern to force sanitization
                 mock_chart_block += ";\n"
 
-                # 2. Stream Sanitizer Latency Test
+                with open("temp_mock.ssc", "w") as tf:
+                    tf.write(mock_chart_block)
+
+                # 2. Native Go Stream Sanitizer Latency Test
                 san_start = time.perf_counter()
-                clean_chart = process_chart(mock_chart_block)
+                subprocess.run(["./fcdm-orchestrator", "--sanitize", "temp_mock.ssc", "--out", "temp_mock_clean.ssc"], stdout=subprocess.DEVNULL)
                 san_latency = (time.perf_counter() - san_start) * 1000
 
                 raw = cal.get_raw_values()[:2] if cal else [0, 0]

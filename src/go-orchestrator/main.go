@@ -10,17 +10,27 @@ import (
 	"runtime"
 	"strings"
 	"path/filepath"
+
+	"fcdm/go-orchestrator/internal/sanitizer"
 )
 
-// FCDM Go Orchestrator (Milestone 6: Phase 1-3)
+// FCDM Go Orchestrator (Milestone 6: Phase 1-3 & Milestone 7 Phase 4)
 
 func checkHardware(simMode bool) bool {
+	fmt.Println("--- FCDM SYSTEM HEALTH CHECK (Go Native) ---")
+
 	if simMode {
+		fmt.Println("[FCDM Orchestrator] Running in Simulation Mode. Bypassing Hardware checks.")
 		return true
 	}
+
 	if _, err := os.Stat("/dev/ttyACM0"); os.IsNotExist(err) {
+		fmt.Println("[WARN] /dev/ttyACM0 (Teensy) not found. Check physical connection or use --sim.")
 		return false
+	} else {
+		fmt.Println("[PASS] FSR Controller (/dev/ttyACM0) detected.")
 	}
+
 	return true
 }
 
@@ -75,7 +85,6 @@ func launchKiosk(simMode bool) {
 	fmt.Println("[FCDM Orchestrator] Configuring environment and launching ITGMania...")
 	manageX11()
 
-	// Use stub in CI/headless mode, or real binary if it exists
 	if _, err := os.Stat("itgmania/itgmania"); err == nil {
 		itgProcess = exec.Command("./itgmania", "--theme", "FitnessKiosk", "--kiosk")
 		itgProcess.Dir = "itgmania"
@@ -183,7 +192,22 @@ func main() {
 	simMode := flag.Bool("sim", false, "Enable simulation mode (bypasses hardware/alsa)")
 	validateMode := flag.Bool("validate", false, "Run validation tests and exit")
 	pipelineMode := flag.Bool("pipeline", false, "Run the python integration pipeline and exit")
+
+	// Phase 4: Direct CLI call to the Go Native Sanitizer
+	sanitizeMode := flag.String("sanitize", "", "Path to SSC file to sanitize via Go logic")
+	outMode := flag.String("out", "sanitized.ssc", "Path to output the sanitized SSC file")
 	flag.Parse()
+
+	if *sanitizeMode != "" {
+		fmt.Printf("Running Native Go Sanitizer on: %s\n", *sanitizeMode)
+		err := sanitizer.SanitizeSSC(*sanitizeMode, *outMode)
+		if err != nil {
+			fmt.Printf("Sanitization failed: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("Sanitization complete.")
+		os.Exit(0)
+	}
 
 	if *validateMode {
 		fmt.Println("[FCDM Validation] Checking pipeline integrity...")
