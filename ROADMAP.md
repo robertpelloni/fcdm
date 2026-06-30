@@ -33,10 +33,13 @@
 - [x] Unified management protocol via run_pipeline.py.
 - [x] Integrated v24.1.0 Coordinate-Aware decoder for elite ergonomics.
 
-## Milestone 6: Clean-room Go Rewrite [IN PROGRESS]
+## Milestone 6: Clean-room Go Rewrite [DONE]
 - [x] Draft implementation phasing plan (`docs/GO_REWRITE_PLAN.md`).
 - [x] Initialize Go orchestration skeleton (`src/go-orchestrator/main.go`).
 - [x] Phase 1: Migrate bash hardware/environment management to Go.
 - [x] Phase 2: Migrate Python pipeline orchestration (`run_pipeline.py`).
 - [x] Phase 3: Implement internal HTTP server for remote Kiosk management.
-- [ ] Phase 4: Bind ONNX runtime to Go and deprecate Python ML inference.
+- [x] Deprecate Python/Bash pipeline orchestrators.
+
+## Milestone 7: Deprecate Python ML [IN PROGRESS]
+- [ ] Phase 4: Bind ONNX runtime to Go and deprecate Python ML inference script.
