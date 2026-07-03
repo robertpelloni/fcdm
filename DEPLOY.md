@@ -27,7 +27,7 @@ To run the automated ML generation and validation pipeline loop:
 ## Running the Stress Tests & Latency Profiling
 To run a sustained load test verifying system stability and Stream Sanitization latency:
 ```bash
-python3 scripts/industrial_stress_test.py --duration 60 --sim
+./fcdm-orchestrator --stress-test --stress-duration 60 --sim
 ```
 
 ## Internal HTTP Management

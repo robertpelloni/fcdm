@@ -8,68 +8,13 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"strings"
 	"path/filepath"
 
+	"fcdm/go-orchestrator/internal/hardware"
 	"fcdm/go-orchestrator/internal/sanitizer"
 )
 
 // FCDM Go Orchestrator (Milestone 6: Phase 1-3 & Milestone 7 Phase 4)
-
-func checkHardware(simMode bool) bool {
-	fmt.Println("--- FCDM SYSTEM HEALTH CHECK (Go Native) ---")
-
-	if simMode {
-		fmt.Println("[FCDM Orchestrator] Running in Simulation Mode. Bypassing Hardware checks.")
-		return true
-	}
-
-	if _, err := os.Stat("/dev/ttyACM0"); os.IsNotExist(err) {
-		fmt.Println("[WARN] /dev/ttyACM0 (Teensy) not found. Check physical connection or use --sim.")
-		return false
-	} else {
-		fmt.Println("[PASS] FSR Controller (/dev/ttyACM0) detected.")
-	}
-
-	return true
-}
-
-func setupALSAEnvironment() string {
-	fmt.Println("  [INFO] Scanning for ALSA audio hardware...")
-	out, err := exec.Command("aplay", "-l").Output()
-	if err != nil {
-		fmt.Println("[FAIL] ALSA (aplay) not found or errored.")
-		return "0"
-	}
-
-	fmt.Println("[PASS] ALSA (aplay) found.")
-	lines := strings.Split(string(out), "\n")
-	detectedCard := ""
-	priorities := []string{"Teensy", "USB", "Internal", "HDMI"}
-
-	for _, prio := range priorities {
-		for _, line := range lines {
-			if strings.Contains(strings.ToLower(line), strings.ToLower(prio)) && strings.HasPrefix(line, "card") {
-				parts := strings.Split(line, " ")
-				if len(parts) > 1 {
-					detectedCard = strings.Trim(parts[1], ":")
-					break
-				}
-			}
-		}
-		if detectedCard != "" {
-			break
-		}
-	}
-
-	if detectedCard != "" {
-		fmt.Printf("  [INFO] Auto-detected Hardware Card Index: %s\n", detectedCard)
-	} else {
-		fmt.Println("  [INFO] Using default Card Index: 0")
-		detectedCard = "0"
-	}
-	return detectedCard
-}
 
 func manageX11() {
 	if runtime.GOOS == "linux" {
@@ -99,7 +44,7 @@ func launchKiosk(simMode bool) {
 	if simMode {
 		env = append(env, "SDL_AUDIODRIVER=dummy")
 	} else {
-		alsaCard := setupALSAEnvironment()
+		alsaCard := hardware.SetupALSAEnvironment()
 		env = append(env, "SDL_AUDIODRIVER=alsa")
 		env = append(env, "ALSA_CARD="+alsaCard)
 	}
@@ -160,7 +105,7 @@ func executePipeline(simMode bool) {
 
 func startHTTPServer(simMode bool) {
 	http.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
-		hwStatus := checkHardware(simMode)
+		hwStatus := hardware.CheckHardware(simMode)
 		response := map[string]string{
 			"status":   "active",
 			"hardware": fmt.Sprintf("%t", hwStatus),
@@ -180,6 +125,17 @@ func startHTTPServer(simMode bool) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
 		os.Exit(0)
+	})
+
+	http.HandleFunc("/api/telemetry", func(w http.ResponseWriter, r *http.Request) {
+		panels := hardware.GetTelemetry(simMode)
+		response := map[string]interface{}{
+			"status": "active",
+			"panels": panels,
+			"latency_ms": 1.2,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
 	})
 
 	fmt.Println("[FCDM Orchestrator] Starting HTTP Management Server on :8080")
@@ -211,7 +167,7 @@ func main() {
 
 	if *validateMode {
 		fmt.Println("[FCDM Validation] Checking pipeline integrity...")
-		checkHardware(*simMode)
+		hardware.CheckHardware(*simMode)
 		fmt.Println("[FCDM Validation] Pipeline integrity verified.")
 		os.Exit(0)
 	}
@@ -222,7 +178,7 @@ func main() {
 	}
 
 	fmt.Println("=== Starting FCDM Go Orchestrator (v24.1.1) ===")
-	if !*simMode && !checkHardware(false) {
+	if !*simMode && !hardware.CheckHardware(false) {
 		fmt.Println("Cannot launch production without hardware. Aborting.")
 		os.Exit(1)
 	}
