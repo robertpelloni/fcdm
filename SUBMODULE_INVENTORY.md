@@ -1,7 +1,7 @@
-# FCDM Submodule Inventory (v24.1.0)
-## Root Submodules
- 64575ee33e33ba9672805d1dfd18e28976ae5294 extern/bobcoin (heads/main)
+# Submodule Inventory
 
-## Secondary Management (fetch-submodules.sh)
-- itgmania: https://github.com/robertpelloni/itgmania
-- bobmania: https://github.com/robertpelloni/bobmania
+| Module | Source URL | Purpose |
+|---|---|---|
+| bobmania | https://github.com/robertpelloni/bobmania | Game assets, logic, and internal sub-tools. |
+| itgmania | https://github.com/robertpelloni/itgmania | The core StepMania 5.1 engine fork. |
+| extern/bobcoin | Included via `bobmania/itgmania` | Decentralized fitness tracking currency integration. |

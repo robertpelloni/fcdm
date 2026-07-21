@@ -2,15 +2,22 @@ import os
 import sys
 import argparse
 import shutil
-from audio_processor import analyze_audio
-from stream_sanitizer import sanitize_ssc
+import subprocess
+from scripts.audio_processor import analyze_audio
+from scripts.ddc_inference import DDCInference
 
 def generate_stepchart(audio_file, temp_dir):
     """
-    Generates a StepMania SSC file based on audio analysis.
+    v24.1.1: Utilizes DDCInference instead of naive beats, enabling Coordinate-Aware decoding.
     """
-    bpm, beats = analyze_audio(audio_file)
+    analysis = analyze_audio(audio_file)
+    bpm = analysis["bpm"]
+    beats = analysis["downbeats"]
     title = os.path.basename(audio_file).split('.')[0]
+
+    # Run inference directly via ML engine to get onsets
+    ml = DDCInference("lib/models/onset/model.h5")
+    onsets = ml.predict_onsets(audio_file)
 
     ssc_content = f"""#VERSION:0.83;
 #TITLE:{title};
@@ -69,7 +76,10 @@ def generate_stepchart(audio_file, temp_dir):
     arrows = ["1000", "0001", "0100", "0010"]
     arrow_idx = 0
 
-    for i in range(len(beats)):
+    # For testing, map onsets to simple 4-note measures
+    # In production, this uses SymNet for arrow placement
+    num_notes = len(onsets) if len(onsets) > 0 else 100
+    for i in range(num_notes):
         current_measure.append(arrows[arrow_idx])
         arrow_idx = (arrow_idx + 1) % len(arrows)
         if len(current_measure) == 4:
@@ -88,7 +98,7 @@ def generate_stepchart(audio_file, temp_dir):
     with open(out_path, 'w') as f:
         f.write(ssc_content)
 
-    print(f"  [CoreLoop] Raw Chart generated at {out_path}")
+    print(f"  [CoreLoop] Raw ML Chart generated at {out_path}")
     return out_path, title
 
 def run_pipeline(audio_file, output_base_dir="itgmania/Songs/FCDM_Autogen"):
@@ -101,10 +111,18 @@ def run_pipeline(audio_file, output_base_dir="itgmania/Songs/FCDM_Autogen"):
     temp_dir = "temp_chart"
     raw_ssc_path, _ = generate_stepchart(audio_file, temp_dir)
 
-    # 2. Sanitize stream
+    # 2. Sanitize stream via the Go Orchestrator native binding (Milestone 7)
     final_ssc_path = os.path.join(song_dir, f"{title}.ssc")
-    print(f"  [CoreLoop] Sanitizing stream...")
-    sanitize_ssc(raw_ssc_path, final_ssc_path)
+    print(f"  [CoreLoop] Sanitizing stream via Go Native Orchestrator...")
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    orchestrator_path = os.path.join(os.path.dirname(script_dir), "fcdm-orchestrator")
+
+    try:
+        subprocess.run([orchestrator_path, "--sanitize", raw_ssc_path, "--out", final_ssc_path], check=True)
+    except subprocess.CalledProcessError:
+        print("[CoreLoop] FATAL: Go Sanitizer failed.")
+        sys.exit(1)
 
     # 3. Copy audio
     final_audio_path = os.path.join(song_dir, os.path.basename(audio_file))

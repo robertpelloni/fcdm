@@ -1,5 +1,5 @@
 #!/bin/bash
-# FCDM v24.1.0 Production Startup
+# FCDM v24.1.1 Production Startup
 # Orchestrates the industrial FCDM stack initialization.
 
 # 1. Hardware & Environment Setup

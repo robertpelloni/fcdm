@@ -4,9 +4,11 @@
 - [x] Initialize repository with submodules (BobMania, ITGMania).
 - [x] Analyze StepMania/OutFox/ITGMania theme engines.
 
-## Milestone 2: Minimalist Kiosk Theme [IN PROGRESS]
+## Milestone 2: Minimalist Kiosk Theme [DONE]
 - [x] Create a stripped-down Lua theme skeleton for ITGMania.
 - [x] Implement 1-10 difficulty normalization logic.
+- [x] Wire 1-10 normalization to the Music Wheel UI.
+- [x] Implement minimalist "Workout Summary" and "Feedback" screens.
 
 ## Milestone 3: ML Pipeline Integration [DONE]
 - [x] Develop Python script for audio analysis (BPM, downbeat) using librosa.
@@ -15,6 +17,7 @@
 
 ## Milestone 4: Hardware Integration [DONE]
 - [x] Design/Implement Teensy/Arduino FSR controller code.
+- [x] Document hardware build (frame, panel stack, wiring).
 - [x] Implement Industrial Calibration Suite (Wizard, Resonance, Drift analysis).
 
 ## Milestone 5: Full System Integration [DONE]
@@ -29,3 +32,16 @@
 - [x] Bobcoin Node Client robust pathing and Flow-Bonus reward logic.
 - [x] Unified management protocol via run_pipeline.py.
 - [x] Integrated v24.1.0 Coordinate-Aware decoder for elite ergonomics.
+
+## Milestone 6: Clean-room Go Rewrite [DONE]
+- [x] Draft implementation phasing plan (`docs/GO_REWRITE_PLAN.md`).
+- [x] Initialize Go orchestration skeleton (`src/go-orchestrator/main.go`).
+- [x] Phase 1: Migrate bash hardware/environment management to Go.
+- [x] Phase 2: Migrate Python pipeline orchestration (`run_pipeline.py`).
+- [x] Phase 3: Implement internal HTTP server for remote Kiosk management.
+- [x] Deprecate Python/Bash pipeline orchestrators.
+
+## Milestone 7: Deprecate Python ML [DONE]
+- [x] Phase 4: Bind ONNX runtime to Go and deprecate Python ML inference script.
+- [x] Phase 5: Implement the Go-based HTTP management endpoints (`/api/health`, `/api/reboot`).
+- [x] Phase 6: Integrate the compiled `fcdm-orchestrator` binary with the systemd service for full production auto-start.

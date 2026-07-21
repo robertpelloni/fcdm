@@ -7,7 +7,9 @@ Type=simple
 # User=USER
 # WorkingDirectory=/path/to/fcdm
 Environment=DISPLAY=:0
-ExecStart=/usr/bin/bash scripts/kiosk-standalone.sh
+# Systemd requires absolute paths for ExecStart when paths are used.
+# Replace /path/to/fcdm with the actual deployment directory.
+ExecStart=/path/to/fcdm/fcdm-orchestrator
 Restart=always
 RestartSec=5
 

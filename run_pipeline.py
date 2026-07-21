@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 """
-FCDM v24.1.0 Industrial Management Protocol - Central Orchestrator
-Automates music ingestion, hardware health checks, and CI verification.
+[DEPRECATED] FCDM Python Orchestrator
+As of v24.1.1, the Python orchestrator has been deprecated in favor of the compiled Go binary.
+This script serves as a passthrough for backward compatibility.
 """
-import os
 import sys
+import os
 import subprocess
 
-def run_step(name, command):
-    print(f"\n>>> EXECUTING: {name} ...")
-    try:
-        subprocess.run(command, shell=True, check=True)
-        print(f"--- SUCCESS: {name} ---")
-    except subprocess.CalledProcessError as e:
-        print(f"!!! FAILED: {name} (Exit: {e.returncode}) !!!")
-        sys.exit(1)
-
 def main():
-    print("=== FCDM INDUSTRIAL MANAGEMENT PIPELINE (v24.1.0) ===")
-    run_step("Hardware & Environment Health Check", "bash scripts/check_system_health.sh --sim")
-    run_step("CI & Integration Suite", "python3 scripts/integration_test.py")
-    if os.path.exists("itgmania/Songs/QA_Test"):
-        run_step("Music Ingestion Pipeline (QA_Test)", "python3 scripts/ingest_music.py itgmania/Songs/QA_Test --difficulty 5 --force")
-    print("\n[COMPLETE] v24.1.0 Management Baseline established and verified.")
+    print("[WARNING] run_pipeline.py is deprecated. Passing execution to Go fcdm-orchestrator...")
+
+    # Resolve the absolute path to ensure execution doesn't break depending on where it's called from
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    orchestrator_path = os.path.join(script_dir, "fcdm-orchestrator")
+
+    args = [orchestrator_path, "--pipeline"]
+
+    if "--sim" in sys.argv:
+        args.append("--sim")
+
+    try:
+        subprocess.run(args, check=True, cwd=script_dir)
+    except subprocess.CalledProcessError as e:
+        sys.exit(e.returncode)
 
 if __name__ == "__main__":
     main()
