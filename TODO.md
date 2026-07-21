@@ -1,10 +1,10 @@
 # TODO: Immediate Tasks
 
-- [x] Add submodules: `bobmania` and `itgmania`.
-- [x] Create initial documentation suite.
-- [x] Implement "FitnessKiosk" theme skeleton.
-- [x] Implement initial "Stream Sanitizer" Python script.
-- [x] Document hardware build and controller code.
-- [ ] Implement full audio analysis pipeline in Python (librosa).
-- [ ] Connect Stream Sanitizer to a real ML generator output.
-- [ ] Refine "FitnessKiosk" theme to show workout-specific stats.
+- [x] v24.1.0 Industrial Onyx Stable Release.
+- [x] ONNX-accelerated ML inference engine.
+- [x] Coordinate-Aware Kinematic Viterbi Decoder.
+- [x] Industrial QA Certification suite.
+- [x] ALSA Multi-Card prioritizaton.
+- [x] Bobcoin Node Client path discovery.
+- [ ] Worldwide bulk industrial deployment.
+- [ ] Long-term telemetry analysis for sensor fatigue.

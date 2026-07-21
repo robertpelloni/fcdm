@@ -1,4 +1,4 @@
-# Deployment & Environment Setup
+# Deployment & Environment Setup (v24.1.0 Industrial Onyx Stable)
 
 ## Software Requirements
 - Linux (Ubuntu LTS or Arch recommended)
