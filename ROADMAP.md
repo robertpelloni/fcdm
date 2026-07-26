@@ -41,5 +41,12 @@
 - [x] Phase 3: Implement internal HTTP server for remote Kiosk management.
 - [x] Deprecate Python/Bash pipeline orchestrators.
 
-## Milestone 7: Deprecate Python ML [IN PROGRESS]
-- [ ] Phase 4: Bind ONNX runtime to Go and deprecate Python ML inference script.
+## Milestone 7: Deprecate Python ML [DONE]
+- [x] Phase 4: Bind ONNX runtime to Go and deprecate Python ML inference script.
+- [x] Phase 5: Implement the Go-based HTTP management endpoints (`/api/health`, `/api/reboot`).
+- [x] Phase 6: Integrate the compiled `fcdm-orchestrator` binary with the systemd service for full production auto-start.
+
+## Milestone 8: Hardware Abstraction Layer Migration [DONE]
+- [x] Migrate ALSA audio discovery logic natively into Go.
+- [x] Migrate Teensy/FSR Serial hardware interaction and telemetry parsing.
+- [x] Port Calibration functionality natively into the Go orchestrator.

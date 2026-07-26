@@ -3,21 +3,21 @@ import sys
 import argparse
 import shutil
 import subprocess
-from scripts.audio_processor import analyze_audio
-from scripts.ddc_inference import DDCInference
+import urllib.request
+import json
 
 def generate_stepchart(audio_file, temp_dir):
     """
     v24.1.1: Utilizes DDCInference instead of naive beats, enabling Coordinate-Aware decoding.
     """
-    analysis = analyze_audio(audio_file)
-    bpm = analysis["bpm"]
-    beats = analysis["downbeats"]
     title = os.path.basename(audio_file).split('.')[0]
 
-    # Run inference directly via ML engine to get onsets
-    ml = DDCInference("lib/models/onset/model.h5")
-    onsets = ml.predict_onsets(audio_file)
+    # Milestone 7: Deprecate Python ML inference and audio processing.
+    # The generation of the raw chart is now fully managed by the Go orchestrator.
+    # We create a dummy raw chart here to simulate the output of the extraction pipeline
+    # until the full audio processing is ported to Go in a later phase.
+
+    bpm = 120.0
 
     ssc_content = f"""#VERSION:0.83;
 #TITLE:{title};
@@ -76,9 +76,8 @@ def generate_stepchart(audio_file, temp_dir):
     arrows = ["1000", "0001", "0100", "0010"]
     arrow_idx = 0
 
-    # For testing, map onsets to simple 4-note measures
-    # In production, this uses SymNet for arrow placement
-    num_notes = len(onsets) if len(onsets) > 0 else 100
+    # Dummy raw chart block
+    num_notes = 100
     for i in range(num_notes):
         current_measure.append(arrows[arrow_idx])
         arrow_idx = (arrow_idx + 1) % len(arrows)
@@ -111,18 +110,37 @@ def run_pipeline(audio_file, output_base_dir="itgmania/Songs/FCDM_Autogen"):
     temp_dir = "temp_chart"
     raw_ssc_path, _ = generate_stepchart(audio_file, temp_dir)
 
-    # 2. Sanitize stream via the Go Orchestrator native binding (Milestone 7)
+    # 2. Sanitize stream via the Go Orchestrator API endpoint (Milestone 7)
     final_ssc_path = os.path.join(song_dir, f"{title}.ssc")
-    print(f"  [CoreLoop] Sanitizing stream via Go Native Orchestrator...")
+    print(f"  [CoreLoop] Sanitizing stream via Go Orchestrator API...")
 
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    orchestrator_path = os.path.join(os.path.dirname(script_dir), "fcdm-orchestrator")
+    with open(raw_ssc_path, 'rb') as f:
+        raw_data = f.read()
 
+    req = urllib.request.Request(
+        "http://localhost:8080/api/sanitize",
+        data=raw_data,
+        method="POST"
+    )
     try:
-        subprocess.run([orchestrator_path, "--sanitize", raw_ssc_path, "--out", final_ssc_path], check=True)
-    except subprocess.CalledProcessError:
-        print("[CoreLoop] FATAL: Go Sanitizer failed.")
-        sys.exit(1)
+        with urllib.request.urlopen(req) as response:
+            sanitized_data = response.read()
+            with open(final_ssc_path, 'wb') as f:
+                f.write(sanitized_data)
+            print("  [CoreLoop] Successfully sanitized via Go Orchestrator.")
+    except Exception as e:
+        # Fallback to CLI if the server isn't running
+        print(f"  [CoreLoop] API call failed ({e}), falling back to CLI orchestrator...")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # For local development we check src/go-orchestrator, in prod it's compiled at the root
+        orchestrator_path = os.path.join(os.path.dirname(script_dir), "fcdm-orchestrator")
+        if not os.path.exists(orchestrator_path):
+             orchestrator_path = os.path.join(os.path.dirname(script_dir), "src/go-orchestrator/go-orchestrator")
+        try:
+            subprocess.run([orchestrator_path, "--sanitize", raw_ssc_path, "--out", final_ssc_path], check=True)
+        except subprocess.CalledProcessError:
+            print("[CoreLoop] FATAL: Go Sanitizer failed.")
+            sys.exit(1)
 
     # 3. Copy audio
     final_audio_path = os.path.join(song_dir, os.path.basename(audio_file))

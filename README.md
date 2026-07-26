@@ -6,7 +6,7 @@ A bespoke software and hardware stack optimized solely for streamlining a workou
 - **Go Orchestrator**: High-performance, latency-optimized compiled binary controlling the entire machine state.
 - **Kiosk-Mode UI**: Stripped-down ITGMania interface for immediate utility.
 - **ML-Generated Charts**: Automatic generation of flow-optimized charts utilizing a Kinematic Viterbi Decoder.
-- **Stream Sanitizer**: Python-based post-processor to ensure a safe, strictly alternating cardio flow.
+- **Stream Sanitizer**: Go-native post-processor to ensure a safe, strictly alternating cardio flow without Python interop overhead.
 
 ## Getting Started
 See [DEPLOY.md](DEPLOY.md) for full hardware and software environment setup instructions.
@@ -19,4 +19,11 @@ go build -o ../../fcdm-orchestrator
 # Launch the Machine
 cd ../../
 ./fcdm-orchestrator
+```
+
+## Go Stream Sanitizer Usage
+The Stream Sanitizer is now built natively into the Go Orchestrator. It automatically processes generated charts, but can also be invoked directly from the CLI on any existing `.ssc` file:
+
+```bash
+./fcdm-orchestrator --sanitize <path_to_input.ssc> --out <path_to_output.ssc>
 ```
