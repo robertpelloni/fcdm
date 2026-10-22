@@ -1,29 +1,35 @@
 # Fitness Center Dance Machine (FCDM)
 
-A bespoke software and hardware stack optimized solely for streamlining a workout session. Unlike standard rhythm games designed for short bursts, this machine focuses on sustained, unbroken Zone 2/Zone 3 cardio using seamless 60+ minute progressive psytrance sets.
+A bespoke software (and hardware) stack for running a dance-game *workout* machine — optimized for sustained, unbroken Zone 2/Zone 3 cardio sessions rather than short rhythm-game bursts. It plays seamless 60+ minute progressive psytrance sets with ML-generated, flow-optimized charts.
 
-## Features
-- **Go Orchestrator**: High-performance, latency-optimized compiled binary controlling the entire machine state.
-- **Kiosk-Mode UI**: Stripped-down ITGMania interface for immediate utility.
-- **ML-Generated Charts**: Automatic generation of flow-optimized charts utilizing a Kinematic Viterbi Decoder.
-- **Stream Sanitizer**: Go-native post-processor to ensure a safe, strictly alternating cardio flow without Python interop overhead.
+This repo is the clean mirror of the project.
 
-## Getting Started
-See [DEPLOY.md](DEPLOY.md) for full hardware and software environment setup instructions.
+## Components
+
+- **Go Orchestrator** (`src/go-orchestrator/`) — a compiled binary that controls the whole machine state: session flow, chart processing, and the stream sanitizer
+- **Kiosk-mode UI** — a stripped-down ITGmania interface for immediate, no-friction use on the machine
+- **ML chart generation** — automatic generation of flow-optimized charts using a Kinematic Viterbi Decoder
+- **Stream Sanitizer** — built into the orchestrator (Go-native, no Python interop): post-processes charts to guarantee a safe, strictly alternating cardio flow
+
+Also in the tree: `config/`, `themes/`, `lib/`, `extern/`, `scripts/`, and chart/audio test assets.
+
+## Build & run
+
+See `DEPLOY.md` for the full hardware and software environment setup.
 
 ```bash
-# Build the Go Orchestrator
 cd src/go-orchestrator
 go build -o ../../fcdm-orchestrator
-
-# Launch the Machine
 cd ../../
 ./fcdm-orchestrator
 ```
 
-## Go Stream Sanitizer Usage
-The Stream Sanitizer is now built natively into the Go Orchestrator. It automatically processes generated charts, but can also be invoked directly from the CLI on any existing `.ssc` file:
+Sanitize an existing chart directly:
 
 ```bash
-./fcdm-orchestrator --sanitize <path_to_input.ssc> --out <path_to_output.ssc>
+./fcdm-orchestrator --sanitize <input.ssc> --out <output.ssc>
 ```
+
+## Status
+
+Personal exergaming project by Robert Pelloni — part of his long-running dance-game work (StepMania/ITGmania forks, custom dance-machine design). Built for one machine and one purpose; not a general-purpose rhythm game release.
