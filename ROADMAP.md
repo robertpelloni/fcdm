@@ -45,3 +45,9 @@
 - [x] Phase 4: Bind ONNX runtime to Go and deprecate Python ML inference script.
 - [x] Phase 5: Implement the Go-based HTTP management endpoints (`/api/health`, `/api/reboot`).
 - [x] Phase 6: Integrate the compiled `fcdm-orchestrator` binary with the systemd service for full production auto-start.
+
+## Milestone 8: Consolidated Diagnostics & Control Architecture (v24.2.0) [DONE]
+- [x] Consolidated single-page interactive terminal diagnostic dashboard (`scripts/diagnostic_dashboard.py`).
+- [x] System Tray and background server controller with clean server termination (`scripts/system_tray.py`).
+- [x] Dual-format HTTP API sanitization support and native stress testing emission to `logs/stress_results.csv`.
+- [x] Cross-component test suite harmonization (integration test, stream sanitizer tests, stress testing QA report).
