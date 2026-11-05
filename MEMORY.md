@@ -1,4 +1,4 @@
-# Memory: Architectural Observations (v24.1.0 Industrial Onyx Stable)
+# Memory: Architectural Observations (v24.2.0 Consolidated Diagnostics & Control)
 
 ## Architecture & Foundational Concepts
 The **Fitness Center Dance Machine (FCDM)** is a specialized rhythm game software/hardware stack designed expressly for sustained, unbroken aerobic cardio (Zone 2/3) via 60+ minute progressive psytrance sets, deviating significantly from traditional arcade bursts.
@@ -17,6 +17,7 @@ As of Milestone 6 and 7, the legacy Python and Bash orchestrators (`run_pipeline
 - **ML Chart Generation & Kinematics:** Standard rhythmic charts contain dangerous physical patterns for long sessions (e.g. quad hits, jacks). The system previously used Python (`ddc_inference.py`) but has now successfully ported the ONNX inference and Kinematic Viterbi Decoder entirely into the Go Orchestrator (`src/go-orchestrator/internal/inference`). This provides zero-latency chart generation.
 - **Stream Sanitization:** Post-processing logic previously handled by `stream_sanitizer.py` has been translated into Go byte-slice processing (`src/go-orchestrator/internal/sanitizer`). This native Go implementation eliminates Python interop overhead and executes significantly faster, keeping processing times well under the 10ms industrial threshold. The pipeline guarantees high Alternation Efficiency and strictly alternating fitness-safe flow patterns.
 - **Hardware Simulation Fallbacks:** System bash/python pipelines robustly use `--sim` flags to execute tests cleanly when FSR hardware interfaces (`/dev/ttyACM0`) or advanced ALSA environments are missing.
+- **Consolidated Dashboard & System Tray:** The terminal dashboard (`scripts/diagnostic_dashboard.py`) unites real-time 9-panel FSR pressure visualization, subsystem metrics (Cardio timer, Bobcoin mining, low-latency ALSA card), and interactive calibration into a single-screen layout with '?' tooltip overlays. The accompanying `scripts/system_tray.py` manages process lifecycles and clean server termination.
 - **Monetization / Verification:** The project experiments with a built-in decentralized `Bobcoin` (a submodule node client) intended for tracking and rewarding "verifiable fitness mining".
 
 ## Ongoing Codebase Trajectory

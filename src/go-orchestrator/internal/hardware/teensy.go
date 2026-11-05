@@ -66,6 +66,32 @@ func simulateTelemetry() {
 	}
 }
 
+// ParseTelemetryLine parses a raw CSV string of 9 integers representing the 9-panel FSR sensors.
+func ParseTelemetryLine(line string) ([]int, error) {
+	line = strings.TrimSpace(line)
+	if line == "" {
+		return nil, fmt.Errorf("empty telemetry line")
+	}
+
+	parts := strings.Split(line, ",")
+	if len(parts) != 9 {
+		return nil, fmt.Errorf("expected 9 sensor readings, got %d", len(parts))
+	}
+
+	parsed := make([]int, 9)
+	for i, p := range parts {
+		val, err := strconv.Atoi(strings.TrimSpace(p))
+		if err != nil {
+			return nil, fmt.Errorf("invalid integer at panel %d: %w", i, err)
+		}
+		if val < 0 {
+			val = 0
+		}
+		parsed[i] = val
+	}
+	return parsed, nil
+}
+
 func readSerialStream() {
 	reader := bufio.NewReader(serialPort)
 	for {
@@ -76,26 +102,11 @@ func readSerialStream() {
 			continue
 		}
 
-		line = strings.TrimSpace(line)
-		// Expected format: CSV of 9 integers, e.g., "0,0,1024,0,50,0,0,0,4000"
-		parts := strings.Split(line, ",")
-		if len(parts) == 9 {
-			parsed := make([]int, 9)
-			valid := true
-			for i, p := range parts {
-				val, err := strconv.Atoi(p)
-				if err != nil {
-					valid = false
-					break
-				}
-				parsed[i] = val
-			}
-
-			if valid {
-				telemetryMutex.Lock()
-				currentTelemetry = parsed
-				telemetryMutex.Unlock()
-			}
+		parsed, err := ParseTelemetryLine(line)
+		if err == nil {
+			telemetryMutex.Lock()
+			currentTelemetry = parsed
+			telemetryMutex.Unlock()
 		}
 	}
 }
