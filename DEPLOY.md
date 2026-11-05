@@ -34,3 +34,4 @@ To run a sustained load test verifying system stability and Stream Sanitization 
 The Go orchestrator exposes an HTTP server on `:8080`.
 - Health Check: `curl http://localhost:8080/api/health`
 - Reboot ITGMania: `curl http://localhost:8080/api/reboot`
+- Stream Sanitizer: `POST http://localhost:8080/api/sanitize` (expects raw `.ssc` text body, returns sanitized `.ssc` text)

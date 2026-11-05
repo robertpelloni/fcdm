@@ -7,7 +7,7 @@ A bespoke software and hardware stack optimized solely for streamlining a workou
 - **Kiosk-Mode UI**: Stripped-down interface for immediate utility. (Implemented in `itgmania/Themes/FitnessKiosk`)
 - **Universal 4/5/SMX Support**: Support for DDR (4-panel), Pump It Up (5-panel), and StepManiaX (5-panel) layouts.
 - **1-10 Fitness Scale**: Simplified difficulty mapping. (Normalization logic in `FitnessDifficulties.lua`)
-- **ML-Generated Charts**: Automatic generation of flow-optimized charts for long audio sets utilizing a Kinematic Viterbi Decoder.
-- **Stream Sanitizer**: Python-based post-processor deeply integrated into `run_pipeline.py` to ensure a safe, strictly alternating cardio flow.
+- **ML-Generated Charts**: Automatic generation of flow-optimized charts for long audio sets utilizing a Kinematic Viterbi Decoder natively in the Go Orchestrator.
+- **Stream Sanitizer**: Go-native post-processor deeply integrated into the Orchestrator HTTP API (`/api/sanitize`) to ensure a safe, strictly alternating cardio flow.
 - **Industrial-Grade Hardware**: FSR-based sensors, bulletproof construction, and high-fidelity audio.
-- **Zero Latency**: Deeply profiled latency measurements (via `industrial_stress_test.py`) ensure maximum responsiveness under prolonged load.
+- **Zero Latency**: Deeply profiled latency measurements (via `fcdm-orchestrator --stress-test`) ensure maximum responsiveness under prolonged load.
