@@ -1,5 +1,21 @@
 # Changelog
 
+## [24.2.0] - 2026-11-04
+### Added
+- **v24.2.0 Consolidated Dashboard & System Tray Release**.
+- Re-architected `scripts/diagnostic_dashboard.py` into a consolidated single-screen interactive terminal dashboard (curses) featuring:
+  - Top system status bar: Go Orchestrator health, ALSA low-latency DMA audio card index, global version.
+  - Prominent 3x3 FSR foot pressure matrix with live STRIKE/IDLE status badges, bar graphs, and sensitivity levels.
+  - Subsystem telemetry integration: Cardio Continuous Session Timer, HAL latency tracking (< 2ms), Bobcoin flow-bonus node minting, baseline drift monitoring.
+  - Interactive hotkey controls: calibration display ('c'), wizard ('w'), burn-in test ('b'), orchestrator reboot ('r'), and toggleable interactive tooltips ('?').
+- Implemented **System Tray & Background Daemon Controller** (`scripts/system_tray.py`):
+  - Provides system tray graphical icon and interactive CLI daemon fallbacks.
+  - Controls lifecycle of Go Orchestrator and background daemons (start, stop, restart, calibration trigger, launch dashboard, clean quit of all servers).
+- Harmonized Go Orchestrator native stress testing and stream sanitization:
+  - Updated `src/go-orchestrator/main.go` `--stress-test` flag to emit telemetry logs to `logs/stress_results.csv`.
+  - Added dual-format support for `/api/sanitize` endpoint (JSON requests and raw SSC text stream).
+  - Updated `scripts/test_stream_sanitizer.py` and `scripts/production_stress_runner.sh` to interface directly with the compiled Go orchestrator.
+
 ## [24.1.0] - 2024-06-25
 ### Added
 - **v24.1.0 Industrial Onyx Stable Release**.

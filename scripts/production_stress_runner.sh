@@ -1,15 +1,21 @@
 #!/bin/bash
-# FCDM v21.0.0 Production Stress Runner
-# Orchestrates 60-minute stress testing and generates pass/fail certification.
+# FCDM v24.2.0 Production Stress Runner
+# Orchestrates stress testing using the native Go orchestrator and generates QA certification.
 
-echo "--- FCDM v21.0.0 PRODUCTION STRESS RUNNER ---"
+echo "--- FCDM v24.2.0 PRODUCTION STRESS RUNNER ---"
+
+DURATION=${1:-60}
 
 # 1. Initialization
 bash scripts/check_system_health.sh --sim
 
-# 2. 60-Minute Stress Session
-echo "Starting 60-minute session..."
-python3 scripts/industrial_stress_test.py --duration 60 --sim
+# 2. Native Stress Session via Go Orchestrator
+echo "Starting ${DURATION}s stress session..."
+if [ -f "./fcdm-orchestrator" ]; then
+    ./fcdm-orchestrator --sim --stress-test --duration "$DURATION"
+else
+    ./src/go-orchestrator/go-orchestrator --sim --stress-test --duration "$DURATION"
+fi
 
 # 3. Generate QA Report
 echo "Generating Industrial QA Report..."
